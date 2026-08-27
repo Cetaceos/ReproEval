@@ -1,0 +1,41 @@
+{
+  "version": "1.0.0",
+  "assumptions": [
+    {"name": "carrier_frequency", "category": "scenario"},
+    {"name": "bandwidth", "category": "scenario"},
+    {"name": "deployment_geometry", "category": "scenario"},
+    {"name": "number_of_users", "category": "scenario"},
+    {"name": "number_of_targets", "category": "scenario"},
+    {"name": "mobility", "category": "scenario"},
+    {"name": "array_type", "category": "antenna_rf"},
+    {"name": "number_of_tx_antennas", "category": "antenna_rf"},
+    {"name": "number_of_rx_antennas", "category": "antenna_rf"},
+    {"name": "array_aperture", "category": "antenna_rf"},
+    {"name": "number_of_rf_chains", "category": "antenna_rf"},
+    {"name": "near_or_far_field", "category": "antenna_rf"},
+    {"name": "duplex_mode", "category": "antenna_rf"},
+    {"name": "self_interference_cancellation", "category": "antenna_rf"},
+    {"name": "communication_channel_model", "category": "channel"},
+    {"name": "clutter_model", "category": "channel"},
+    {"name": "hardware_impairments", "category": "channel"},
+    {"name": "target_range", "category": "target"},
+    {"name": "target_velocity", "category": "target"},
+    {"name": "target_angle", "category": "target"},
+    {"name": "target_RCS", "category": "target"},
+    {"name": "waveform", "category": "waveform"},
+    {"name": "power_constraint", "category": "waveform"},
+    {"name": "frame_and_pilot_structure", "category": "waveform"},
+    {"name": "CSI_condition", "category": "estimation"},
+    {"name": "known_noise_variance", "category": "estimation"},
+    {"name": "known_target_parameters", "category": "estimation"},
+    {"name": "array_calibration", "category": "estimation"}
+  ],
+  "evidence_sources": [
+    "observed_in_paper",
+    "derived_from_formula",
+    "observed_in_code",
+    "observed_in_config",
+    "inferred_by_Hy3",
+    "unknown"
+  ]
+}

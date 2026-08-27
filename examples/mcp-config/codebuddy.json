@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "hy3-reproeval": {
+      "type": "stdio",
+      "command": "<PATH_TO_PYTHON>",
+      "args": ["-m", "hy3_reproscope_mcp"],
+      "cwd": "<REPROEVAL_DIR>",
+      "envFile": "<REPROEVAL_DIR>/.env"
+    }
+  }
+}

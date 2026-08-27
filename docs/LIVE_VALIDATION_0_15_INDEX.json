@@ -1,0 +1,282 @@
+{
+  "record_type": "sanitized_live_validation_index",
+  "record_date": "2026-08-01",
+  "package_version": "0.15.0",
+  "distribution_version": "0.15.0",
+  "schema_version": "1.21",
+  "provider": "tokenhub",
+  "model": "hy3",
+  "live_run_wheel_sha256": "3C940B9CED5D95EACCABC563DCB459B462CE35B597AE8FDB20B2EC673976F950",
+  "latest_code_candidate_wheel_sha256": "76A3F8C05D40031F81E97FB3538E8B595F7B6BD86CA9B1C3CC6657F3083A32F3",
+  "latest_code_candidate_sdist_sha256": null,
+  "sdist_hash_source": "scripts/check_distribution.py output; omitted from sdist-contained evidence to avoid self-reference",
+  "latest_candidate_online_revalidated": false,
+  "latest_candidate_online_attempted_on": null,
+  "latest_candidate_online_request_reached_service": false,
+  "latest_candidate_online_failure_stage": "not_run",
+  "latest_candidate_online_completed_workflows": [],
+  "latest_candidate_online_unstarted_workflows": [
+    "paper",
+    "transfer",
+    "isac"
+  ],
+  "latest_candidate_online_blocker": "The final wheel passed local installation, distribution, and stdio discovery gates; exact-candidate online Hy3 revalidation is pending.",
+  "latest_candidate_online_failed_run_id": null,
+  "latest_candidate_online_failed_run_status": null,
+  "latest_candidate_online_failed_run_id_note": null,
+  "live_summary_relative_path": ".hy3-reproscope/readme-wheel-live-evidence-index.json",
+  "live_summary_sha256": "0FE83471A9B613F807193E275EA3A6B85C0F4159C0198F1521AB0C8EE80E619A",
+  "persistent_workspace": ".hy3-reproscope/readme-wheel-live-20260801",
+  "unique_run_count": 13,
+  "artifact_count": 28,
+  "json_artifact_count": 26,
+  "markdown_artifact_count": 2,
+  "artifact_hash_verification": {
+    "json_content_hashes_match": true,
+    "json_payload_hashes_match": true,
+    "markdown_content_hashes_match": true,
+    "all_run_manifests_completed": true,
+    "status_history": [
+      "created",
+      "running",
+      "completed"
+    ]
+  },
+  "request_overrides": {
+    "HY3_MAX_TOKENS": "32000",
+    "HY3_REASONING_EFFORT": "low",
+    "REPROSCOPE_LIVE_COMMAND_TIMEOUT_SECONDS": "1200"
+  },
+  "input_boundary": "All live calls used repository-owned synthetic examples authorized for transmission; this index is not a scientific benchmark.",
+  "privacy_boundary": "No API key, authorization header, endpoint secret, user identity, private source text, or absolute local path is stored.",
+  "artifact_retention": "Full JSON and Markdown artifacts remain in the local ignored .hy3-reproscope workspace; this index preserves sanitized verification metadata.",
+  "historical_validation": {
+    "successful_wheel_sha256": "61F776DD297EFEDBB52B5D1CEB6A13CA917626E6BB6B30AB052CFA53E8524641",
+    "earlier_successful_wheel_sha256": "07FE0F3A9165C3FBD793CAC560DC29F32065185EBA4ABB4BCDA2D5E566D9FFD2",
+    "successful_workflows": [
+      "paper",
+      "transfer",
+      "isac"
+    ],
+    "retry_history": [
+      {
+        "wheel_sha256": "72BDAA07C4612278E8B83CEA972FC57F6F664A859585139A88EA4BF52E7CC4AA",
+        "failure": "HTTP 402 / 401008 quota exhaustion",
+        "failed_run_id": "claims_ffa7e4cb90e5",
+        "failed_run_status": "failed"
+      },
+      {
+        "wheel_sha256": "61F776DD297EFEDBB52B5D1CEB6A13CA917626E6BB6B30AB052CFA53E8524641",
+        "failure": "HTTP 402 / 401008 quota exhaustion during paper.extract_claims before quota restoration",
+        "failed_run_id": null,
+        "failed_run_status": "failed"
+      },
+      {
+        "wheel_sha256": "3C940B9CED5D95EACCABC563DCB459B462CE35B597AE8FDB20B2EC673976F950",
+        "failure": "HTTP 200 with an empty completion during the first ISAC explicit-profile attempt",
+        "failed_run_id": "claims_05dfe2ec2b6c",
+        "failed_run_status": "failed",
+        "retry_result": "ISAC explicit, auto-positive, and auto-negative cases passed on the bounded retry"
+      }
+    ]
+  },
+  "paper": {
+    "status": "passed",
+    "elapsed_seconds": 312.521,
+    "graph_validated": true,
+    "runs": [
+      {
+        "tool": "reproscope_extract_claims",
+        "run_id": "claims_c6789d403a3c",
+        "status": "completed",
+        "artifact": "claims_c6789d403a3c/extract_claims.json",
+        "content_hash": "a87b94c7e2a616b0c62f4b40ec715ee491f36fc96dc1654bc5211966887695f1",
+        "payload_hash": "3ca2f0498f9732b18e87fa29130f704c656efdcee95de69c848c1eef19d4119f",
+        "manifest_content_hash": "a72a3f60ad692bbc1d0b89cc7220e0f6558f174ce7c35e8c18bbf58806275215",
+        "manifest_payload_hash": "c420d5ac5f16830c0ad4b45bc5d1112d7ca659b9b7839df231593d28ebd16817"
+      },
+      {
+        "tool": "reproscope_compare_results",
+        "run_id": "compare_4425f4b90db3",
+        "status": "completed",
+        "artifact": "compare_4425f4b90db3/compare_results.json",
+        "content_hash": "ce79856c2a354d55ed5bbbd76985ed30736b927d32821375b0182b6c4b91b48c",
+        "payload_hash": "b935d4f351142ce43aff53c725de68a5722531844507ea6ca57b263f401318d0",
+        "manifest_content_hash": "ba88cf52a91401e689807f68b4f7c1199d44e72f200b71bd4351357361a3cf96",
+        "manifest_payload_hash": "fe8df00d899300911e0f78af4d85b1ab5d510dce65da0a4c5906e8731ea156ac"
+      },
+      {
+        "tool": "reproscope_score_paper",
+        "run_id": "score_691f61731662",
+        "status": "completed",
+        "artifact": "score_691f61731662/reliability_score.json",
+        "content_hash": "608b7721813e72991a235158561a13a6562563f9bab3b8d4848a4c3c60d802e6",
+        "payload_hash": "425616cde52e84b147169c9f9d65872283962f1b55e4e7993337406ea82b2054",
+        "manifest_content_hash": "efe076ae17b1ba8233070e178f5674ca9e0a04e6a68fbaf6b1e54d8f3e0ed2dc",
+        "manifest_payload_hash": "ac5deea4708d8cb3fd633fca73f3026b1a65d73afc9584a9845d8d60da896db8"
+      },
+      {
+        "tool": "reproscope_build_evidence_graph",
+        "run_id": "graph_101f7a23137e",
+        "status": "completed",
+        "artifact": "graph_101f7a23137e/evidence_graph.json",
+        "content_hash": "64e1e8a6523b9832f11722140d716b30fc5a1ab10f96fd58c025b85165a9f8a7",
+        "payload_hash": "45fe69f56ed905920c3d1ee7295ba35346a75eef29fba4392effc08b3a571a70",
+        "manifest_content_hash": "75603ddeda186b72b8fdbc0bf68cca973e1d3def9d6bbb3d532cedf2cd299167",
+        "manifest_payload_hash": "910b7766e182412d068a9f3129947ce023128fadf5b706e65d6991bf2d859279"
+      },
+      {
+        "tool": "reproscope_render_report",
+        "run_id": "report_9e42ad6e9cef",
+        "status": "completed",
+        "artifact": "report_9e42ad6e9cef/reproscope_report.md",
+        "content_hash": "608205d4acf2dd278d67982bdb3f631de5968f3e3a138cce73c79ebfa7dec94c",
+        "payload_hash": null,
+        "report_manifest_content_hash": "f6ced554f78ceb4d1e5181b65ab7a3a2e761a365abac63769bdfbe4fbe336f6d",
+        "report_manifest_payload_hash": "b0c6acc7ecd535952add3a1353c19c8db798a8bc022eb96e3648d92191a740cd",
+        "manifest_content_hash": "aa4584dc4b1ce618e940fabd7bb7444c415e76ff5d13715e0a0738176db34378",
+        "manifest_payload_hash": "383b88f0cecae5cc8b786088d424ce7c66e79e4dfd57c9e647e4f1cb3c526629"
+      }
+    ],
+    "deterministic_metrics": {
+      "paper_accuracy": 0.91,
+      "reproduced_accuracy": 0.876,
+      "absolute_delta": -0.034,
+      "relative_delta_percent": -3.7363,
+      "score": 45.0,
+      "score_band": "weak",
+      "rubric_coverage": 0.9
+    }
+  },
+  "transfer": {
+    "status": "passed",
+    "elapsed_seconds": 233.092,
+    "runs": [
+      {
+        "tool": "extract_solution_profile",
+        "run_id": "solution_01b54ae47d1e",
+        "status": "completed",
+        "artifact": "solution_01b54ae47d1e/solution_profile.json",
+        "content_hash": "6f0f5abce1d44e3f8a34b055c83193c9be3977bbae9f7b5c88c673af8f4e1bd7",
+        "payload_hash": "eaf2ec14018029e5e4a27929b2ab751aa57b702cd42203b670b0290c040a4f47",
+        "manifest_content_hash": "aeed7f10c29e7c2cb78d164096583a6dd36c52bd5b5ee55f8438bc6d4a772912",
+        "manifest_payload_hash": "d25c085901059e224eedbab57ec262b7bc197510ded33f0cbcc48912d5255221"
+      },
+      {
+        "tool": "audit_repository",
+        "run_id": "repository_cc3c6cfb3127",
+        "status": "completed",
+        "artifact": "repository_cc3c6cfb3127/repository_audit.json",
+        "content_hash": "b73d9321701cf4c549ad87dcca7b62c690f8e30471d8d3da711589f34c5b6c72",
+        "payload_hash": "773d124f488e8a9a9cf628fc3dd89bc4411eb03c6815eca7703fbdd91100dd04",
+        "manifest_content_hash": "258ebedc6e60949cb3e1b7cf49e1caa467de3ff4d48b5c30cf1f3ecd11c4df08",
+        "manifest_payload_hash": "bc9a23be2a14175ff79a961213a61ad482df394a16804eada15c6471c7cd2079"
+      },
+      {
+        "tool": "assess_transfer",
+        "run_id": "transfer_427f7b78535a",
+        "status": "completed",
+        "artifact": "transfer_427f7b78535a/transfer_assessment.json",
+        "content_hash": "c5978d4876f01638719e7af4f392c86638283b6002c6e87d5950cccf00761604",
+        "payload_hash": "17d98d438e25a7f57e6c7202de4a0f6cc66375cbac0a737ea0d392834de72cfe",
+        "manifest_content_hash": "9cdedb0c5ae8e087dae5eb4bf5acd84bd0e5a0cdf9d521721d2bbdb07d2dc179",
+        "manifest_payload_hash": "0601bf465451e111f26ddd4dd7bff4c88f4fe2d618ca65253ad1ad4a127816aa"
+      },
+      {
+        "tool": "build_transfer_graph",
+        "run_id": "transfer_graph_0ee7b9cf3ac8",
+        "status": "completed",
+        "artifact": "transfer_graph_0ee7b9cf3ac8/transfer_graph.json",
+        "content_hash": "50776bd01eb03c5e6665354d5fa081486fbbd5b86607c906779af2cc118ff501",
+        "payload_hash": "9a299046e02428d03b73aac9c43fffdde577eb45bae1ed3abe47afacad3e8dca",
+        "manifest_content_hash": "b91209c823cc137ab705c46e9458940965294ef7cff9dc880aae088c6c2f1505",
+        "manifest_payload_hash": "07e8eba652f409495f43e766a5e564537f4c83e24a4861ee20bb2af60c795d75"
+      },
+      {
+        "tool": "render_transfer_report",
+        "run_id": "transfer_report_963f898f32f5",
+        "status": "completed",
+        "artifact": "transfer_report_963f898f32f5/transfer_report.md",
+        "content_hash": "d962129a20b004f0f59400e03e6428ebddabbb14f5ab1f4d40359ca9fed70db4",
+        "payload_hash": null,
+        "report_manifest_content_hash": "d11693fb2cdacccadbb0a39d7a630dfadaccc7cc5ddd581b3636ed8531101a41",
+        "report_manifest_payload_hash": "ec4355f1b80d56a7526e2128a99f1bf38dc3f86e6f8de1a788dbff946ee820f6",
+        "manifest_content_hash": "7fbcd5e6be8d7756702a44b0ca6eb0ae2b44dc5dedf4c1596eb7fe5cf1ae19d6",
+        "manifest_payload_hash": "8c5237e23706d5e8cedce6aea8c48a18f9ec09a90f35e81443cee26916a2e235"
+      }
+    ],
+    "deterministic_metrics": {
+      "overall_score": 31.0,
+      "feasibility_band": "high_risk",
+      "evidence_coverage": 1.0,
+      "rubric_coverage": 1.0,
+      "performance_prediction_provided": false,
+      "legal_conclusion_provided": false,
+      "graph_validated": true,
+      "source_closure_ratio": 1.0
+    }
+  },
+  "isac": {
+    "status": "passed",
+    "cases": [
+      {
+        "case": "explicit_isac",
+        "run_id": "claims_28c0a4b6a050",
+        "status": "completed",
+        "requested_profile": "isac_phy",
+        "effective_profile": "isac_phy",
+        "activation_source": "explicit_parameter",
+        "metric_count": 2,
+        "assumption_count": 4,
+        "finding_count": 12,
+        "risk_finding_count": 0,
+        "artifact": "claims_28c0a4b6a050/extract_claims.json",
+        "content_hash": "4c2a1b5339593b3c020c95173b55ea9a3ab963c27a94420004e3c05976ee8a16",
+        "payload_hash": "625226da91eccd8153de8bb18f4446576d8653c30a27d8125e2b74fe836e54f4",
+        "manifest_content_hash": "fc50d45c651f076a604dc6f4c7700d4a2225cf70f98d536a1888b41ff5fb6283",
+        "manifest_payload_hash": "96f4b57cf0bcfca8947820404f905d94791cef08e4c60c9fe0ad77be3157086a"
+      },
+      {
+        "case": "auto_isac_positive",
+        "run_id": "claims_399109c85ab3",
+        "status": "completed",
+        "requested_profile": "auto",
+        "effective_profile": "isac_phy",
+        "activation_source": "auto_detection",
+        "metric_count": 2,
+        "assumption_count": 4,
+        "finding_count": 12,
+        "risk_finding_count": 2,
+        "artifact": "claims_399109c85ab3/extract_claims.json",
+        "content_hash": "4e53d3c69b82377c4eb21e9193bb84c5478f8dfd52948be7863c05c1c3019240",
+        "payload_hash": "99bbfbecf6ed81dc496a62d17c46c2d0b9966d7cadfe5fc1fdf7cd7dde868c4c",
+        "manifest_content_hash": "374cc648643298209d43b2e819494b0a2fdb942d062360f63f51715c276a823f",
+        "manifest_payload_hash": "4d0afe54b03d395c639dad16972e521a647a5f8acd4433ca3f097c5864710a22"
+      },
+      {
+        "case": "auto_radar_negative",
+        "run_id": "claims_d2bac55494b0",
+        "status": "completed",
+        "requested_profile": "auto",
+        "effective_profile": "generic",
+        "activation_source": "default_generic",
+        "metric_count": 0,
+        "assumption_count": 0,
+        "finding_count": 0,
+        "risk_finding_count": 0,
+        "artifact": "claims_d2bac55494b0/extract_claims.json",
+        "content_hash": "bff6d868a9bec8b1d48073b50b8e7a45aefcec247d1d6a88e90d61cbe1e84dcf",
+        "payload_hash": "10206fc0ce8e9cb2e5b212bb52f1c91078891999f951f1d5c2b8dd9408e65d13",
+        "manifest_content_hash": "8903cce0472ad658918be62938408a4dd19fc0e7ed2f324d35196e2d6dd9283e",
+        "manifest_payload_hash": "ad0a70ba5a9cb62ebb071940af8cb463da852d28ae781b151b8e4912a9ea7237"
+      }
+    ],
+    "assertions": {
+      "all_manifests_completed": true,
+      "explicit_effective_profile": "isac_phy",
+      "auto_positive_effective_profile": "isac_phy",
+      "auto_negative_effective_profile": "generic",
+      "findings_affect_generic_score": false
+    }
+  }
+}

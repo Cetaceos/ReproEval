@@ -1,0 +1,3 @@
+2026-07-13 INFO optimizer=AdamW learning_rate=0.0003 epochs=100
+2026-07-13 INFO dataset=Dataset-A augmentation=default seed=1
+2026-07-13 INFO final_accuracy=0.87 latency_ms=14.2

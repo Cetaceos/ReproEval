@@ -1,0 +1,99 @@
+{
+  "$defs": {
+    "EvaluationCheck": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "passed": {
+          "title": "Passed",
+          "type": "boolean"
+        },
+        "expected": {
+          "title": "Expected"
+        },
+        "actual": {
+          "title": "Actual"
+        }
+      },
+      "required": [
+        "name",
+        "passed",
+        "expected",
+        "actual"
+      ],
+      "title": "EvaluationCheck",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "case_id": {
+      "minLength": 1,
+      "title": "Case Id",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "passed",
+        "failed"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "expected_abstention": {
+      "default": false,
+      "title": "Expected Abstention",
+      "type": "boolean"
+    },
+    "correct_abstention": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Correct Abstention"
+    },
+    "passed_checks": {
+      "minimum": 0,
+      "title": "Passed Checks",
+      "type": "integer"
+    },
+    "total_checks": {
+      "minimum": 1,
+      "title": "Total Checks",
+      "type": "integer"
+    },
+    "checks": {
+      "items": {
+        "$ref": "#/$defs/EvaluationCheck"
+      },
+      "minItems": 1,
+      "title": "Checks",
+      "type": "array"
+    },
+    "artifacts": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Artifacts",
+      "type": "object"
+    }
+  },
+  "required": [
+    "case_id",
+    "status",
+    "passed_checks",
+    "total_checks",
+    "checks"
+  ],
+  "title": "OfflineEvaluationResult",
+  "type": "object"
+}

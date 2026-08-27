@@ -1,0 +1,23 @@
+{
+  "fixture_id": "isac-expert-annotation-template-v1",
+  "profile_version": "1.0.0",
+  "annotation_policy": "external_human_required",
+  "annotation_protocol": {
+    "dataset_id": "REPLACE_WITH_DEIDENTIFIED_DATASET_ID",
+    "annotation_schema_version": "isac-evidence-card-v1",
+    "minimum_independent_annotators": 2,
+    "annotator_ids": ["REPLACE_WITH_ANONYMOUS_ANNOTATOR_A", "REPLACE_WITH_ANONYMOUS_ANNOTATOR_B"],
+    "adjudicator_id": "REPLACE_WITH_ANONYMOUS_ADJUDICATOR",
+    "adjudication_record_id": "REPLACE_WITH_ADJUDICATION_RECORD_ID",
+    "adjudication_required": true,
+    "adjudication_completed": false,
+    "split_frozen": false,
+    "source_material_policy": "deidentified_full_text_with_page_or_line_locators",
+    "split_policy": "grouped_by_source_before_calibration_and_held_out_freeze",
+    "source_manifest": {},
+    "agreement_metric": "REPLACE_WITH_COHEN_KAPPA_OR_OTHER_METRIC",
+    "agreement_value": 0.0,
+    "agreement_case_count": 0
+  },
+  "cases": []
+}

@@ -1,0 +1,21 @@
+{
+  "mcpServers": {
+    "hy3-reproeval": {
+      "type": "stdio",
+      "command": "C:/path/to/ReproEval/.venv/Scripts/python.exe",
+      "args": ["-m", "hy3_reproscope_mcp"],
+      "env": {
+        "HY3_API_PROVIDER": "tokenhub",
+        "HY3_BASE_URL": "https://tokenhub.tencentmaas.com/v1",
+        "HY3_API_KEY": "YOUR_HY3_API_KEY",
+        "HY3_MODEL": "hy3",
+        "HY3_REASONING_EFFORT": "high",
+        "HY3_MAX_TOKENS": "16000",
+        "HY3_TIMEOUT_SECONDS": "300",
+        "REPROSCOPE_ALLOWED_ROOTS": "C:/path/to/ReproEval",
+        "REPROSCOPE_WORKSPACE": "C:/path/to/ReproEval/.reproeval/reproscope"
+      },
+      "description": "Hy3-powered research report generation and evidence-grounded evaluation foundation"
+    }
+  }
+}

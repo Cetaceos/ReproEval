@@ -1,0 +1,32 @@
+{
+  "case_id": "synthetic-isac-insufficient-evidence-v1",
+  "inputs": {
+    "paper": "examples/sample_radar_note.md",
+    "domain_profile": "isac_phy"
+  },
+  "response": {
+    "run_id": "replay_isac_insufficient_claims",
+    "summary": "The material is radar-only and does not establish a joint communication-and-sensing system.",
+    "isac_analysis": {
+      "system_type": "fully_integrated",
+      "waveforms": [
+        "MIMO_OFDM"
+      ],
+      "research_methods": [
+        "beamforming"
+      ],
+      "evidence_level": "simulation"
+    }
+  },
+  "expectations": {
+    "detected_profile": "generic",
+    "effective_profile": "isac_phy",
+    "system_type": "unknown",
+    "evidence_level": "unknown",
+    "finding_count": 12,
+    "warning_codes": [
+      "DOMAIN_PROFILE_ACTIVATION_NOTICE",
+      "UNSUPPORTED_ISAC_CLASSIFICATION"
+    ]
+  }
+}

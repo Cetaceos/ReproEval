@@ -1,0 +1,118 @@
+{
+  "case_id": "synthetic-isac-profile-v1",
+  "inputs": {
+    "paper": "examples/sample_isac_paper.md",
+    "domain_profile": "auto"
+  },
+  "response": {
+    "run_id": "replay_isac_claims",
+    "summary": "The synthetic material describes a simulation-only ISAC study.",
+    "isac_analysis": {
+      "system_type": "fully_integrated",
+      "sensing_topologies": [
+        "monostatic"
+      ],
+      "waveforms": [
+        "MIMO_OFDM"
+      ],
+      "research_methods": [
+        "beamforming"
+      ],
+      "evidence_level": "simulation",
+      "classification_citations": [
+        {
+          "source_id": "paper_1",
+          "support": "mentions",
+          "locator": "L1-L11",
+          "rationale": "The synthetic source states the architecture, waveform, method, and evidence level."
+        }
+      ],
+      "metrics": [
+        {
+          "canonical_name": "achievable_rate",
+          "reported_name": "achievable communication rate",
+          "citations": [
+            {
+              "source_id": "paper_1",
+              "support": "mentions",
+              "locator": "L1-L11",
+              "rationale": "The source names achievable communication rate."
+            }
+          ]
+        },
+        {
+          "canonical_name": "Cramer_Rao_bound",
+          "reported_name": "CRB without a citation"
+        },
+        {
+          "canonical_name": "invented_metric",
+          "reported_name": "invented metric"
+        }
+      ],
+      "assumptions": [
+        {
+          "name": "power_constraint",
+          "value": "shared total transmit-power budget",
+          "evidence_kind": "observed",
+          "citations": [
+            {
+              "source_id": "paper_1",
+              "support": "mentions",
+              "locator": "L1-L11",
+              "rationale": "The source states the shared power budget."
+            }
+          ]
+        },
+        {
+          "name": "CSI_condition",
+          "value": "assumed without a citation"
+        },
+        {
+          "name": "invented_assumption",
+          "value": "unknown"
+        }
+      ],
+      "findings": [
+        {
+          "rule_id": "ISAC-R001",
+          "status": "risk",
+          "summary": "The resource budget differs.",
+          "rationale": "No current citation was supplied."
+        },
+        {
+          "rule_id": "ISAC-R002",
+          "status": "warning",
+          "summary": "Metric context needs review.",
+          "rationale": "The comparison context is incomplete.",
+          "missing_evidence": [
+            "The metric scale is not stated."
+          ]
+        },
+        {
+          "rule_id": "ISAC-R999",
+          "status": "unknown",
+          "summary": "Unknown registry rule.",
+          "rationale": "This must be removed."
+        }
+      ]
+    }
+  },
+  "expectations": {
+    "effective_profile": "isac_phy",
+    "minimum_confidence": 0.8,
+    "metric_names": [
+      "achievable_rate"
+    ],
+    "assumption_names": [
+      "power_constraint"
+    ],
+    "finding_count": 12,
+    "warning_codes": [
+      "UNKNOWN_ISAC_ASSUMPTION",
+      "UNKNOWN_ISAC_METRIC",
+      "UNKNOWN_ISAC_RULE",
+      "UNSUPPORTED_ISAC_ASSUMPTION",
+      "UNSUPPORTED_ISAC_METRIC"
+    ]
+  }
+}

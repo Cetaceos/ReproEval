@@ -24,6 +24,7 @@ dist/
 
 # Local evaluation artifacts and API responses
 .reproeval/
+.hy3-reproscope/
 artifacts/
 private_data/
 private_annotations/
@@ -36,5 +37,13 @@ Thumbs.db
 
 # Logs and temporary files
 *.log
+!examples/sample_train.log
 tmp/
 temp/
+
+# Local verification and audit workspaces
+.verify-venv/
+.test-tmp/
+pytest-tmp/
+.audit-pytest*/
+.local-notes/

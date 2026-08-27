@@ -1,0 +1,17 @@
+{
+  "version": "1.0.0",
+  "rules": [
+    {"rule_id": "ISAC-R001", "name": "resource_budget_mismatch", "description": "Compare total power, bandwidth, antennas, RF chains, time resources, and training overhead across methods."},
+    {"rule_id": "ISAC-R002", "name": "metric_definition_mismatch", "description": "Check dB versus linear, fraction versus percentage, MSE versus RMSE, rate versus spectral efficiency, and Pd under different Pfa."},
+    {"rule_id": "ISAC-R003", "name": "missing_sensing_target_model", "description": "Require target count, range, velocity, angle, RCS, clutter, and noise context when sensing performance is asserted."},
+    {"rule_id": "ISAC-R004", "name": "missing_communication_channel_context", "description": "Require channel, CSI, modulation, coding, bandwidth, and power context when communication performance is asserted."},
+    {"rule_id": "ISAC-R005", "name": "ideal_self_interference_cancellation", "description": "Flag perfect self-interference cancellation without residual-interference or sensitivity evidence when applicable."},
+    {"rule_id": "ISAC-R006", "name": "single_joint_weight", "description": "Flag a single weighted joint objective point without weight sweep, sensitivity analysis, or Pareto evidence."},
+    {"rule_id": "ISAC-R007", "name": "unfair_prior_information", "description": "Check whether the proposed method receives more perfect CSI, target, location, or environment information than baselines."},
+    {"rule_id": "ISAC-R008", "name": "simulation_over_extrapolation", "description": "Flag precise deployment claims supported only by ideal simulation or simplified channels."},
+    {"rule_id": "ISAC-R009", "name": "missing_independent_limits", "description": "Check for communication-only, sensing-only, independent-design, or priority baselines when applicable."},
+    {"rule_id": "ISAC-R010", "name": "near_far_field_mismatch", "description": "Request review when array aperture, carrier frequency, target range, and propagation model may be inconsistent."},
+    {"rule_id": "ISAC-R011", "name": "insufficient_statistical_evidence", "description": "Flag conclusions based on a single scene, seed, target position, SNR, or joint weight when broader evidence is required."},
+    {"rule_id": "ISAC-R012", "name": "learning_data_leakage", "description": "Check temporal, spatial, subject, environment, trajectory, and augmentation leakage across data splits."}
+  ]
+}

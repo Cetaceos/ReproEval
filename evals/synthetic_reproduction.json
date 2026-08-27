@@ -1,0 +1,300 @@
+{
+  "case_id": "synthetic-reproduction-v1",
+  "report_title": "Synthetic Reproduction Study Reliability Audit",
+  "inputs": {
+    "paper": "examples/sample_paper.md",
+    "reproduction": [
+      "examples/sample_results.csv",
+      "examples/sample_train.log"
+    ],
+    "focus": "primary metrics, baselines, ablations, and missing reproduction details",
+    "metric_hints": [
+      "accuracy",
+      "latency_ms"
+    ],
+    "rubric_focus": [
+      "baseline fairness",
+      "statistical reporting",
+      "implementation transparency"
+    ]
+  },
+  "responses": {
+    "ExtractClaimsResult": {
+      "run_id": "replay_claims",
+      "summary": "The paper reports a main result, a baseline, and an ablation.",
+      "core_claims": [
+        {
+          "claim_id": "claim_main",
+          "claim_type": "main_result",
+          "statement": "The proposed method reports test accuracy of 0.91 on Dataset-A.",
+          "reported_value": "0.91",
+          "conditions": [
+            "Dataset-A",
+            "five random seeds"
+          ],
+          "citations": [
+            {
+              "source_id": "paper_1",
+              "support": "supports",
+              "locator": "L1-L10",
+              "quote_or_value": "0.91",
+              "rationale": "The synthetic paper states the primary accuracy."
+            }
+          ],
+          "reproducibility_impact": "This is the central empirical claim."
+        },
+        {
+          "claim_id": "claim_baseline",
+          "claim_type": "baseline",
+          "statement": "The strongest baseline reports accuracy of 0.86.",
+          "reported_value": "0.86",
+          "citations": [
+            {
+              "source_id": "paper_1",
+              "support": "supports",
+              "locator": "L1-L10",
+              "quote_or_value": "0.86",
+              "rationale": "The baseline value is explicitly reported."
+            }
+          ],
+          "reproducibility_impact": "This determines the claimed improvement margin."
+        },
+        {
+          "claim_id": "claim_ablation",
+          "claim_type": "ablation",
+          "statement": "Removing the calibration module gives accuracy of 0.88.",
+          "reported_value": "0.88",
+          "citations": [
+            {
+              "source_id": "paper_1",
+              "support": "supports",
+              "locator": "L1-L10",
+              "quote_or_value": "0.88",
+              "rationale": "The ablation value is explicitly reported."
+            }
+          ],
+          "reproducibility_impact": "This supports the calibration-module contribution."
+        }
+      ],
+      "experiment_settings": [
+        {
+          "name": "epochs",
+          "value": "100",
+          "disclosed": true,
+          "citations": [
+            {
+              "source_id": "paper_1",
+              "support": "mentions",
+              "locator": "L1-L10",
+              "quote_or_value": "100 epochs",
+              "rationale": "The training budget is explicit."
+            }
+          ]
+        },
+        {
+          "name": "optimizer",
+          "value": "AdamW",
+          "disclosed": true,
+          "citations": [
+            {
+              "source_id": "paper_1",
+              "support": "mentions",
+              "locator": "L1-L10",
+              "quote_or_value": "AdamW",
+              "rationale": "The optimizer is explicit."
+            }
+          ]
+        },
+        {
+          "name": "learning_rate",
+          "value": "0.0003",
+          "disclosed": true,
+          "citations": [
+            {
+              "source_id": "paper_1",
+              "support": "mentions",
+              "locator": "L1-L10",
+              "quote_or_value": "0.0003",
+              "rationale": "The learning rate is explicit."
+            }
+          ]
+        }
+      ],
+      "missing_details": [
+        {
+          "item": "package versions",
+          "impact": "The exact software environment cannot be reconstructed.",
+          "severity": "material",
+          "citations": [
+            {
+              "source_id": "paper_1",
+              "support": "missing",
+              "locator": "L1-L10",
+              "rationale": "The paper explicitly says package versions are not provided."
+            }
+          ]
+        }
+      ]
+    },
+    "CompareReproductionResult": {
+      "run_id": "replay_comparison",
+      "summary": "The reproduced accuracy is lower than the reported main result.",
+      "metric_comparisons": [
+        {
+          "metric": "accuracy",
+          "paper_value": 0.91,
+          "paper_scale": "fraction",
+          "reproduction_scale": "fraction",
+          "reproduction_source_id": "repro_1",
+          "reproduction_column": "accuracy",
+          "severity": "critical",
+          "conclusion": "The central result is only partially reproduced.",
+          "citations": [
+            {
+              "source_id": "paper_1",
+              "support": "mentions",
+              "locator": "L1-L10",
+              "quote_or_value": "0.91",
+              "rationale": "The paper value is explicit."
+            },
+            {
+              "source_id": "repro_1",
+              "support": "contradicts",
+              "locator": "L1-L20",
+              "rationale": "The local result rows support deterministic aggregation."
+            }
+          ]
+        }
+      ],
+      "supported_claim_ids": [
+        "claim_main"
+      ],
+      "conclusion_stability": "The main conclusion is weakened but not reversed."
+    },
+    "ReliabilityScoreResult": {
+      "run_id": "replay_score",
+      "overall_score": 99,
+      "reliability_band": "strong",
+      "conclusion_confidence": 0.75,
+      "summary": "The paper is moderately supported, with incomplete statistical and implementation evidence.",
+      "dimensions": [
+        {
+          "name": "reproduction_result_agreement",
+          "score": 70,
+          "rationale": "The local mean is below the paper result.",
+          "citations": [
+            {
+              "source_id": "repro_1",
+              "support": "contradicts",
+              "locator": "L1-L20",
+              "rationale": "Five local runs determine the reproduced mean."
+            }
+          ]
+        },
+        {
+          "name": "experiment_setup_transparency",
+          "score": 65,
+          "rationale": "Core optimizer settings are available but package versions are missing.",
+          "citations": [
+            {
+              "source_id": "paper_1",
+              "support": "mentions",
+              "locator": "L1-L10",
+              "rationale": "The paper reports several training settings."
+            }
+          ]
+        },
+        {
+          "name": "baseline_fairness",
+          "score": 80,
+          "rationale": "The synthetic paper states a shared split and budget.",
+          "citations": [
+            {
+              "source_id": "paper_1",
+              "support": "supports",
+              "locator": "L1-L10",
+              "rationale": "The baseline conditions are described."
+            }
+          ]
+        },
+        {
+          "name": "ablation_quality",
+          "score": 75,
+          "rationale": "One targeted calibration ablation is reported.",
+          "citations": [
+            {
+              "source_id": "paper_1",
+              "support": "supports",
+              "locator": "L1-L10",
+              "rationale": "The calibration ablation is explicit."
+            }
+          ]
+        },
+        {
+          "name": "statistical_reporting",
+          "score": 45,
+          "rationale": "Five seeds are named but per-seed results and uncertainty are absent.",
+          "citations": [
+            {
+              "source_id": "paper_1",
+              "support": "missing",
+              "locator": "L1-L10",
+              "rationale": "The missing statistical details are explicit."
+            }
+          ]
+        },
+        {
+          "name": "data_implementation_availability",
+          "score": 40,
+          "rationale": "The preprocessing script and package versions are unavailable.",
+          "citations": [
+            {
+              "source_id": "paper_1",
+              "support": "missing",
+              "locator": "L1-L10",
+              "rationale": "The implementation gaps are explicit."
+            }
+          ]
+        }
+      ],
+      "reproduction_verdict": "The primary result is partially reproduced.",
+      "experimental_rigor_verdict": "The setup is partly transparent but reporting remains incomplete."
+    }
+  },
+  "expectations": {
+    "claim_ids": [
+      "claim_main",
+      "claim_baseline",
+      "claim_ablation"
+    ],
+    "minimum_claim_citations": 3,
+    "claim_relation_coverage": 0.3333333333333333,
+    "metric": {
+      "name": "accuracy",
+      "status": "computed",
+      "mean": 0.876,
+      "sample_count": 5,
+      "absolute_delta": -0.034,
+      "relative_delta_percent": -3.7363
+    },
+    "setting_statuses": {
+      "epochs": "match",
+      "optimizer": "match",
+      "learning_rate": "match"
+    },
+    "score": {
+      "overall": 65.75,
+      "band": "moderate",
+      "rubric_coverage": 1.0,
+      "abstain": false
+    },
+    "report_sections": [
+      "## Executive summary",
+      "## Reproduction comparison",
+      "### Claim relationship coverage",
+      "## Claim-Evidence-Result graph",
+      "### Upstream artifact inventory",
+      "### Direct parent lineage"
+    ]
+  }
+}

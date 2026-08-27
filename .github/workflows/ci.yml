@@ -1,0 +1,111 @@
+name: ReproEval CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      run_live:
+        description: "Run opt-in live Hy3 validation using the protected environment"
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: reproeval-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test-and-build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+      REPROSCOPE_PROMPT_INJECTION_POLICY: reject
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements.lock
+
+      - name: Install locked development dependencies
+        run: |
+          python -m pip install --require-hashes -r requirements.lock
+          python -m pip install -e . --no-deps
+
+      - name: Lint
+        run: python -m ruff check src tests scripts
+
+      - name: Check formatting
+        run: python -m ruff format --check src tests scripts
+
+      - name: Verify lockfile metadata
+        run: python scripts/verify_lockfile.py requirements.lock
+
+      - name: Run tests with fail-closed evidence policy
+        run: python -m pytest -q
+
+      - name: Run deterministic offline evaluations
+        run: |
+          python scripts/run_offline_eval.py
+          python scripts/run_transfer_offline_eval.py
+          python scripts/run_isac_calibration.py
+
+      - name: Build distributions
+        run: python -m build --no-isolation
+
+      - name: Check distribution contents
+        run: python scripts/check_distribution.py dist
+
+      - name: Verify dependency installation
+        run: python -m pip check
+
+  live-validation:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.run_live == true }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    environment: live-validation
+    env:
+      REPROSCOPE_RUN_LIVE: "1"
+      REPROSCOPE_PROMPT_INJECTION_POLICY: reject
+      HY3_API_KEY: ${{ secrets.HY3_API_KEY }}
+      HY3_BASE_URL: ${{ secrets.HY3_BASE_URL }}
+      HY3_MODEL: ${{ secrets.HY3_MODEL }}
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements.lock
+
+      - name: Install locked dependencies and package
+        run: |
+          python -m pip install --require-hashes -r requirements.lock
+          python -m pip install -e . --no-deps
+
+      - name: Run paper live validation with output gate
+        run: python scripts/run_live_validation.py
+
+      - name: Run transfer live validation with output gate
+        run: python scripts/run_live_transfer_validation.py
+
+      - name: Run ISAC live validation with output gate
+        run: python scripts/run_live_isac_validation.py

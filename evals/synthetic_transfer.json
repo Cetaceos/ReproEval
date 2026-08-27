@@ -1,0 +1,532 @@
+{
+  "case_id": "synthetic-transfer-v1",
+  "report_title": "Synthetic CPU Edge Transfer Assessment",
+  "inputs": {
+    "solution": [
+      "examples/sample_solution.md"
+    ],
+    "target_context": [
+      "examples/sample_target_context.md"
+    ],
+    "profile_focus": "deployment architecture, runtime dependencies, resources, and provenance",
+    "assessment_focus": "CPU-only feasibility, latency, accuracy, and redistribution risk"
+  },
+  "responses": {
+    "SolutionProfileResult": {
+      "run_id": "replay_solution_profile",
+      "summary": "The source describes an ONNX edge-inference pipeline that depends on a CUDA GPU.",
+      "objectives": [
+        {
+          "objective_id": "objective_latency",
+          "statement": "Keep batch-one p95 inference latency below 20 ms while maintaining at least 90% accuracy.",
+          "success_criteria": [
+            "p95 inference latency below 20 ms",
+            "accuracy of at least 90% on Dataset-A"
+          ],
+          "citations": [
+            {
+              "source_id": "solution_1",
+              "support": "supports",
+              "locator": "L1-L12",
+              "rationale": "The source states both performance criteria."
+            }
+          ]
+        }
+      ],
+      "components": [
+        {
+          "component_id": "component_inference_pipeline",
+          "name": "ONNX inference pipeline",
+          "responsibility": "Run the feature encoder and classifier for batch-one inference.",
+          "interfaces": [
+            "image input",
+            "classification output",
+            "ONNX model"
+          ],
+          "citations": [
+            {
+              "source_id": "solution_1",
+              "support": "supports",
+              "locator": "L1-L12",
+              "rationale": "The source describes the encoder, classifier, export, and runtime."
+            }
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "dependency_id": "dependency_cuda_runtime",
+          "name": "CUDA execution provider",
+          "dependency_type": "software and hardware runtime",
+          "required_condition": "CUDA 12 on an NVIDIA edge GPU",
+          "replaceable": true,
+          "citations": [
+            {
+              "source_id": "solution_1",
+              "support": "supports",
+              "locator": "L1-L12",
+              "rationale": "The documented deployment uses CUDA 12 and a CUDA execution provider."
+            }
+          ]
+        }
+      ],
+      "assumptions": [
+        {
+          "assumption_id": "assumption_gpu_available",
+          "statement": "An NVIDIA GPU with CUDA 12 is available in deployment.",
+          "scope": "deployment",
+          "criticality": "high",
+          "citations": [
+            {
+              "source_id": "solution_1",
+              "support": "supports",
+              "locator": "L1-L12",
+              "rationale": "The source solution explicitly targets an NVIDIA edge GPU."
+            }
+          ]
+        }
+      ],
+      "resource_requirements": [
+        {
+          "resource_id": "resource_gpu_memory",
+          "resource_type": "accelerator memory",
+          "requirement": "At least 4 GB of NVIDIA device memory.",
+          "flexibility": "No CPU fallback is documented.",
+          "citations": [
+            {
+              "source_id": "solution_1",
+              "support": "supports",
+              "locator": "L1-L12",
+              "rationale": "The hardware requirement and missing fallback are stated."
+            }
+          ]
+        }
+      ],
+      "implementation_signals": [
+        {
+          "signal": "Model weights and an inference script are available.",
+          "implication": "A prototype can start from released implementation artifacts.",
+          "citations": [
+            {
+              "source_id": "solution_1",
+              "support": "supports",
+              "locator": "L1-L12",
+              "rationale": "The source lists the released implementation artifacts."
+            }
+          ]
+        }
+      ],
+      "license_signals": [
+        {
+          "signal": "The source code declares Apache-2.0.",
+          "implication": "Code licensing is stated, but other artifacts require separate review.",
+          "citations": [
+            {
+              "source_id": "solution_1",
+              "support": "mentions",
+              "locator": "L1-L12",
+              "rationale": "The source states the code license."
+            }
+          ]
+        }
+      ],
+      "provenance_signals": [
+        {
+          "signal": "Weights and Dataset-A redistribution terms are not stated.",
+          "implication": "Provenance and redistribution require review before reuse.",
+          "citations": [
+            {
+              "source_id": "solution_1",
+              "support": "missing",
+              "locator": "L1-L12",
+              "rationale": "The source explicitly identifies missing terms."
+            }
+          ]
+        }
+      ],
+      "evidence_gaps": [
+        {
+          "item": "CPU benchmark",
+          "impact": "The target CPU latency cannot be inferred from the source GPU result.",
+          "severity": "critical",
+          "citations": [
+            {
+              "source_id": "solution_1",
+              "support": "missing",
+              "locator": "L1-L12",
+              "rationale": "The source states that no CPU benchmark is provided."
+            }
+          ]
+        }
+      ]
+    },
+    "TransferAssessmentResult": {
+      "run_id": "replay_transfer_assessment",
+      "solution_profile_run_id": "replay_solution_profile",
+      "summary": "The pipeline is conditionally transferable, but the CUDA runtime must be replaced and measured on the target CPU.",
+      "target_context_summary": "The target is a CPU-only gateway with a 30 ms p95 latency budget and an 88% feasibility accuracy floor.",
+      "overall_score": 99,
+      "feasibility_band": "promising",
+      "conclusion_confidence": 0.8,
+      "dimensions": [
+        {
+          "name": "evidence_reliability",
+          "score": 80,
+          "rationale": "The source architecture and deployment dependency are explicit, although CPU evidence is absent.",
+          "citations": [
+            {
+              "source_id": "solution_1",
+              "support": "supports",
+              "locator": "L1-L12",
+              "rationale": "The source documents architecture, runtime, and missing evidence."
+            }
+          ]
+        },
+        {
+          "name": "assumption_compatibility",
+          "score": 55,
+          "rationale": "The critical GPU-availability assumption conflicts with the target.",
+          "citations": [
+            {
+              "source_id": "solution_1",
+              "support": "supports",
+              "locator": "L1-L12",
+              "rationale": "The source requires an NVIDIA GPU."
+            },
+            {
+              "source_id": "target_1",
+              "support": "contradicts",
+              "locator": "L1-L9",
+              "rationale": "The target explicitly excludes accelerator hardware."
+            }
+          ]
+        },
+        {
+          "name": "dependency_feasibility",
+          "score": 55,
+          "rationale": "ONNX can be retained, but the CUDA execution provider cannot.",
+          "citations": [
+            {
+              "source_id": "solution_1",
+              "support": "supports",
+              "locator": "L1-L12",
+              "rationale": "The source documents ONNX and CUDA."
+            },
+            {
+              "source_id": "target_1",
+              "support": "contradicts",
+              "locator": "L1-L9",
+              "rationale": "The target has CPU compute only."
+            }
+          ]
+        },
+        {
+          "name": "resource_feasibility",
+          "score": 60,
+          "rationale": "System memory is available, but the required GPU memory is not.",
+          "citations": [
+            {
+              "source_id": "solution_1",
+              "support": "supports",
+              "locator": "L1-L12",
+              "rationale": "The source requires device memory."
+            },
+            {
+              "source_id": "target_1",
+              "support": "contradicts",
+              "locator": "L1-L9",
+              "rationale": "The target has no discrete GPU."
+            }
+          ]
+        },
+        {
+          "name": "adaptation_manageability",
+          "score": 70,
+          "rationale": "The ONNX boundary permits a bounded runtime replacement, subject to measurement.",
+          "citations": [
+            {
+              "source_id": "solution_1",
+              "support": "supports",
+              "locator": "L1-L12",
+              "rationale": "The model is exported to ONNX."
+            },
+            {
+              "source_id": "target_1",
+              "support": "supports",
+              "locator": "L1-L9",
+              "rationale": "The team can export ONNX models."
+            }
+          ]
+        },
+        {
+          "name": "validation_readiness",
+          "score": 85,
+          "rationale": "The target supplies measurable thresholds, representative data, and required evaluation dimensions.",
+          "citations": [
+            {
+              "source_id": "target_1",
+              "support": "supports",
+              "locator": "L1-L9",
+              "rationale": "The target defines data, thresholds, and evaluation requirements."
+            }
+          ]
+        }
+      ],
+      "assumption_assessments": [
+        {
+          "assumption_id": "assumption_gpu_available",
+          "compatibility": "incompatible",
+          "target_condition": "No discrete GPU or new accelerator hardware is available.",
+          "rationale": "The source deployment assumption directly conflicts with the target constraint.",
+          "citations": [
+            {
+              "source_id": "solution_1",
+              "support": "supports",
+              "locator": "L1-L12",
+              "rationale": "The source requires an NVIDIA GPU."
+            },
+            {
+              "source_id": "target_1",
+              "support": "contradicts",
+              "locator": "L1-L9",
+              "rationale": "The target excludes accelerator hardware."
+            }
+          ]
+        }
+      ],
+      "component_assessments": [
+        {
+          "component_id": "component_inference_pipeline",
+          "reuse_level": "adapt",
+          "rationale": "The ONNX model boundary can be retained while the execution provider changes.",
+          "required_changes": [
+            "replace the CUDA execution provider",
+            "measure CPU latency, memory, and accuracy"
+          ],
+          "citations": [
+            {
+              "source_id": "solution_1",
+              "support": "supports",
+              "locator": "L1-L12",
+              "rationale": "The source uses ONNX."
+            },
+            {
+              "source_id": "target_1",
+              "support": "supports",
+              "locator": "L1-L9",
+              "rationale": "The target team can export ONNX models."
+            }
+          ]
+        }
+      ],
+      "dependency_assessments": [
+        {
+          "dependency_id": "dependency_cuda_runtime",
+          "status": "unsatisfied",
+          "target_condition": "The target has no CUDA-capable GPU.",
+          "rationale": "The documented execution provider cannot run in the target context.",
+          "required_action": "Select and benchmark a CPU execution provider.",
+          "citations": [
+            {
+              "source_id": "solution_1",
+              "support": "supports",
+              "locator": "L1-L12",
+              "rationale": "The source uses CUDA."
+            },
+            {
+              "source_id": "target_1",
+              "support": "contradicts",
+              "locator": "L1-L9",
+              "rationale": "The target has CPU compute only."
+            }
+          ]
+        }
+      ],
+      "resource_assessments": [
+        {
+          "resource_id": "resource_gpu_memory",
+          "status": "unsatisfied",
+          "target_condition": "The target has system memory but no device memory.",
+          "rationale": "The required GPU memory is unavailable.",
+          "required_action": "Measure CPU peak memory and define an acceptable system-memory limit.",
+          "citations": [
+            {
+              "source_id": "solution_1",
+              "support": "supports",
+              "locator": "L1-L12",
+              "rationale": "The source requires GPU memory."
+            },
+            {
+              "source_id": "target_1",
+              "support": "contradicts",
+              "locator": "L1-L9",
+              "rationale": "The target has no GPU."
+            }
+          ]
+        }
+      ],
+      "transferable_strengths": [
+        "The ONNX model boundary is explicit.",
+        "The target team has representative data and measurable acceptance criteria."
+      ],
+      "required_adaptations": [
+        {
+          "adaptation_id": "adaptation_cpu_runtime",
+          "affected_component_ids": [
+            "component_inference_pipeline"
+          ],
+          "change": "Replace the CUDA execution provider with a CPU-compatible runtime.",
+          "reason": "The target cannot add accelerator hardware.",
+          "estimated_effort": "medium",
+          "citations": [
+            {
+              "source_id": "solution_1",
+              "support": "supports",
+              "locator": "L1-L12",
+              "rationale": "The source runtime is CUDA-specific."
+            },
+            {
+              "source_id": "target_1",
+              "support": "contradicts",
+              "locator": "L1-L9",
+              "rationale": "The target excludes accelerators."
+            }
+          ]
+        }
+      ],
+      "risks": [
+        {
+          "risk_id": "risk_cpu_latency",
+          "category": "performance",
+          "level": "high",
+          "description": "CPU p95 latency may exceed the 30 ms target.",
+          "mitigation": "Benchmark an optimized CPU export on the target gateway.",
+          "citations": [
+            {
+              "source_id": "solution_1",
+              "support": "missing",
+              "locator": "L1-L12",
+              "rationale": "No CPU benchmark is provided."
+            },
+            {
+              "source_id": "target_1",
+              "support": "supports",
+              "locator": "L1-L9",
+              "rationale": "The target requires p95 latency below 30 ms."
+            }
+          ]
+        }
+      ],
+      "validation_plan": [
+        {
+          "step_id": "benchmark_cpu",
+          "objective": "Establish CPU latency and memory feasibility.",
+          "method": "Run the exported model on the target gateway with representative batch-one inputs.",
+          "success_criteria": [
+            "p95 end-to-end latency below 30 ms",
+            "peak memory fits the agreed system-memory budget"
+          ],
+          "prerequisites": [
+            "CPU-compatible ONNX runtime"
+          ],
+          "citations": [
+            {
+              "source_id": "target_1",
+              "support": "supports",
+              "locator": "L1-L9",
+              "rationale": "The target defines the latency and memory evaluation."
+            }
+          ]
+        },
+        {
+          "step_id": "check_target_accuracy",
+          "objective": "Measure accuracy under target-domain shift.",
+          "method": "Evaluate the adapted model on the 2,000 representative target images.",
+          "success_criteria": [
+            "accuracy of at least 88% during feasibility testing"
+          ],
+          "prerequisites": [
+            "representative target-domain dataset",
+            "documented model and dataset provenance"
+          ],
+          "citations": [
+            {
+              "source_id": "target_1",
+              "support": "supports",
+              "locator": "L1-L9",
+              "rationale": "The target provides data and an accuracy floor."
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "expectations": {
+    "objective_ids": [
+      "objective_latency"
+    ],
+    "component_ids": [
+      "component_inference_pipeline"
+    ],
+    "dependency_ids": [
+      "dependency_cuda_runtime"
+    ],
+    "assumption_ids": [
+      "assumption_gpu_available"
+    ],
+    "resource_ids": [
+      "resource_gpu_memory"
+    ],
+    "minimum_profile_citations": 9,
+    "score": {
+      "overall": 67.5,
+      "band": "conditional",
+      "rubric_coverage": 1.0,
+      "evidence_coverage": 1.0,
+      "abstain": false,
+      "warning_codes": [
+        "TRANSFER_SCORE_NORMALIZED",
+        "CONDITIONAL_TRANSFER_ASSESSMENT",
+        "NO_TARGET_PERFORMANCE_PREDICTION",
+        "LICENSE_SIGNALS_NOT_LEGAL_ADVICE",
+        "TRANSFER_BLOCKERS_PRESENT"
+      ]
+    },
+    "assumption_compatibility": {
+      "assumption_gpu_available": "incompatible"
+    },
+    "component_reuse": {
+      "component_inference_pipeline": "adapt"
+    },
+    "dependency_statuses": {
+      "dependency_cuda_runtime": "unsatisfied"
+    },
+    "resource_statuses": {
+      "resource_gpu_memory": "unsatisfied"
+    },
+    "validation_step_ids": [
+      "benchmark_cpu",
+      "check_target_accuracy"
+    ],
+    "graph": {
+      "source_closure_ratio": 1.0,
+      "profile_entity_evidence_coverage": 1.0,
+      "invalidated_condition_count": 3,
+      "transferred_component_count": 1,
+      "high_risk_count": 1,
+      "validation_step_count": 2
+    },
+    "report_sections": [
+      "## Decision summary",
+      "## Dependency and resource feasibility",
+      "## Reuse and adaptation",
+      "## Validation plan",
+      "## Transfer evidence graph",
+      "## Audit trail"
+    ],
+    "report_contains": [
+      "TRANSFER_BLOCKERS_PRESENT",
+      "does not predict point performance"
+    ]
+  }
+}

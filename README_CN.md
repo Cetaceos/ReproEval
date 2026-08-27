@@ -1,0 +1,138 @@
+# Hy3 ReproEval
+
+[English](README.md)
+
+Hy3 ReproEval 是一个面向开放式科研报告的 Hy3 多工具应用与可信评测框架。项目以论文复现审查为主场景，并将技术方案迁移评估保留为跨场景泛化案例。
+
+本项目是为 2026 腾讯犀牛鸟开源课题实战开发的个人作品，不是腾讯官方产品。
+
+## 当前进度
+
+第一阶段迁移已经完成。本仓库已纳入 [Tencent-Hunyuan/Hy3 PR #187](https://github.com/Tencent-Hunyuan/Hy3/pull/187) 中经过验证的 ReproScope 应用层，包括：
+
+- 10 个 stdio MCP Tool，覆盖论文复现、方案迁移、证据图、报告和只读仓库审计；
+- 本地统计重算、Schema 校验、来源哈希、工件血缘和证据不足拒答；
+- 合成示例、离线评测集、在线验证门禁和 269 个迁移测试；
+- 对原有 `hy3_reproscope_mcp` 模块和 `hy3-reproscope-mcp` 命令的兼容。
+
+七维报告质量评估器、报告盲化比较、人工标注流程和 Benchmark 分析是下一阶段工作，详见[项目方案](docs/PROJECT_PROPOSAL_CN.md)，当前 README 不将这些计划项描述为已完成功能。
+
+## 架构
+
+```text
+论文材料 + 复现实验结果
+          |
+          v
+   ReproScope 应用生成层
+Hy3 语义提取 + Python 本地校验
+          |
+          v
+   可追溯报告与结构化工件
+          |
+          v
+    ReproEval 质量评估层
+规则校验 + Hy3 Judge + 人工标签
+```
+
+Hy3 负责语义提取和证据关系判断；本地 Python 负责数值重算、Schema 与引用校验、工件血缘和固定规则聚合。模型输出不能覆盖本地重新计算的事实。
+
+## 快速开始
+
+要求 Python 3.11 或更高版本，以及可用的 Hy3 兼容接口。
+
+```bash
+git clone https://github.com/Cetaceos/ReproEval.git
+cd ReproEval
+python -m venv .venv
+```
+
+Windows：
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install -e .
+```
+
+Linux / macOS：
+
+```bash
+./.venv/bin/python -m pip install -e .
+```
+
+将 `.env.example` 复制为私有 `.env`，或通过 MCP 客户端提供相同环境变量。不得提交真实 API Key。
+
+```text
+HY3_API_PROVIDER=tokenhub
+HY3_BASE_URL=https://tokenhub.tencentmaas.com/v1
+HY3_API_KEY=replace-with-your-key
+HY3_MODEL=hy3-preview
+REPROSCOPE_ALLOWED_ROOTS=.
+REPROSCOPE_WORKSPACE=.reproeval/reproscope
+```
+
+通过 stdio 启动 MCP Server：
+
+```bash
+hy3-reproeval-mcp
+```
+
+已有客户端仍可继续使用兼容命令：
+
+```bash
+hy3-reproscope-mcp
+```
+
+项目级客户端配置可参考 [.mcp.json](.mcp.json)，使用时需替换占位路径，并在私有配置中注入密钥。
+
+## 已迁移的 MCP Tools
+
+| Tool | 功能 |
+| --- | --- |
+| `reproscope_extract_claims` | 提取论文实验主张和可选领域证据 |
+| `reproscope_compare_results` | 对齐指标并重新计算复现实验统计量 |
+| `reproscope_score_paper` | 执行六维证据充分性评估 |
+| `reproscope_build_evidence_graph` | 构建论文证据图 |
+| `reproscope_render_report` | 生成论文复现审查报告 |
+| `reproscope_extract_solution_profile` | 提取结构化技术方案画像 |
+| `reproscope_assess_transfer` | 评估迁移条件、风险和证据缺口 |
+| `reproscope_build_transfer_graph` | 构建技术迁移证据图 |
+| `reproscope_render_transfer_report` | 生成技术迁移决策报告 |
+| `reproscope_audit_repository` | 静态审计 Python 仓库的复现条件 |
+
+## 开发验证
+
+```bash
+python -m pip install --require-hashes -r requirements.lock
+python -m pip install -e . --no-deps
+python -m pytest
+python -m ruff check src tests scripts
+python scripts/run_offline_eval.py
+python scripts/run_transfer_offline_eval.py
+```
+
+在线验证脚本仅在显式提供 Hy3 API Key 时运行，并在保留工件前执行输出安全检查。
+
+## 目录结构
+
+```text
+src/hy3_reproeval/          ReproEval 公共包和 CLI
+src/hy3_reproscope_mcp/     迁移后的应用与 MCP 兼容层
+tests/                      单元、集成、stdio、安全和工件测试
+examples/                   公开合成输入与 MCP 客户端配置
+evals/                      已迁移的确定性评测样例
+scripts/                    离线评测、在线验证、打包与证据检查脚本
+docs/PROJECT_PROPOSAL_CN.md 实战阶段设计和交付计划
+docs/reproscope/             ReproScope 验证证据与历史材料
+```
+
+兼容性和来源说明见 [MIGRATION.md](docs/MIGRATION.md)。
+
+## 安全与能力边界
+
+- API Key 和私有科研材料不得进入版本控制；
+- 仓库审计仅执行静态分析，不运行第三方代码；
+- 系统评估当前材料中的证据，不判断学术不端，也不提供法律结论；
+- 报告和评分用于辅助专家复核，不能替代专家判断。
+
+## 许可证
+
+Apache License 2.0，详见 [LICENSE](LICENSE)。

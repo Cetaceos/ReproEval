@@ -1,0 +1,55 @@
+{
+  "version": "1.0.0",
+  "system_types": [
+    "coexistence",
+    "dual_function",
+    "fully_integrated",
+    "sensing_assisted_communication",
+    "communication_assisted_sensing",
+    "unknown"
+  ],
+  "sensing_topologies": [
+    "monostatic",
+    "bistatic",
+    "multistatic",
+    "passive",
+    "active",
+    "networked",
+    "unknown"
+  ],
+  "waveforms": [
+    "OFDM",
+    "MIMO_OFDM",
+    "FMCW",
+    "OTFS",
+    "single_carrier",
+    "pulsed_radar",
+    "hybrid_waveform",
+    "custom_waveform",
+    "unknown"
+  ],
+  "research_methods": [
+    "theoretical_bound",
+    "waveform_design",
+    "beamforming",
+    "resource_allocation",
+    "parameter_estimation",
+    "detection",
+    "localization",
+    "learning_based",
+    "network_level",
+    "experimental_prototype",
+    "dataset_paper",
+    "survey",
+    "unknown"
+  ],
+  "evidence_levels": [
+    "analytical_only",
+    "simulation",
+    "hardware_in_the_loop",
+    "SDR_prototype",
+    "over_the_air",
+    "real_world_dataset",
+    "unknown"
+  ]
+}

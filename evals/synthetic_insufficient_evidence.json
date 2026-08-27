@@ -1,0 +1,205 @@
+{
+  "case_id": "synthetic-insufficient-evidence-v1",
+  "report_title": "Synthetic Insufficient Evidence Audit",
+  "inputs": {
+    "paper": "examples/sample_paper.md",
+    "reproduction": [
+      "examples/sample_results.csv",
+      "examples/sample_train.log"
+    ],
+    "focus": "determine whether the available evidence supports an overall reliability score",
+    "metric_hints": [
+      "accuracy"
+    ],
+    "rubric_focus": [
+      "baseline fairness"
+    ]
+  },
+  "responses": {
+    "ExtractClaimsResult": {
+      "run_id": "replay_sparse_claims",
+      "summary": "The primary reported result is identifiable, but the evidence inventory is incomplete.",
+      "core_claims": [
+        {
+          "claim_id": "claim_main",
+          "claim_type": "main_result",
+          "statement": "The proposed method reports test accuracy of 0.91 on Dataset-A.",
+          "reported_value": "0.91",
+          "conditions": [
+            "Dataset-A",
+            "five random seeds"
+          ],
+          "citations": [
+            {
+              "source_id": "paper_1",
+              "support": "supports",
+              "locator": "L1-L10",
+              "quote_or_value": "0.91",
+              "rationale": "The synthetic paper explicitly reports the primary accuracy."
+            }
+          ],
+          "reproducibility_impact": "This is the central empirical claim."
+        }
+      ],
+      "experiment_settings": [
+        {
+          "name": "epochs",
+          "value": "100",
+          "disclosed": true,
+          "citations": [
+            {
+              "source_id": "paper_1",
+              "support": "mentions",
+              "locator": "L1-L10",
+              "quote_or_value": "100 epochs",
+              "rationale": "The training budget is explicit."
+            }
+          ]
+        },
+        {
+          "name": "optimizer",
+          "value": "AdamW",
+          "disclosed": true,
+          "citations": [
+            {
+              "source_id": "paper_1",
+              "support": "mentions",
+              "locator": "L1-L10",
+              "quote_or_value": "AdamW",
+              "rationale": "The optimizer is explicit."
+            }
+          ]
+        },
+        {
+          "name": "learning_rate",
+          "value": "0.0003",
+          "disclosed": true,
+          "citations": [
+            {
+              "source_id": "paper_1",
+              "support": "mentions",
+              "locator": "L1-L10",
+              "quote_or_value": "0.0003",
+              "rationale": "The learning rate is explicit."
+            }
+          ]
+        }
+      ],
+      "missing_details": [
+        {
+          "item": "statistical uncertainty and implementation package versions",
+          "impact": "Most fixed-rubric dimensions cannot be assessed from the available evidence.",
+          "severity": "critical",
+          "citations": [
+            {
+              "source_id": "paper_1",
+              "support": "missing",
+              "locator": "L1-L10",
+              "rationale": "The paper states that uncertainty and package versions are not provided."
+            }
+          ]
+        }
+      ]
+    },
+    "CompareReproductionResult": {
+      "run_id": "replay_sparse_comparison",
+      "summary": "The local accuracy can be calculated, but this alone is not enough for a broad reliability score.",
+      "metric_comparisons": [
+        {
+          "metric": "accuracy",
+          "paper_value": 0.91,
+          "paper_scale": "fraction",
+          "reproduction_scale": "fraction",
+          "reproduction_source_id": "repro_1",
+          "reproduction_column": "accuracy",
+          "severity": "critical",
+          "conclusion": "The primary metric is lower in the supplied reproduction results.",
+          "citations": [
+            {
+              "source_id": "paper_1",
+              "support": "mentions",
+              "locator": "L1-L10",
+              "quote_or_value": "0.91",
+              "rationale": "The paper value is explicit."
+            },
+            {
+              "source_id": "repro_1",
+              "support": "contradicts",
+              "locator": "L1-L20",
+              "rationale": "The local rows support deterministic aggregation."
+            }
+          ]
+        }
+      ],
+      "supported_claim_ids": [
+        "claim_main"
+      ],
+      "conclusion_stability": "The metric difference is observable, but the wider reliability conclusion is underdetermined."
+    },
+    "ReliabilityScoreResult": {
+      "run_id": "replay_sparse_score",
+      "overall_score": 99,
+      "reliability_band": "strong",
+      "conclusion_confidence": 0.9,
+      "summary": "Only baseline fairness has enough evidence for a dimension-level assessment.",
+      "dimensions": [
+        {
+          "name": "baseline_fairness",
+          "score": 70,
+          "rationale": "The paper states that the baseline uses the same split and training budget.",
+          "citations": [
+            {
+              "source_id": "paper_1",
+              "support": "supports",
+              "locator": "L1-L10",
+              "rationale": "The baseline conditions are described."
+            }
+          ]
+        }
+      ],
+      "reproduction_verdict": "A metric difference is present, but the evidence is too sparse for an overall reliability score.",
+      "experimental_rigor_verdict": "Most rigor dimensions remain unassessed."
+    }
+  },
+  "expectations": {
+    "claim_ids": [
+      "claim_main"
+    ],
+    "minimum_claim_citations": 1,
+    "claim_relation_coverage": 1.0,
+    "metric": {
+      "name": "accuracy",
+      "status": "computed",
+      "mean": 0.876,
+      "sample_count": 5,
+      "absolute_delta": -0.034,
+      "relative_delta_percent": -3.7363
+    },
+    "setting_statuses": {
+      "epochs": "match",
+      "optimizer": "match",
+      "learning_rate": "match"
+    },
+    "score": {
+      "overall": null,
+      "band": "insufficient",
+      "rubric_coverage": 0.15,
+      "abstain": true,
+      "warning_codes": [
+        "RUBRIC_PARTIAL_COVERAGE"
+      ]
+    },
+    "report_sections": [
+      "## Executive summary",
+      "## Reproduction comparison",
+      "### Claim relationship coverage",
+      "## Claim-Evidence-Result graph",
+      "### Upstream artifact inventory",
+      "### Direct parent lineage"
+    ],
+    "report_contains": [
+      "not assessed",
+      "RUBRIC_PARTIAL_COVERAGE"
+    ]
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "evidence_version": "1",
+  "client": "visual_studio_code",
+  "client_version": "1.131.0",
+  "server_version": "0.15.0",
+  "schema_version": "1.21",
+  "operating_system": "Windows x64",
+  "python_version": "3.13.5",
+  "tool_names": [
+    "reproscope_extract_claims",
+    "reproscope_compare_results",
+    "reproscope_score_paper",
+    "reproscope_build_evidence_graph",
+    "reproscope_render_report",
+    "reproscope_extract_solution_profile",
+    "reproscope_assess_transfer",
+    "reproscope_build_transfer_graph",
+    "reproscope_render_transfer_report",
+    "reproscope_audit_repository"
+  ],
+  "calls": [
+    {
+      "tool_name": "reproscope_audit_repository",
+      "run_id": "repository_8246ee4f34e0",
+      "status": "completed",
+      "artifacts": [
+        {
+          "run_id": "repository_8246ee4f34e0",
+          "artifact_type": "json",
+          "relative_path": "repository_8246ee4f34e0/repository_audit.json",
+          "content_hash": "8f271a819fa86c4bbb8944885c63d44dd2b33d96f98a677a808cce7ffabd6b00",
+          "payload_hash": "34342b97756965fa6e7830d5395de662d1bc608c50cdc1975c1fc94bd496cb66"
+        }
+      ]
+    }
+  ],
+  "screenshot_ref": "docs/assets/vscode-0.15.0-tool-discovery.png",
+  "recording_ref": null,
+  "secrets_redacted": true
+}

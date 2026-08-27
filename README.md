@@ -1,29 +1,139 @@
 # Hy3 ReproEval
 
-Hy3 ReproEval is a personal project developed for the 2026 Tencent Rhino-Bird open-source practical program. It is not an official Tencent product.
+[中文说明](README_CN.md)
 
-The project will build an evidence-grounded Hy3 application and evaluation framework for open-ended research reports. Its primary scenario is research reproducibility review, with technology-transfer assessment used as a generalization scenario.
+Hy3 ReproEval is an evidence-grounded Hy3 application and evaluation framework for open-ended research reports. Its primary scenario is research reproducibility review; technology-transfer assessment is retained as a cross-scenario generalization case.
 
-## Planned Capabilities
+This is a personal project developed for the 2026 Tencent Rhino-Bird open-source practical program. It is not an official Tencent product.
 
-- Generate structured research reproducibility reports with Hy3 and local tools.
-- Validate citations, numerical results, schemas, and artifact lineage deterministically.
-- Evaluate reports with an operational seven-dimension rubric.
-- Compare automatic evaluation with blinded human annotations.
-- Measure discrimination, consistency, stability, and adversarial robustness.
-- Expose reusable Python, CLI, MCP, and optional Skill adapters.
+## Current Status
 
-## Relationship to ReproScope
+The first migration milestone is implemented. The repository now contains the validated ReproScope application layer from [Tencent-Hunyuan/Hy3 PR #187](https://github.com/Tencent-Hunyuan/Hy3/pull/187), including:
 
-This repository continues the research direction explored in [Hy3 PR #187](https://github.com/Tencent-Hunyuan/Hy3/pull/187), while focusing on the validity of evaluation methods for open-ended AI outputs. It uses an independent repository and Git history as required by the practical-stage task.
+- 10 stdio MCP tools for reproducibility review, transfer assessment, evidence graphs, reports, and read-only repository audits;
+- deterministic statistics, schema validation, source hashes, artifact lineage, and fail-closed evidence checks;
+- synthetic examples, offline evaluation suites, live-validation gates, and 269 migrated tests;
+- compatibility with existing `hy3_reproscope_mcp` module and `hy3-reproscope-mcp` command names.
 
-## Status
+The seven-dimension report-quality evaluator, blinded report comparison, human annotation workflow, and benchmark analysis are the next implementation stage. They are described in [the project proposal](docs/PROJECT_PROPOSAL_CN.md), not presented here as completed features.
 
-Initial planning and repository setup. The final project submission is planned for September 11, 2026.
+## Architecture
 
-## Security
+```text
+research sources + reproduction results
+                  |
+                  v
+       ReproScope application layer
+   Hy3 semantic extraction + local checks
+                  |
+                  v
+      traceable reports and artifacts
+                  |
+                  v
+       ReproEval evaluation layer
+ validators + Hy3 rubric judge + human labels
+```
 
-API keys and private research materials must not be committed. Hy3 credentials will be supplied through environment variables or private client configuration.
+Hy3 handles semantic extraction and evidence reasoning. Local Python recalculates numerical results, validates schemas and citations, enforces artifact lineage, and applies deterministic aggregation rules. Model output cannot overwrite locally recomputed facts.
+
+## Quick Start
+
+Requirements: Python 3.11 or newer and a Hy3-compatible API endpoint.
+
+```bash
+git clone https://github.com/Cetaceos/ReproEval.git
+cd ReproEval
+python -m venv .venv
+```
+
+Windows:
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install -e .
+```
+
+Linux / macOS:
+
+```bash
+./.venv/bin/python -m pip install -e .
+```
+
+Copy `.env.example` to a private `.env` or provide the same variables through your MCP client. Never commit a real API key.
+
+```text
+HY3_API_PROVIDER=tokenhub
+HY3_BASE_URL=https://tokenhub.tencentmaas.com/v1
+HY3_API_KEY=replace-with-your-key
+HY3_MODEL=hy3-preview
+REPROSCOPE_ALLOWED_ROOTS=.
+REPROSCOPE_WORKSPACE=.reproeval/reproscope
+```
+
+Start the MCP server over stdio:
+
+```bash
+hy3-reproeval-mcp
+```
+
+The original command remains available for existing clients:
+
+```bash
+hy3-reproscope-mcp
+```
+
+Use [.mcp.json](.mcp.json) as the project-level configuration template. Replace placeholder paths and inject secrets through private client configuration.
+
+## Migrated MCP Tools
+
+| Tool | Purpose |
+| --- | --- |
+| `reproscope_extract_claims` | Extract experimental claims and optional domain evidence |
+| `reproscope_compare_results` | Align metrics and recompute reproduction statistics |
+| `reproscope_score_paper` | Apply the six-dimension evidence sufficiency rubric |
+| `reproscope_build_evidence_graph` | Build a traceable paper evidence graph |
+| `reproscope_render_report` | Render a reproducibility review report |
+| `reproscope_extract_solution_profile` | Extract a structured technology solution profile |
+| `reproscope_assess_transfer` | Assess transfer conditions, risks, and evidence gaps |
+| `reproscope_build_transfer_graph` | Build a transfer evidence graph |
+| `reproscope_render_transfer_report` | Render a transfer decision report |
+| `reproscope_audit_repository` | Statically audit Python repository reproducibility signals |
+
+## Development
+
+Install the locked development environment and run the deterministic checks:
+
+```bash
+python -m pip install --require-hashes -r requirements.lock
+python -m pip install -e . --no-deps
+python -m pytest
+python -m ruff check src tests scripts
+python scripts/run_offline_eval.py
+python scripts/run_transfer_offline_eval.py
+```
+
+The live validation scripts require an explicitly supplied Hy3 API key and apply output safety gates before retaining artifacts.
+
+## Repository Layout
+
+```text
+src/hy3_reproeval/          ReproEval public package and CLI
+src/hy3_reproscope_mcp/     migrated application and MCP compatibility layer
+tests/                      unit, integration, stdio, security, and artifact tests
+examples/                   public synthetic inputs and MCP client examples
+evals/                      migrated deterministic evaluation fixtures
+scripts/                    offline, live, packaging, and evidence checks
+docs/PROJECT_PROPOSAL_CN.md practical-stage design and delivery plan
+docs/reproscope/             selected ReproScope validation evidence and history
+```
+
+See [MIGRATION.md](docs/MIGRATION.md) for compatibility and provenance details.
+
+## Security and Scope
+
+- API keys and private research materials must remain outside version control.
+- Repository auditing is static and does not execute third-party code.
+- The system evaluates available evidence; it does not determine academic misconduct or provide legal conclusions.
+- Reports and scores support expert review and do not replace it.
 
 ## License
 

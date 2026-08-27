@@ -1,0 +1,109 @@
+{
+  "fixture_id": "synthetic-isac-calibration-v1",
+  "profile_version": "1.0.0",
+  "annotation_policy": "synthetic",
+  "cases": [
+    {
+      "label": {
+        "case_id": "development-isac-positive",
+        "split": "development",
+        "expected_isac": true,
+        "expected_risk_rule_ids": ["ISAC-R001"],
+        "expected_citations": [
+          {"target_id": "ISAC-R001", "source_id": "paper_1", "support": "mentions", "locator": "L1"}
+        ],
+        "annotation_source": "synthetic",
+        "notes": "Synthetic joint communication-and-sensing example."
+      },
+      "predictions": [
+        {
+          "case_id": "development-isac-positive",
+          "detected": true,
+          "risk_rule_ids": ["ISAC-R001"],
+          "citations": [
+            {"target_id": "ISAC-R001", "source_id": "paper_1", "support": "mentions", "locator": "L1"}
+          ],
+          "assertion_ids": ["ISAC-R001"],
+          "run_id": "synthetic-run-1"
+        }
+      ]
+    },
+    {
+      "label": {
+        "case_id": "calibration-isac-positive",
+        "split": "calibration",
+        "expected_isac": true,
+        "expected_risk_rule_ids": ["ISAC-R002"],
+        "expected_citations": [
+          {"target_id": "ISAC-R002", "source_id": "paper_1", "support": "mentions", "locator": "L2"}
+        ],
+        "annotation_source": "synthetic"
+      },
+      "predictions": [
+        {
+          "case_id": "calibration-isac-positive",
+          "detected": true,
+          "risk_rule_ids": ["ISAC-R002"],
+          "citations": [
+            {"target_id": "ISAC-R002", "source_id": "paper_1", "support": "mentions", "locator": "L2"}
+          ],
+          "assertion_ids": ["ISAC-R002"],
+          "run_id": "synthetic-run-1"
+        },
+        {
+          "case_id": "calibration-isac-positive",
+          "detected": true,
+          "risk_rule_ids": ["ISAC-R002"],
+          "citations": [
+            {"target_id": "ISAC-R002", "source_id": "paper_1", "support": "mentions", "locator": "L2"}
+          ],
+          "assertion_ids": ["ISAC-R002"],
+          "run_id": "synthetic-run-2"
+        }
+      ]
+    },
+    {
+      "label": {
+        "case_id": "held-out-isac-positive",
+        "split": "held_out",
+        "expected_isac": true,
+        "expected_risk_rule_ids": [],
+        "expected_unsupported_assertion_ids": ["ISAC-R003"],
+        "annotation_source": "synthetic"
+      },
+      "predictions": [
+        {
+          "case_id": "held-out-isac-positive",
+          "detected": true,
+          "risk_rule_ids": [],
+          "run_id": "synthetic-run-1"
+        }
+      ]
+    },
+    {
+      "label": {
+        "case_id": "negative-radar-only",
+        "split": "negative",
+        "expected_isac": false,
+        "expected_risk_rule_ids": [],
+        "expected_unsupported_assertion_ids": ["ISAC-R001"],
+        "annotation_source": "synthetic",
+        "notes": "Radar-only material must not auto-activate ISAC."
+      },
+      "predictions": [
+        {
+          "case_id": "negative-radar-only",
+          "detected": false,
+          "risk_rule_ids": [],
+          "run_id": "synthetic-run-1"
+        },
+        {
+          "case_id": "negative-radar-only",
+          "detected": false,
+          "risk_rule_ids": [],
+          "run_id": "synthetic-run-2"
+        }
+      ]
+    }
+  ]
+}

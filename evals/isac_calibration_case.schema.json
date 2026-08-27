@@ -1,0 +1,101 @@
+{
+  "$defs": {
+    "EvidenceSupport": {
+      "enum": ["supports", "contradicts", "mentions", "missing", "unclear"],
+      "title": "EvidenceSupport",
+      "type": "string"
+    },
+    "ISACCaseSplit": {
+      "description": "Evaluation split used for an ISAC Evidence Card.",
+      "enum": ["development", "calibration", "held_out", "negative", "demo"],
+      "title": "ISACCaseSplit",
+      "type": "string"
+    },
+    "ISACCitation": {
+      "additionalProperties": false,
+      "description": "The auditable part of one citation label or prediction.",
+      "properties": {
+        "target_id": {"minLength": 1, "title": "Target Id", "type": "string"},
+        "source_id": {"minLength": 1, "title": "Source Id", "type": "string"},
+        "support": {"$ref": "#/$defs/EvidenceSupport"},
+        "locator": {"maxLength": 200, "minLength": 1, "title": "Locator", "type": "string"}
+      },
+      "required": ["target_id", "source_id", "support", "locator"],
+      "title": "ISACCitation",
+      "type": "object"
+    },
+    "ISACEvidenceCard": {
+      "additionalProperties": false,
+      "description": "Human-provided ground truth for one bounded ISAC case.",
+      "properties": {
+        "case_id": {"minLength": 1, "title": "Case Id", "type": "string"},
+        "split": {"$ref": "#/$defs/ISACCaseSplit"},
+        "group_id": {
+          "anyOf": [{"minLength": 1, "type": "string"}, {"type": "null"}],
+          "default": null,
+          "title": "Group Id"
+        },
+        "content_hash": {
+          "anyOf": [
+            {"maxLength": 64, "minLength": 64, "pattern": "^[0-9a-f]{64}$", "type": "string"},
+            {"type": "null"}
+          ],
+          "default": null,
+          "title": "Content Hash"
+        },
+        "expected_isac": {"title": "Expected Isac", "type": "boolean"},
+        "expected_risk_rule_ids": {"items": {"type": "string"}, "title": "Expected Risk Rule Ids", "type": "array"},
+        "expected_citations": {"items": {"$ref": "#/$defs/ISACCitation"}, "title": "Expected Citations", "type": "array"},
+        "expected_unsupported_assertion_ids": {
+          "items": {"type": "string"},
+          "title": "Expected Unsupported Assertion Ids",
+          "type": "array"
+        },
+        "expected_abstention": {
+          "anyOf": [{"type": "boolean"}, {"type": "null"}],
+          "default": null,
+          "title": "Expected Abstention"
+        },
+        "annotation_source": {
+          "default": "synthetic",
+          "enum": ["expert", "reviewed", "synthetic"],
+          "title": "Annotation Source",
+          "type": "string"
+        },
+        "notes": {"anyOf": [{"type": "string"}, {"type": "null"}], "default": null, "title": "Notes"}
+      },
+      "required": ["case_id", "split", "expected_isac"],
+      "title": "ISACEvidenceCard",
+      "type": "object"
+    },
+    "ISACPrediction": {
+      "additionalProperties": false,
+      "description": "One recorded detector/profile prediction for an Evidence Card.",
+      "properties": {
+        "case_id": {"minLength": 1, "title": "Case Id", "type": "string"},
+        "detected": {"title": "Detected", "type": "boolean"},
+        "confidence": {
+          "anyOf": [{"maximum": 1, "minimum": 0, "type": "number"}, {"type": "null"}],
+          "default": null,
+          "title": "Confidence"
+        },
+        "risk_rule_ids": {"items": {"type": "string"}, "title": "Risk Rule Ids", "type": "array"},
+        "citations": {"items": {"$ref": "#/$defs/ISACCitation"}, "title": "Citations", "type": "array"},
+        "assertion_ids": {"items": {"type": "string"}, "title": "Assertion Ids", "type": "array"},
+        "run_id": {"anyOf": [{"type": "string"}, {"type": "null"}], "default": null, "title": "Run Id"}
+      },
+      "required": ["case_id", "detected"],
+      "title": "ISACPrediction",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "A labelled case plus one or more predictions for stability checks.",
+  "properties": {
+    "label": {"$ref": "#/$defs/ISACEvidenceCard"},
+    "predictions": {"items": {"$ref": "#/$defs/ISACPrediction"}, "minItems": 1, "title": "Predictions", "type": "array"}
+  },
+  "required": ["label", "predictions"],
+  "title": "ISACCalibrationCase",
+  "type": "object"
+}

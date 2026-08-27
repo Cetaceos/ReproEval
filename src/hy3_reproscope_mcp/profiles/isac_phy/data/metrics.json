@@ -1,0 +1,29 @@
+{
+  "version": "1.0.0",
+  "metrics": [
+    {"canonical_name": "achievable_rate", "aliases": ["rate", "communication_rate"], "category": "communication", "unit": "bit/s", "scale": "linear", "direction": "higher_is_better", "required_context": ["bandwidth", "power_constraint", "channel_model"]},
+    {"canonical_name": "sum_rate", "aliases": ["sum throughput"], "category": "communication", "unit": "bit/s", "scale": "linear", "direction": "higher_is_better", "required_context": ["user_count", "bandwidth", "power_constraint"]},
+    {"canonical_name": "spectral_efficiency", "aliases": ["SE", "achievable_SE"], "category": "communication", "unit": "bit/s/Hz", "scale": "linear", "direction": "higher_is_better", "required_context": ["bandwidth", "pilot_overhead", "sensing_overhead"]},
+    {"canonical_name": "SINR", "aliases": ["communication_SINR"], "category": "communication", "unit": "dB", "scale": "decibel", "direction": "higher_is_better", "required_context": ["receiver", "interference_model", "noise_condition"]},
+    {"canonical_name": "BER", "aliases": ["bit_error_rate"], "category": "communication", "unit": null, "scale": "fraction", "direction": "lower_is_better", "required_context": ["modulation", "coding", "channel_model", "SNR_definition"]},
+    {"canonical_name": "BLER", "aliases": ["block_error_rate"], "category": "communication", "unit": null, "scale": "fraction", "direction": "lower_is_better", "required_context": ["block_length", "coding", "channel_model"]},
+    {"canonical_name": "outage_probability", "aliases": ["outage"], "category": "communication", "unit": null, "scale": "fraction", "direction": "lower_is_better", "required_context": ["rate_threshold", "channel_model", "SNR_condition"]},
+    {"canonical_name": "latency", "aliases": ["delay"], "category": "communication", "unit": "s", "scale": "linear", "direction": "lower_is_better", "required_context": ["latency_definition", "traffic_model", "processing_scope"]},
+    {"canonical_name": "energy_efficiency", "aliases": ["EE"], "category": "communication", "unit": "bit/J", "scale": "linear", "direction": "higher_is_better", "required_context": ["power_model", "bandwidth", "hardware_power"]},
+    {"canonical_name": "throughput", "aliases": ["data_rate"], "category": "communication", "unit": "bit/s", "scale": "linear", "direction": "higher_is_better", "required_context": ["bandwidth", "frame_overhead", "traffic_model"]},
+    {"canonical_name": "detection_probability", "aliases": ["Pd", "probability_of_detection"], "category": "sensing", "unit": null, "scale": "fraction", "direction": "higher_is_better", "required_context": ["false_alarm_probability", "target_model", "noise_condition"]},
+    {"canonical_name": "false_alarm_probability", "aliases": ["Pfa", "probability_of_false_alarm"], "category": "sensing", "unit": null, "scale": "fraction", "direction": "lower_is_better", "required_context": ["detector", "threshold", "noise_condition"]},
+    {"canonical_name": "range_RMSE", "aliases": ["range_error", "range_rmse"], "category": "sensing", "unit": "m", "scale": "linear", "direction": "lower_is_better", "required_context": ["target_range", "bandwidth", "SNR_condition", "sample_count"]},
+    {"canonical_name": "velocity_RMSE", "aliases": ["Doppler_RMSE", "velocity_error"], "category": "sensing", "unit": "m/s", "scale": "linear", "direction": "lower_is_better", "required_context": ["coherent_processing_interval", "target_velocity", "SNR_condition"]},
+    {"canonical_name": "angle_RMSE", "aliases": ["angular_error", "AoA_RMSE"], "category": "sensing", "unit": "degree", "scale": "linear", "direction": "lower_is_better", "required_context": ["array_geometry", "target_angle", "SNR_condition"]},
+    {"canonical_name": "localization_error", "aliases": ["position_error"], "category": "sensing", "unit": "m", "scale": "linear", "direction": "lower_is_better", "required_context": ["geometry", "error_statistic", "target_distribution"]},
+    {"canonical_name": "sensing_SNR", "aliases": ["radar_SNR"], "category": "sensing", "unit": "dB", "scale": "decibel", "direction": "higher_is_better", "required_context": ["target_RCS", "range", "noise_condition"]},
+    {"canonical_name": "Cramer_Rao_bound", "aliases": ["CRB", "CRLB"], "category": "sensing", "unit": null, "scale": "linear", "direction": "lower_is_better", "required_context": ["estimated_parameter", "observation_model", "noise_model"]},
+    {"canonical_name": "beampattern_error", "aliases": ["beampattern_MSE"], "category": "sensing", "unit": null, "scale": "linear", "direction": "lower_is_better", "required_context": ["desired_beampattern", "angular_grid", "normalization"]},
+    {"canonical_name": "range_resolution", "aliases": ["distance_resolution"], "category": "sensing", "unit": "m", "scale": "linear", "direction": "lower_is_better", "required_context": ["bandwidth", "waveform"]},
+    {"canonical_name": "velocity_resolution", "aliases": ["Doppler_resolution"], "category": "sensing", "unit": "m/s", "scale": "linear", "direction": "lower_is_better", "required_context": ["carrier_frequency", "coherent_processing_interval"]},
+    {"canonical_name": "Pareto_front", "aliases": ["Pareto_boundary", "tradeoff_curve"], "category": "joint", "unit": null, "scale": "unknown", "direction": "pareto", "required_context": ["communication_metric", "sensing_metric", "shared_resource_budget"]},
+    {"canonical_name": "weighted_joint_objective", "aliases": ["weighted_sum_objective"], "category": "joint", "unit": null, "scale": "unknown", "direction": "depends_on_definition", "required_context": ["weight", "normalization", "component_metrics"]},
+    {"canonical_name": "joint_energy_efficiency", "aliases": ["ISAC_energy_efficiency"], "category": "joint", "unit": null, "scale": "linear", "direction": "higher_is_better", "required_context": ["communication_utility", "sensing_utility", "power_model"]}
+  ]
+}

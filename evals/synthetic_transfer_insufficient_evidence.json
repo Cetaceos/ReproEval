@@ -1,0 +1,218 @@
+{
+  "case_id": "synthetic-transfer-insufficient-evidence-v1",
+  "report_title": "Synthetic Transfer Evidence Sufficiency Assessment",
+  "inputs": {
+    "solution": [
+      "examples/sample_solution.md"
+    ],
+    "target_context": [
+      "examples/sample_target_context_sparse.md"
+    ],
+    "profile_focus": "identify the source solution conditions",
+    "assessment_focus": "determine whether the target context supports a transfer decision"
+  },
+  "responses": {
+    "SolutionProfileResult": {
+      "run_id": "replay_sparse_solution_profile",
+      "summary": "The source solution is identifiable, but transfer requires a concrete target context.",
+      "objectives": [
+        {
+          "objective_id": "objective_latency",
+          "statement": "Keep batch-one p95 inference latency below 20 ms while maintaining at least 90% accuracy.",
+          "success_criteria": [
+            "p95 inference latency below 20 ms",
+            "accuracy of at least 90%"
+          ],
+          "citations": [
+            {
+              "source_id": "solution_1",
+              "support": "supports",
+              "locator": "L1-L12",
+              "rationale": "The source states its performance objective."
+            }
+          ]
+        }
+      ],
+      "components": [
+        {
+          "component_id": "component_inference_pipeline",
+          "name": "ONNX inference pipeline",
+          "responsibility": "Run the feature encoder and classifier.",
+          "interfaces": [
+            "ONNX model"
+          ],
+          "citations": [
+            {
+              "source_id": "solution_1",
+              "support": "supports",
+              "locator": "L1-L12",
+              "rationale": "The source describes the ONNX pipeline."
+            }
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "dependency_id": "dependency_cuda_runtime",
+          "name": "CUDA execution provider",
+          "dependency_type": "runtime",
+          "required_condition": "CUDA 12 on an NVIDIA edge GPU",
+          "replaceable": true,
+          "citations": [
+            {
+              "source_id": "solution_1",
+              "support": "supports",
+              "locator": "L1-L12",
+              "rationale": "The source states its runtime dependency."
+            }
+          ]
+        }
+      ],
+      "assumptions": [
+        {
+          "assumption_id": "assumption_gpu_available",
+          "statement": "An NVIDIA GPU is available.",
+          "scope": "deployment",
+          "criticality": "high",
+          "citations": [
+            {
+              "source_id": "solution_1",
+              "support": "supports",
+              "locator": "L1-L12",
+              "rationale": "The source targets an NVIDIA edge GPU."
+            }
+          ]
+        }
+      ],
+      "resource_requirements": [
+        {
+          "resource_id": "resource_gpu_memory",
+          "resource_type": "accelerator memory",
+          "requirement": "At least 4 GB of device memory.",
+          "flexibility": "No CPU fallback is documented.",
+          "citations": [
+            {
+              "source_id": "solution_1",
+              "support": "supports",
+              "locator": "L1-L12",
+              "rationale": "The source states the memory requirement."
+            }
+          ]
+        }
+      ],
+      "evidence_gaps": [
+        {
+          "item": "target context",
+          "impact": "Compatibility, resources, adaptation effort, and validation readiness cannot be assessed.",
+          "severity": "critical",
+          "citations": [
+            {
+              "source_id": "solution_1",
+              "support": "missing",
+              "locator": "L1-L12",
+              "rationale": "The source cannot provide target-project constraints."
+            }
+          ]
+        }
+      ]
+    },
+    "TransferAssessmentResult": {
+      "run_id": "replay_sparse_transfer_assessment",
+      "solution_profile_run_id": "replay_sparse_solution_profile",
+      "summary": "The target context is too incomplete for an overall transfer decision.",
+      "target_context_summary": "Hardware, data, interfaces, thresholds, constraints, and validation resources remain undefined.",
+      "overall_score": 95,
+      "feasibility_band": "promising",
+      "conclusion_confidence": 0.9,
+      "dimensions": [
+        {
+          "name": "evidence_reliability",
+          "score": 75,
+          "rationale": "The source solution is documented, but this does not establish target feasibility.",
+          "citations": [
+            {
+              "source_id": "solution_1",
+              "support": "supports",
+              "locator": "L1-L12",
+              "rationale": "The source documents its own architecture and conditions."
+            }
+          ]
+        }
+      ],
+      "risks": [
+        {
+          "risk_id": "risk_target_context_missing",
+          "category": "evidence",
+          "level": "unknown",
+          "description": "Transfer risks cannot be bounded without target requirements and resources.",
+          "mitigation": "Define target hardware, data, interfaces, thresholds, constraints, and validation resources.",
+          "citations": [
+            {
+              "source_id": "target_1",
+              "support": "missing",
+              "locator": "L1-L4",
+              "rationale": "The target note states that these details are not defined."
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "expectations": {
+    "objective_ids": [
+      "objective_latency"
+    ],
+    "component_ids": [
+      "component_inference_pipeline"
+    ],
+    "dependency_ids": [
+      "dependency_cuda_runtime"
+    ],
+    "assumption_ids": [
+      "assumption_gpu_available"
+    ],
+    "resource_ids": [
+      "resource_gpu_memory"
+    ],
+    "minimum_profile_citations": 6,
+    "score": {
+      "overall": null,
+      "band": "insufficient",
+      "rubric_coverage": 0.2,
+      "evidence_coverage": 0.2,
+      "abstain": true,
+      "warning_codes": [
+        "TRANSFER_SCORE_NORMALIZED",
+        "CONDITIONAL_TRANSFER_ASSESSMENT",
+        "NO_TARGET_PERFORMANCE_PREDICTION",
+        "LICENSE_SIGNALS_NOT_LEGAL_ADVICE",
+        "TRANSFER_RUBRIC_PARTIAL_COVERAGE",
+        "TRANSFER_DIMENSION_MISSING"
+      ]
+    },
+    "assumption_compatibility": {},
+    "component_reuse": {},
+    "dependency_statuses": {},
+    "resource_statuses": {},
+    "validation_step_ids": [],
+    "graph": {
+      "source_closure_ratio": 1.0,
+      "profile_entity_evidence_coverage": 1.0,
+      "invalidated_condition_count": 0,
+      "transferred_component_count": 0,
+      "high_risk_count": 0,
+      "validation_step_count": 0
+    },
+    "report_sections": [
+      "## Decision summary",
+      "## Transfer rubric",
+      "## Validation plan",
+      "## Transfer evidence graph",
+      "## Audit trail"
+    ],
+    "report_contains": [
+      "not assessed",
+      "TRANSFER_RUBRIC_PARTIAL_COVERAGE"
+    ]
+  }
+}
