@@ -15,7 +15,7 @@ Hy3 ReproEval 是一个面向开放式科研报告的 Hy3 多工具应用与可�
 - 合成示例、离线评测集、在线验证门禁和 269 个迁移测试；
 - 对原有 `hy3_reproscope_mcp` 模块和 `hy3-reproscope-mcp` 命令的兼容。
 
-七维报告质量评估器、报告盲化比较、人工标注流程和 Benchmark 分析是下一阶段工作，详见[项目方案](docs/PROJECT_PROPOSAL_CN.md)，当前 README 不将这些计划项描述为已完成功能。
+版本化七维 Rubric 和确定性评估核心已经实现，可检查已登记的引用、主张支撑、数值、单位、必需章节、不确定性说明和工件哈希。Hy3 语义 Judge、报告盲化比较、人工标注和 Benchmark 分析仍在开发中，详见[项目方案](docs/PROJECT_PROPOSAL_CN.md)。
 
 ## 架构
 
@@ -83,6 +83,20 @@ hy3-reproscope-mcp
 
 项目级客户端配置可参考 [.mcp.json](.mcp.json)，使用时需替换占位路径，并在私有配置中注入密钥。
 
+## 确定性报告评估
+
+以下公开样例无需 API Key：
+
+```bash
+hy3-reproeval evaluate-report \
+  --case examples/evaluation/sample_case.json \
+  --output evaluation.json
+```
+
+Case Manifest 登记合法来源定位、必需主张与章节、数值期望、不确定性短语和工件哈希。评估结果包含维度分数、证据位置、错误标签、已评估权重、硬性分数上限、Manifest 与 Rubric 指纹和机器可读质量结论。
+
+没有确定性或语义证据的维度保持 `insufficient_evidence`；已评估权重低于 50% 时不输出总分。在 Hy3 Judge 接入前，只要存在未评估的语义维度，结果就标记为 `provisional=true`。当前契约和限制详见 [EVALUATION_CORE.md](docs/EVALUATION_CORE.md)。
+
 ## 已迁移的 MCP Tools
 
 | Tool | 功能 |
@@ -121,10 +135,12 @@ examples/                   公开合成输入与 MCP 客户端配置
 evals/                      已迁移的确定性评测样例
 scripts/                    离线评测、在线验证、打包与证据检查脚本
 docs/PROJECT_PROPOSAL_CN.md 实战阶段设计和交付计划
+docs/EVALUATION_CORE.md     确定性评估器契约和能力边界
 docs/reproscope/             ReproScope 验证证据与历史材料
 ```
 
 兼容性和来源说明见 [MIGRATION.md](docs/MIGRATION.md)。
+版本更新记录见 [CHANGELOG.md](CHANGELOG.md)。
 
 ## 安全与能力边界
 

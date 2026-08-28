@@ -14,7 +14,6 @@ from typing import Literal
 
 from pydantic import Field, model_validator
 
-from . import __version__
 from .models import SCHEMA_VERSION, StrictModel
 
 EXPECTED_CLIENT_TOOLS = (
@@ -29,6 +28,7 @@ EXPECTED_CLIENT_TOOLS = (
     "reproscope_render_transfer_report",
     "reproscope_audit_repository",
 )
+REPROSCOPE_EVIDENCE_SERVER_VERSION = "0.15.0"
 
 _SHA256 = re.compile(r"^[0-9a-f]{64}$")
 _RELATIVE_PATH = re.compile(r"^(?![A-Za-z]:)(?!/)(?!\\)(?!.*(?:^|/|\\)\.\.(?:/|\\|$)).+$")
@@ -77,7 +77,7 @@ class ClientValidationEvidence(StrictModel):
     evidence_version: Literal["1"] = "1"
     client: Literal["codebuddy", "visual_studio_code"]
     client_version: str = Field(min_length=1, max_length=100)
-    server_version: Literal[__version__] = __version__
+    server_version: Literal["0.15.0"] = REPROSCOPE_EVIDENCE_SERVER_VERSION
     schema_version: Literal[SCHEMA_VERSION] = SCHEMA_VERSION
     operating_system: str = Field(min_length=1, max_length=100)
     python_version: str = Field(min_length=1, max_length=100)

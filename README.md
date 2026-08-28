@@ -15,7 +15,7 @@ The first migration milestone is implemented. The repository now contains the va
 - synthetic examples, offline evaluation suites, live-validation gates, and 269 migrated tests;
 - compatibility with existing `hy3_reproscope_mcp` module and `hy3-reproscope-mcp` command names.
 
-The seven-dimension report-quality evaluator, blinded report comparison, human annotation workflow, and benchmark analysis are the next implementation stage. They are described in [the project proposal](docs/PROJECT_PROPOSAL_CN.md), not presented here as completed features.
+The versioned seven-dimension rubric and deterministic evaluation core are now implemented. They validate registered citations, claim support, numerical facts, units, required sections, uncertainty disclosures, and artifact hashes. Semantic Hy3 Judge dimensions, blinded report comparison, human annotation, and benchmark analysis remain in development and are described in [the project proposal](docs/PROJECT_PROPOSAL_CN.md).
 
 ## Architecture
 
@@ -83,6 +83,20 @@ hy3-reproscope-mcp
 
 Use [.mcp.json](.mcp.json) as the project-level configuration template. Replace placeholder paths and inject secrets through private client configuration.
 
+## Deterministic Report Evaluation
+
+Run the public sample without an API key:
+
+```bash
+hy3-reproeval evaluate-report \
+  --case examples/evaluation/sample_case.json \
+  --output evaluation.json
+```
+
+The case manifest registers source locators, required claims and sections, numerical expectations, uncertainty phrases, and artifact hashes. The evaluator returns dimension scores, evidence locations, error codes, assessed weight, hard caps, manifest and Rubric fingerprints, and a machine-readable quality result.
+
+Dimensions without deterministic or semantic evidence remain `insufficient_evidence`. An overall score is withheld below 50% assessed weight. Until the Hy3 Judge is integrated, results with unassessed semantic dimensions are marked `provisional=true`. See [EVALUATION_CORE.md](docs/EVALUATION_CORE.md) for the current contract and limitations.
+
 ## Migrated MCP Tools
 
 | Tool | Purpose |
@@ -123,10 +137,12 @@ examples/                   public synthetic inputs and MCP client examples
 evals/                      migrated deterministic evaluation fixtures
 scripts/                    offline, live, packaging, and evidence checks
 docs/PROJECT_PROPOSAL_CN.md practical-stage design and delivery plan
+docs/EVALUATION_CORE.md     deterministic evaluator contract and limitations
 docs/reproscope/             selected ReproScope validation evidence and history
 ```
 
 See [MIGRATION.md](docs/MIGRATION.md) for compatibility and provenance details.
+Release history is recorded in [CHANGELOG.md](CHANGELOG.md).
 
 ## Security and Scope
 

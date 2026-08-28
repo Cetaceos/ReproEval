@@ -1,0 +1,65 @@
+schema_version: "1.0"
+rubric_version: "0.1.0"
+minimum_assessed_weight: 0.50
+dimensions:
+  - id: factual_accuracy
+    label: Factual accuracy
+    weight: 0.20
+    anchors:
+      0: Multiple critical facts conflict with the registered evidence.
+      2: Main facts are supported, with limited local errors or omissions.
+      4: Every checked critical fact is supported by registered evidence.
+  - id: evidence_traceability
+    label: Evidence traceability
+    weight: 0.18
+    anchors:
+      0: Critical citations are fabricated, invalid, or unlocatable.
+      2: Some conclusions are traceable, but important evidence is missing.
+      4: Every checked critical conclusion has a valid source and locator.
+  - id: numerical_consistency
+    label: Numerical consistency
+    weight: 0.15
+    anchors:
+      0: Critical values or units conflict with deterministic references.
+      2: Main calculations are correct, with limited local discrepancies.
+      4: Every checked value, unit, and tolerance constraint is satisfied.
+  - id: reasoning_consistency
+    label: Reasoning consistency
+    weight: 0.15
+    anchors:
+      0: Evidence does not support the conclusions or conclusions conflict.
+      2: Reasoning is broadly valid but contains material gaps.
+      4: Evidence, analysis, and conclusions form a complete argument.
+  - id: uncertainty_handling
+    label: Uncertainty handling
+    weight: 0.12
+    anchors:
+      0: Strong conclusions are stated despite registered evidence gaps.
+      2: Some limitations are stated, but confidence is inconsistently calibrated.
+      4: Evidence gaps trigger explicit limitations, downgrade, or abstention.
+  - id: content_completeness
+    label: Content completeness
+    weight: 0.10
+    anchors:
+      0: Most required task elements are absent.
+      2: Main elements are present, with limited missing details.
+      4: Every registered claim and required section is present.
+  - id: clarity_actionability
+    label: Clarity and actionability
+    weight: 0.10
+    anchors:
+      0: The report is difficult to interpret and provides no usable next step.
+      2: Structure is understandable, but recommendations remain generic.
+      4: The report is clear and provides concrete, verifiable next steps.
+quality_thresholds:
+  excellent: 85
+  strong: 70
+  mixed: 50
+hard_caps:
+  fabricated_citation: 40
+  artifact_lineage_error: 40
+  numeric_error: 50
+  unit_error: 60
+  unsupported_claim: 55
+  citation_mismatch: 55
+  overconfidence: 60

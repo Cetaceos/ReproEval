@@ -8,6 +8,8 @@ import tarfile
 import zipfile
 from pathlib import Path
 
+from hy3_reproeval import __version__
+
 FORBIDDEN_PARTS = {
     ".env",
     ".venv",
@@ -18,16 +20,22 @@ FORBIDDEN_PARTS = {
     "dist",
 }
 REQUIRED_PACKAGE_DATA = {
-    "profiles/isac_phy/data/assumptions.json",
-    "profiles/isac_phy/data/metrics.json",
-    "profiles/isac_phy/data/risk_rules.json",
-    "profiles/isac_phy/data/taxonomy.json",
+    "hy3_reproeval": {
+        "data/rubric.yaml",
+    },
+    "hy3_reproscope_mcp": {
+        "profiles/isac_phy/data/assumptions.json",
+        "profiles/isac_phy/data/metrics.json",
+        "profiles/isac_phy/data/risk_rules.json",
+        "profiles/isac_phy/data/taxonomy.json",
+    },
 }
 REQUIRED_SDIST_DOCS = {
     "docs/PROJECT_PROPOSAL_CN.md",
     "docs/reproscope/RELEASE_EVIDENCE_0.15_CN.md",
 }
 REQUIRED_SDIST_FILES = {
+    "CHANGELOG.md",
     "requirements.lock",
 }
 FORBIDDEN_SDIST_PATHS = {
@@ -46,9 +54,9 @@ def _archive_names(path: Path) -> list[str]:
     raise ValueError(f"Unsupported distribution archive: {path.name}")
 
 
-def _relative_package_data(names: list[str]) -> set[str]:
+def _relative_package_data(names: list[str], package: str) -> set[str]:
     result: set[str] = set()
-    marker = "hy3_reproscope_mcp/"
+    marker = f"{package}/"
     for name in names:
         if marker in name:
             result.add(name.split(marker, 1)[1])
@@ -68,9 +76,13 @@ def check_archive(path: Path) -> None:
     if any(name.endswith(".pyc") for name in names):
         raise ValueError(f"Python bytecode found in {path.name}")
     if path.suffix == ".whl":
-        missing = sorted(REQUIRED_PACKAGE_DATA - _relative_package_data(names))
+        missing = {
+            package: sorted(required - _relative_package_data(names, package))
+            for package, required in REQUIRED_PACKAGE_DATA.items()
+        }
+        missing = {package: paths for package, paths in missing.items() if paths}
         if missing:
-            raise ValueError(f"Missing wheel package data in {path.name}: {', '.join(missing)}")
+            raise ValueError(f"Missing wheel package data in {path.name}: {missing}")
     elif path.name.endswith(".tar.gz"):
         missing_files = sorted(
             relative for relative in REQUIRED_SDIST_FILES if not _contains_archive_path(names, relative)
@@ -101,7 +113,7 @@ def _sha256(path: Path) -> str:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("dist", type=Path)
-    parser.add_argument("--version", default="0.15.0")
+    parser.add_argument("--version", default=__version__)
     args = parser.parse_args()
     wheel_name = f"-{args.version}-"
     sdist_name = f"-{args.version}.tar.gz"

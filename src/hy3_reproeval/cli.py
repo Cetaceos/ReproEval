@@ -4,8 +4,11 @@ from __future__ import annotations
 
 import argparse
 from collections.abc import Sequence
+from pathlib import Path
 
 from . import __version__
+from .errors import EvaluationInputError
+from .evaluator import evaluate_case_file
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -16,6 +19,12 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
     subparsers = parser.add_subparsers(dest="command")
     subparsers.add_parser("serve-mcp", help="Run the migrated ReproScope MCP server over stdio.")
+    evaluate_parser = subparsers.add_parser(
+        "evaluate-report",
+        help="Run deterministic seven-dimension evaluation from a case manifest.",
+    )
+    evaluate_parser.add_argument("--case", required=True, type=Path, help="Path to an evaluation case JSON file.")
+    evaluate_parser.add_argument("--output", type=Path, help="Optional path for the evaluation result JSON.")
     return parser
 
 
@@ -26,6 +35,21 @@ def main(argv: Sequence[str] | None = None) -> int:
         from hy3_reproscope_mcp.server import main as run_server
 
         run_server()
+        return 0
+    if args.command == "evaluate-report":
+        try:
+            result = evaluate_case_file(args.case)
+        except EvaluationInputError as exc:
+            parser.error(str(exc))
+        rendered = result.model_dump_json(indent=2) + "\n"
+        if args.output is not None:
+            output_path = args.output.expanduser().resolve()
+            if not output_path.parent.is_dir():
+                parser.error(f"output directory does not exist: {output_path.parent}")
+            output_path.write_text(rendered, encoding="utf-8")
+            print(output_path.as_posix())
+        else:
+            print(rendered, end="")
         return 0
     parser.print_help()
     return 0
