@@ -134,6 +134,26 @@ hy3-reproeval compare-reports \
 
 Prompt 不包含 Case ID 和文件路径，交替将两份报告呈现为 A，并仅让 Hy3 判断两个语义维度。Python 将语义分数与各报告的确定性贡献和 hard cap 合并，输出分数标准差、排序翻转率、质量等级翻转和观察到的 A/B 位置差值。公开 Bundle 是用于验证协议的合成回放数据，不代表真实模型 Benchmark。详见 [PAIRWISE_COMPARISON.md](docs/PAIRWISE_COMPARISON.md)。
 
+## 可复现数据协议
+
+以下命令无需 API Key，可验证公开的高、中、低三档合成报告组：
+
+```bash
+hy3-reproeval validate-dataset \
+  --manifest examples/dataset/sample_dataset.json \
+  --output dataset-validation.json
+```
+
+版本化 Dataset Manifest 登记来源、组级数据划分、报告档位、Case Manifest、内容哈希、预期错误和 Mutation Manifest。字面变异可从高质量父报告确定性重放，只有输出字节与登记的 SHA-256 一致时才会通过：
+
+```bash
+hy3-reproeval replay-mutation \
+  --manifest examples/dataset/medium_mutation.json \
+  --root examples/dataset
+```
+
+验证器要求同一来源组使用同一评测契约，阻止登记的同一来源指纹跨数据集划分复用，限制路径范围，并要求本地可检查错误与声明标签严格闭合。语义类变异标签仍需后续 Hy3 Judge 或人工实验验证。公开样例仅含一个合成开发组，用于验证协议，不是 Benchmark。详见 [DATASET_PROTOCOL.md](docs/DATASET_PROTOCOL.md)。
+
 ## 已迁移的 MCP Tools
 
 | Tool | 功能 |
@@ -173,6 +193,7 @@ evals/                      已迁移的确定性评测样例
 scripts/                    离线评测、在线验证、打包与证据检查脚本
 docs/PROJECT_PROPOSAL_CN.md 实战阶段设计和交付计划
 docs/EVALUATION_CORE.md     确定性评估器契约和能力边界
+docs/DATASET_PROTOCOL.md    数据集、划分、来源与变异协议
 docs/reproscope/             ReproScope 验证证据与历史材料
 ```
 

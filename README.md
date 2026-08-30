@@ -134,6 +134,26 @@ hy3-reproeval compare-reports \
 
 The prompt omits case IDs and paths, alternates which report is presented as A, and asks Hy3 only for the two semantic dimensions. Python combines those scores with each report's deterministic contribution and hard cap. The result reports score standard deviation, preference flips, quality-band flips, and the observed A/B position delta. The public bundle is synthetic replay data; it validates the protocol and does not claim a real model benchmark. See [PAIRWISE_COMPARISON.md](docs/PAIRWISE_COMPARISON.md).
 
+## Reproducible Dataset Protocol
+
+Validate the public high/medium/low synthetic group without an API key:
+
+```bash
+hy3-reproeval validate-dataset \
+  --manifest examples/dataset/sample_dataset.json \
+  --output dataset-validation.json
+```
+
+The versioned Dataset Manifest registers provenance, group-level splits, report tiers, Case Manifests, hashes, expected errors, and Mutation Manifests. Literal mutations can be replayed from their high-quality parent and are accepted only when the output bytes match the registered SHA-256:
+
+```bash
+hy3-reproeval replay-mutation \
+  --manifest examples/dataset/medium_mutation.json \
+  --root examples/dataset
+```
+
+The validator enforces one evaluation contract per source group, prevents a declared source fingerprint from crossing splits, confines paths, and requires exact closure for locally detectable errors. Semantic mutation labels remain hypotheses for later Hy3 Judge or human validation. The public fixture is one synthetic development group for protocol verification, not a benchmark. See [DATASET_PROTOCOL.md](docs/DATASET_PROTOCOL.md).
+
 ## Migrated MCP Tools
 
 | Tool | Purpose |
@@ -175,6 +195,7 @@ evals/                      migrated deterministic evaluation fixtures
 scripts/                    offline, live, packaging, and evidence checks
 docs/PROJECT_PROPOSAL_CN.md practical-stage design and delivery plan
 docs/EVALUATION_CORE.md     deterministic evaluator contract and limitations
+docs/DATASET_PROTOCOL.md    dataset, split, provenance, and mutation contract
 docs/reproscope/             selected ReproScope validation evidence and history
 ```
 

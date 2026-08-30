@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.0",
+  "mutation_id": "sample-medium-mutation-v1",
+  "parent_report_id": "sample-report-high-v1",
+  "output_report_id": "sample-report-medium-v1",
+  "parent_path": "high_report.md",
+  "output_path": "medium_report.md",
+  "parent_sha256": "41C2348FD062926A4DA4BDC60562872B6B745BC07F4963551228650F62881E9A",
+  "output_sha256": "4ED62198E88589F2D3A25552FB60875862EAAD03890A2479F3C9B3507B14A6A8",
+  "operations": [
+    {
+      "operation_id": "weaken-reasoning",
+      "kind": "replace_once",
+      "target": "Five runs support the gap, but there is insufficient evidence for one causal attribution.",
+      "replacement": "The result is different. There is insufficient evidence.",
+      "expected_dimensions": ["reasoning_consistency"],
+      "expected_error_codes": ["reasoning_gap"]
+    },
+    {
+      "operation_id": "weaken-next-step",
+      "kind": "replace_once",
+      "target": "Run the registered ablation with fixed preprocessing and confidence intervals.",
+      "replacement": "Do more work.",
+      "expected_dimensions": ["clarity_actionability"],
+      "expected_error_codes": ["actionability_gap"]
+    }
+  ]
+}

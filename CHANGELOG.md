@@ -2,6 +2,23 @@
 
 All notable ReproEval changes are documented in this file.
 
+## 0.19.0 - 2026-08-30
+
+### Added
+
+- Versioned dataset, provenance, report-tier, and literal Mutation Manifest schemas.
+- Deterministic mutation replay with parent/output hashes and exact operation cardinality.
+- Dataset validation for group-level splits, evaluation-contract equality, path confinement, and expected deterministic error closure.
+- `validate-dataset` and `replay-mutation` CLI commands plus a public three-tier synthetic protocol fixture.
+
+### Changed
+
+- Normalize tracked text files to LF so registered report and mutation hashes remain stable across operating systems.
+
+### Limitations
+
+- The public fixture is one synthetic development group for protocol verification, not a benchmark result or human-labeled dataset.
+
 ## 0.18.0 - 2026-08-30
 
 ### Added

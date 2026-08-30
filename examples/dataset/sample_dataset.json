@@ -1,0 +1,54 @@
+{
+  "schema_version": "1.0",
+  "dataset_id": "reproeval-public-synthetic-sample",
+  "dataset_version": "0.1.0",
+  "description": "Minimal high/medium/low synthetic dataset for validating the ReproEval data and mutation protocol.",
+  "groups": [
+    {
+      "group_id": "synthetic-reproduction-group-001",
+      "split": "development",
+      "scenario": "reproduction",
+      "provenance": {
+        "kind": "synthetic",
+        "license": "Apache-2.0",
+        "source_group_sha256": "7AC245D8896F1C8067121E8658E5F169CE6A6F24EDF6AFC07248803A6FC943D3",
+        "acquisition_date": "2026-08-30",
+        "description": "Repository-authored synthetic reproduction evidence; no external paper or personal data."
+      },
+      "reports": [
+        {
+          "report_id": "sample-report-high-v1",
+          "quality_tier": "high",
+          "case_path": "high_case.json",
+          "report_sha256": "41C2348FD062926A4DA4BDC60562872B6B745BC07F4963551228650F62881E9A",
+          "label_source": "reference_revision",
+          "expected_error_codes": []
+        },
+        {
+          "report_id": "sample-report-medium-v1",
+          "quality_tier": "medium",
+          "case_path": "medium_case.json",
+          "report_sha256": "4ED62198E88589F2D3A25552FB60875862EAAD03890A2479F3C9B3507B14A6A8",
+          "label_source": "synthetic_mutation",
+          "mutation_manifest_path": "medium_mutation.json",
+          "expected_error_codes": ["reasoning_gap", "actionability_gap"]
+        },
+        {
+          "report_id": "sample-report-low-v1",
+          "quality_tier": "low",
+          "case_path": "low_case.json",
+          "report_sha256": "98C49B4F88AA15CE1E27F531739987CB158410DCE6C234B43648F02C82BE60E0",
+          "label_source": "synthetic_mutation",
+          "mutation_manifest_path": "low_mutation.json",
+          "expected_error_codes": [
+            "reasoning_gap",
+            "actionability_gap",
+            "fabricated_citation",
+            "unsupported_claim",
+            "numeric_error"
+          ]
+        }
+      ]
+    }
+  ]
+}

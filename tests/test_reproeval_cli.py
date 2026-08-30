@@ -3,6 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from hy3_reproeval.cli import main
+from hy3_reproeval.dataset import DatasetValidationResult, MutationReplayResult
 from hy3_reproeval.models import EvaluationMode, EvaluationResult, EvaluationStatus
 from hy3_reproeval.pairwise import ComparisonPreference, PairwiseComparisonResult
 
@@ -80,3 +81,46 @@ def test_cli_replays_public_blinded_pairwise_sample(tmp_path: Path) -> None:
     assert result.right.final_score_mean == 81.25
     assert result.preference_flip_rate == 0
     assert result.observed_position_delta_max == 1.875
+
+
+def test_cli_validates_public_three_tier_dataset(tmp_path: Path) -> None:
+    project_root = Path(__file__).resolve().parents[1]
+    output_path = tmp_path / "dataset-validation.json"
+
+    assert (
+        main(
+            [
+                "validate-dataset",
+                "--manifest",
+                str(project_root / "examples" / "dataset" / "sample_dataset.json"),
+                "--output",
+                str(output_path),
+            ]
+        )
+        == 0
+    )
+    result = DatasetValidationResult.model_validate_json(output_path.read_text(encoding="utf-8"))
+    assert result.valid is True
+    assert result.group_count == 1
+    assert result.report_count == 3
+    assert result.mutation_count == 2
+
+
+def test_cli_replays_public_mutation(capsys) -> None:
+    project_root = Path(__file__).resolve().parents[1]
+
+    assert (
+        main(
+            [
+                "replay-mutation",
+                "--manifest",
+                str(project_root / "examples" / "dataset" / "medium_mutation.json"),
+                "--root",
+                str(project_root / "examples" / "dataset"),
+            ]
+        )
+        == 0
+    )
+    result = MutationReplayResult.model_validate_json(capsys.readouterr().out)
+    assert result.mutation_id == "sample-medium-mutation-v1"
+    assert result.wrote_output is False

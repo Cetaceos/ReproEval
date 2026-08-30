@@ -10,6 +10,7 @@ from pathlib import Path
 from hy3_reproscope_mcp.errors import ReproScopeError
 
 from . import __version__
+from .dataset import replay_mutation_manifest, validate_dataset_manifest
 from .errors import EvaluationInputError
 from .evaluator import evaluate_case_file, evaluate_case_file_hybrid
 from .judge import write_judge_record
@@ -56,6 +57,21 @@ def build_parser() -> argparse.ArgumentParser:
         help="Write an online pairwise Judge bundle, or read this bundle in replay mode.",
     )
     compare_parser.add_argument("--output", type=Path, help="Optional path for the comparison result JSON.")
+    dataset_parser = subparsers.add_parser(
+        "validate-dataset",
+        help="Validate dataset tiers, mutations, group isolation, hashes, and expected deterministic errors.",
+    )
+    dataset_parser.add_argument("--manifest", required=True, type=Path)
+    dataset_parser.add_argument("--output", type=Path, help="Optional path for the validation result JSON.")
+    mutation_parser = subparsers.add_parser(
+        "replay-mutation",
+        help="Deterministically replay and verify one literal Mutation Manifest.",
+    )
+    mutation_parser.add_argument("--manifest", required=True, type=Path)
+    mutation_parser.add_argument("--root", type=Path, help="Dataset root; defaults to the manifest directory.")
+    mutation_parser.add_argument(
+        "--write", action="store_true", help="Write the verified output instead of checking it."
+    )
     return parser
 
 
@@ -92,6 +108,32 @@ def main(argv: Sequence[str] | None = None) -> int:
             print(output_path.as_posix())
         else:
             print(rendered, end="")
+        return 0
+    if args.command == "validate-dataset":
+        try:
+            result = validate_dataset_manifest(args.manifest)
+        except EvaluationInputError as exc:
+            parser.error(str(exc))
+        rendered = result.model_dump_json(indent=2) + "\n"
+        if args.output is not None:
+            output_path = args.output.expanduser().resolve()
+            if not output_path.parent.is_dir():
+                parser.error(f"output directory does not exist: {output_path.parent}")
+            output_path.write_text(rendered, encoding="utf-8")
+            print(output_path.as_posix())
+        else:
+            print(rendered, end="")
+        return 0
+    if args.command == "replay-mutation":
+        try:
+            result = replay_mutation_manifest(
+                args.manifest,
+                root=args.root,
+                write=args.write,
+            )
+        except EvaluationInputError as exc:
+            parser.error(str(exc))
+        print(result.model_dump_json(indent=2))
         return 0
     if args.command == "compare-reports":
         if args.judge == "replay" and args.judge_record is None:
