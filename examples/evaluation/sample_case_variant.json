@@ -1,0 +1,51 @@
+{
+  "schema_version": "1.0",
+  "case_id": "sample-reproduction-report-variant-v1",
+  "scenario": "reproduction",
+  "report_path": "sample_report_variant.md",
+  "sources": [
+    {
+      "source_id": "paper",
+      "locators": ["L3-L4"]
+    },
+    {
+      "source_id": "results",
+      "locators": ["rows:1-5"]
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "reproduced_accuracy",
+      "marker": "reproduced Accuracy",
+      "required_source_ids": ["paper", "results"]
+    }
+  ],
+  "numeric_expectations": [
+    {
+      "fact_id": "reproduced_accuracy",
+      "label": "Accuracy is",
+      "expected": "0.876",
+      "absolute_tolerance": "0.0001",
+      "critical": true
+    }
+  ],
+  "required_sections": [
+    {
+      "section_id": "summary",
+      "heading": "Executive summary"
+    },
+    {
+      "section_id": "limitations",
+      "heading": "Evidence and limitations"
+    },
+    {
+      "section_id": "next_steps",
+      "heading": "Next steps"
+    }
+  ],
+  "uncertainty": {
+    "required": true,
+    "accepted_phrases": ["insufficient evidence", "evidence gap"]
+  },
+  "artifacts": []
+}

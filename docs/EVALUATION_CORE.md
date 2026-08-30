@@ -104,6 +104,8 @@ hy3-reproeval evaluate-report \
   --output replayed-evaluation.json
 ```
 
+Repeated blinded A/B comparison is implemented as a separate protocol so it cannot alter single-report findings or scores. See [PAIRWISE_COMPARISON.md](PAIRWISE_COMPARISON.md) for the shared-contract requirement, order alternation, fixed aggregation, stability metrics, and replay boundary.
+
 ## Current Limitations
 
 - Claim support is checked on the line containing the registered literal marker.

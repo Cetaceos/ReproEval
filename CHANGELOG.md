@@ -2,6 +2,20 @@
 
 All notable ReproEval changes are documented in this file.
 
+## 0.18.0 - 2026-08-30
+
+### Added
+
+- Blinded A/B report comparison under an identical deterministic evaluation contract.
+- Alternating presentation order and 2-10 repeated Hy3 semantic Judge trials.
+- Fixed local aggregation of deterministic contributions, semantic scores, and per-report hard caps.
+- Score standard deviation, preference flip rate, quality-band flips, and observed A/B position deltas.
+- Tamper-evident online bundles, credential-free replay, CLI support, and a public synthetic example.
+
+### Security
+
+- Pairwise prompts omit case IDs and file paths, serialize both reports as untrusted data, and validate all cited lines locally.
+
 ## 0.17.0 - 2026-08-30
 
 ### Added

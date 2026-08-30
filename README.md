@@ -15,7 +15,7 @@ The first migration milestone is implemented. The repository now contains the va
 - synthetic examples, offline evaluation suites, live-validation gates, and 269 migrated tests;
 - compatibility with existing `hy3_reproscope_mcp` module and `hy3-reproscope-mcp` command names.
 
-The versioned seven-dimension rubric, deterministic validators, and constrained Hy3 semantic Judge are implemented. The Judge assesses only reasoning consistency and clarity/actionability; it cannot replace local citation, numerical, artifact, or hard-cap decisions. Blinded report comparison, human annotation, and benchmark analysis remain in development and are described in [the project proposal](docs/PROJECT_PROPOSAL_CN.md).
+The versioned seven-dimension rubric, deterministic validators, constrained Hy3 semantic Judge, and blinded repeated report comparison are implemented. Model judgments cannot replace local citation, numerical, artifact, or hard-cap decisions. Human annotation and benchmark analysis remain in development and are described in [the project proposal](docs/PROJECT_PROPOSAL_CN.md).
 
 ## Architecture
 
@@ -116,6 +116,23 @@ hy3-reproeval evaluate-report \
 ```
 
 The online mode reads the existing `HY3_*` environment variables. A replay record is accepted only when its prompt version, case, scenario, report, Rubric, request, and structured response fingerprints match. Dimensions without deterministic or semantic evidence remain `insufficient_evidence`, and an overall score is withheld below 50% assessed weight. See [EVALUATION_CORE.md](docs/EVALUATION_CORE.md) for the scoring boundary and limitations.
+
+## Blinded Repeated Comparison
+
+Compare two reports that use the same deterministic evaluation contract with the public three-trial replay bundle:
+
+```bash
+hy3-reproeval compare-reports \
+  --left-case examples/evaluation/sample_case.json \
+  --right-case examples/evaluation/sample_case_variant.json \
+  --comparison-id sample-pairwise-v1 \
+  --repeats 3 \
+  --judge replay \
+  --judge-record examples/evaluation/sample_pairwise_judge_bundle.json \
+  --output pairwise-result.json
+```
+
+The prompt omits case IDs and paths, alternates which report is presented as A, and asks Hy3 only for the two semantic dimensions. Python combines those scores with each report's deterministic contribution and hard cap. The result reports score standard deviation, preference flips, quality-band flips, and the observed A/B position delta. The public bundle is synthetic replay data; it validates the protocol and does not claim a real model benchmark. See [PAIRWISE_COMPARISON.md](docs/PAIRWISE_COMPARISON.md).
 
 ## Migrated MCP Tools
 

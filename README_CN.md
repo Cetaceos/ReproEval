@@ -15,7 +15,7 @@ Hy3 ReproEval 是一个面向开放式科研报告的 Hy3 多工具应用与可�
 - 合成示例、离线评测集、在线验证门禁和 269 个迁移测试；
 - 对原有 `hy3_reproscope_mcp` 模块和 `hy3-reproscope-mcp` 命令的兼容。
 
-版本化七维 Rubric、确定性校验器和受限 Hy3 语义 Judge 已经实现。Judge 仅评估推理一致性和清晰度/可执行性，不能覆盖本地引用、数值、工件或硬性分数上限结论。报告盲化比较、人工标注和 Benchmark 分析仍在开发中，详见[项目方案](docs/PROJECT_PROPOSAL_CN.md)。
+版本化七维 Rubric、确定性校验器、受限 Hy3 语义 Judge 和盲化重复报告比较已经实现。模型判断不能覆盖本地引用、数值、工件或硬性分数上限结论。人工标注和 Benchmark 分析仍在开发中，详见[项目方案](docs/PROJECT_PROPOSAL_CN.md)。
 
 ## 架构
 
@@ -116,6 +116,23 @@ hy3-reproeval evaluate-report \
 ```
 
 在线模式读取现有 `HY3_*` 环境变量。回放记录仅在 Prompt 版本、Case、场景、报告、Rubric、请求和结构化响应指纹全部匹配时生效。没有确定性或语义证据的维度保持 `insufficient_evidence`，已评估权重低于 50% 时不输出总分。评分边界和限制详见 [EVALUATION_CORE.md](docs/EVALUATION_CORE.md)。
+
+## 盲化重复比较
+
+使用公开的三次合成回放记录，比较采用同一确定性评测契约的两份报告：
+
+```bash
+hy3-reproeval compare-reports \
+  --left-case examples/evaluation/sample_case.json \
+  --right-case examples/evaluation/sample_case_variant.json \
+  --comparison-id sample-pairwise-v1 \
+  --repeats 3 \
+  --judge replay \
+  --judge-record examples/evaluation/sample_pairwise_judge_bundle.json \
+  --output pairwise-result.json
+```
+
+Prompt 不包含 Case ID 和文件路径，交替将两份报告呈现为 A，并仅让 Hy3 判断两个语义维度。Python 将语义分数与各报告的确定性贡献和 hard cap 合并，输出分数标准差、排序翻转率、质量等级翻转和观察到的 A/B 位置差值。公开 Bundle 是用于验证协议的合成回放数据，不代表真实模型 Benchmark。详见 [PAIRWISE_COMPARISON.md](docs/PAIRWISE_COMPARISON.md)。
 
 ## 已迁移的 MCP Tools
 

@@ -13,6 +13,7 @@ from . import __version__
 from .errors import EvaluationInputError
 from .evaluator import evaluate_case_file, evaluate_case_file_hybrid
 from .judge import write_judge_record
+from .pairwise import compare_case_files, write_pairwise_bundle
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -40,6 +41,21 @@ def build_parser() -> argparse.ArgumentParser:
         type=Path,
         help="Write an online Judge record, or read this record in replay mode.",
     )
+    compare_parser = subparsers.add_parser(
+        "compare-reports",
+        help="Blindly compare two reports under one evaluation contract with repeated Hy3 Judge trials.",
+    )
+    compare_parser.add_argument("--left-case", required=True, type=Path)
+    compare_parser.add_argument("--right-case", required=True, type=Path)
+    compare_parser.add_argument("--comparison-id", required=True)
+    compare_parser.add_argument("--repeats", type=int, default=3)
+    compare_parser.add_argument("--judge", choices=("online", "replay"), required=True)
+    compare_parser.add_argument(
+        "--judge-record",
+        type=Path,
+        help="Write an online pairwise Judge bundle, or read this bundle in replay mode.",
+    )
+    compare_parser.add_argument("--output", type=Path, help="Optional path for the comparison result JSON.")
     return parser
 
 
@@ -65,6 +81,33 @@ def main(argv: Sequence[str] | None = None) -> int:
                 result, judge_record = asyncio.run(evaluate_case_file_hybrid(args.case))
                 if args.judge_record is not None:
                     write_judge_record(args.judge_record, judge_record)
+        except (EvaluationInputError, ReproScopeError) as exc:
+            parser.error(str(exc))
+        rendered = result.model_dump_json(indent=2) + "\n"
+        if args.output is not None:
+            output_path = args.output.expanduser().resolve()
+            if not output_path.parent.is_dir():
+                parser.error(f"output directory does not exist: {output_path.parent}")
+            output_path.write_text(rendered, encoding="utf-8")
+            print(output_path.as_posix())
+        else:
+            print(rendered, end="")
+        return 0
+    if args.command == "compare-reports":
+        if args.judge == "replay" and args.judge_record is None:
+            parser.error("--judge replay requires --judge-record")
+        try:
+            result, bundle = asyncio.run(
+                compare_case_files(
+                    args.left_case,
+                    args.right_case,
+                    comparison_id=args.comparison_id,
+                    repeats=args.repeats,
+                    judge_replay_path=args.judge_record if args.judge == "replay" else None,
+                )
+            )
+            if args.judge == "online" and args.judge_record is not None:
+                write_pairwise_bundle(args.judge_record, bundle)
         except (EvaluationInputError, ReproScopeError) as exc:
             parser.error(str(exc))
         rendered = result.model_dump_json(indent=2) + "\n"

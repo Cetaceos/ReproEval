@@ -1,0 +1,124 @@
+{
+  "schema_version": "1.0",
+  "comparison_id": "sample-pairwise-v1",
+  "left_case_id": "sample-reproduction-report-v1",
+  "right_case_id": "sample-reproduction-report-variant-v1",
+  "scenario": "reproduction",
+  "left_report_sha256": "BD6375573B1925C82E13F2ABDB16B6FEC684DA651ACF0F11E4A2980066797844",
+  "right_report_sha256": "189ED012C57EE4146E7AFF106751CE5408D5CE36E56342A29D166AE9C07C2F21",
+  "evaluation_contract_sha256": "11329C8A21953D26AB1798D6B55DEB8E12E0174E38B196F221ACFA6F6286458F",
+  "rubric_sha256": "1B1F6F8A425C1B84AAE88EFDA8E21950F2CF603325414316AEA773A1CD68F40A",
+  "records": [
+    {
+      "schema_version": "1.0",
+      "trial_id": "trial-001",
+      "presentation_order": "left_as_a",
+      "prompt_version": "reproeval-pairwise-1.0",
+      "left_report_sha256": "BD6375573B1925C82E13F2ABDB16B6FEC684DA651ACF0F11E4A2980066797844",
+      "right_report_sha256": "189ED012C57EE4146E7AFF106751CE5408D5CE36E56342A29D166AE9C07C2F21",
+      "evaluation_contract_sha256": "11329C8A21953D26AB1798D6B55DEB8E12E0174E38B196F221ACFA6F6286458F",
+      "rubric_sha256": "1B1F6F8A425C1B84AAE88EFDA8E21950F2CF603325414316AEA773A1CD68F40A",
+      "model": "hy3-preview",
+      "provider": "public-synthetic-replay",
+      "reasoning_effort": "high",
+      "temperature": 0.0,
+      "request_sha256": "3D5A581C9AFF13382005717904975D493F512F9FFA2867366EFA9EB11BA6F9F4",
+      "response_sha256": "BD1C2BB5A5678D0B0B40170078E222DBCB91CCEFC0F5EA38FE2DACFF072FF74B",
+      "response": {
+        "schema_version": "1.0",
+        "assessments": [
+          {
+            "dimension": "reasoning_consistency",
+            "score_a": 3,
+            "score_b": 1,
+            "rationale": "The stronger report connects the measured gap to a bounded conclusion; the other only restates that results differ.",
+            "evidence_a_lines": [5, 9],
+            "evidence_b_lines": [5, 9]
+          },
+          {
+            "dimension": "clarity_actionability",
+            "score_a": 4,
+            "score_b": 1,
+            "rationale": "The stronger report specifies a controlled ablation and confidence intervals; the other gives a generic next step.",
+            "evidence_a_lines": [13],
+            "evidence_b_lines": [13]
+          }
+        ]
+      }
+    },
+    {
+      "schema_version": "1.0",
+      "trial_id": "trial-002",
+      "presentation_order": "right_as_a",
+      "prompt_version": "reproeval-pairwise-1.0",
+      "left_report_sha256": "BD6375573B1925C82E13F2ABDB16B6FEC684DA651ACF0F11E4A2980066797844",
+      "right_report_sha256": "189ED012C57EE4146E7AFF106751CE5408D5CE36E56342A29D166AE9C07C2F21",
+      "evaluation_contract_sha256": "11329C8A21953D26AB1798D6B55DEB8E12E0174E38B196F221ACFA6F6286458F",
+      "rubric_sha256": "1B1F6F8A425C1B84AAE88EFDA8E21950F2CF603325414316AEA773A1CD68F40A",
+      "model": "hy3-preview",
+      "provider": "public-synthetic-replay",
+      "reasoning_effort": "high",
+      "temperature": 0.0,
+      "request_sha256": "41E0B314F678AC3B3E2B4E545951F006EA23D2BBBB40351A8771F916E5DE2449",
+      "response_sha256": "34B4E0BB332408C7C5C9072D50D537012DE93BD268C0A8221AD7AE52D368D368",
+      "response": {
+        "schema_version": "1.0",
+        "assessments": [
+          {
+            "dimension": "reasoning_consistency",
+            "score_a": 1,
+            "score_b": 3,
+            "rationale": "The stronger report connects the measured gap to a bounded conclusion; the other only restates that results differ.",
+            "evidence_a_lines": [5, 9],
+            "evidence_b_lines": [5, 9]
+          },
+          {
+            "dimension": "clarity_actionability",
+            "score_a": 1,
+            "score_b": 4,
+            "rationale": "The stronger report specifies a controlled ablation and confidence intervals; the other gives a generic next step.",
+            "evidence_a_lines": [13],
+            "evidence_b_lines": [13]
+          }
+        ]
+      }
+    },
+    {
+      "schema_version": "1.0",
+      "trial_id": "trial-003",
+      "presentation_order": "left_as_a",
+      "prompt_version": "reproeval-pairwise-1.0",
+      "left_report_sha256": "BD6375573B1925C82E13F2ABDB16B6FEC684DA651ACF0F11E4A2980066797844",
+      "right_report_sha256": "189ED012C57EE4146E7AFF106751CE5408D5CE36E56342A29D166AE9C07C2F21",
+      "evaluation_contract_sha256": "11329C8A21953D26AB1798D6B55DEB8E12E0174E38B196F221ACFA6F6286458F",
+      "rubric_sha256": "1B1F6F8A425C1B84AAE88EFDA8E21950F2CF603325414316AEA773A1CD68F40A",
+      "model": "hy3-preview",
+      "provider": "public-synthetic-replay",
+      "reasoning_effort": "high",
+      "temperature": 0.0,
+      "request_sha256": "3D5A581C9AFF13382005717904975D493F512F9FFA2867366EFA9EB11BA6F9F4",
+      "response_sha256": "5303EBB3432B171D1A4B28AE105A450FAE088BB2E1E7B063E7F7AED788A07AE0",
+      "response": {
+        "schema_version": "1.0",
+        "assessments": [
+          {
+            "dimension": "reasoning_consistency",
+            "score_a": 4,
+            "score_b": 1,
+            "rationale": "The stronger report connects the measured gap to a bounded conclusion; the other only restates that results differ.",
+            "evidence_a_lines": [5, 9],
+            "evidence_b_lines": [5, 9]
+          },
+          {
+            "dimension": "clarity_actionability",
+            "score_a": 4,
+            "score_b": 1,
+            "rationale": "The stronger report specifies a controlled ablation and confidence intervals; the other gives a generic next step.",
+            "evidence_a_lines": [13],
+            "evidence_b_lines": [13]
+          }
+        ]
+      }
+    }
+  ]
+}
