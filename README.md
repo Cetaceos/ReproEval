@@ -15,7 +15,7 @@ The first migration milestone is implemented. The repository now contains the va
 - synthetic examples, offline evaluation suites, live-validation gates, and 269 migrated tests;
 - compatibility with existing `hy3_reproscope_mcp` module and `hy3-reproscope-mcp` command names.
 
-The versioned seven-dimension rubric and deterministic evaluation core are now implemented. They validate registered citations, claim support, numerical facts, units, required sections, uncertainty disclosures, and artifact hashes. Semantic Hy3 Judge dimensions, blinded report comparison, human annotation, and benchmark analysis remain in development and are described in [the project proposal](docs/PROJECT_PROPOSAL_CN.md).
+The versioned seven-dimension rubric, deterministic validators, and constrained Hy3 semantic Judge are implemented. The Judge assesses only reasoning consistency and clarity/actionability; it cannot replace local citation, numerical, artifact, or hard-cap decisions. Blinded report comparison, human annotation, and benchmark analysis remain in development and are described in [the project proposal](docs/PROJECT_PROPOSAL_CN.md).
 
 ## Architecture
 
@@ -58,7 +58,7 @@ Linux / macOS:
 ./.venv/bin/python -m pip install -e .
 ```
 
-Copy `.env.example` to a private `.env` or provide the same variables through your MCP client. Never commit a real API key.
+Load the variables in `.env.example` into the parent shell, or provide them through your MCP client. The package does not auto-load `.env` files. Never commit a real API key.
 
 ```text
 HY3_API_PROVIDER=tokenhub
@@ -83,7 +83,7 @@ hy3-reproscope-mcp
 
 Use [.mcp.json](.mcp.json) as the project-level configuration template. Replace placeholder paths and inject secrets through private client configuration.
 
-## Deterministic Report Evaluation
+## Report Evaluation
 
 Run the public sample without an API key:
 
@@ -95,7 +95,27 @@ hy3-reproeval evaluate-report \
 
 The case manifest registers source locators, required claims and sections, numerical expectations, uncertainty phrases, and artifact hashes. The evaluator returns dimension scores, evidence locations, error codes, assessed weight, hard caps, manifest and Rubric fingerprints, and a machine-readable quality result.
 
-Dimensions without deterministic or semantic evidence remain `insufficient_evidence`. An overall score is withheld below 50% assessed weight. Until the Hy3 Judge is integrated, results with unassessed semantic dimensions are marked `provisional=true`. See [EVALUATION_CORE.md](docs/EVALUATION_CORE.md) for the current contract and limitations.
+Replay the public synthetic Judge record without an API key:
+
+```bash
+hy3-reproeval evaluate-report \
+  --case examples/evaluation/sample_case.json \
+  --judge replay \
+  --judge-record examples/evaluation/sample_judge_record.json \
+  --output hybrid-evaluation.json
+```
+
+Run the semantic Judge online and save a reusable record:
+
+```bash
+hy3-reproeval evaluate-report \
+  --case examples/evaluation/sample_case.json \
+  --judge online \
+  --judge-record judge-record.json \
+  --output hybrid-evaluation.json
+```
+
+The online mode reads the existing `HY3_*` environment variables. A replay record is accepted only when its prompt version, case, scenario, report, Rubric, request, and structured response fingerprints match. Dimensions without deterministic or semantic evidence remain `insufficient_evidence`, and an overall score is withheld below 50% assessed weight. See [EVALUATION_CORE.md](docs/EVALUATION_CORE.md) for the scoring boundary and limitations.
 
 ## Migrated MCP Tools
 

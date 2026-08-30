@@ -1,0 +1,38 @@
+{
+  "schema_version": "1.0",
+  "prompt_version": "reproeval-judge-1.0",
+  "case_id": "sample-reproduction-report-v1",
+  "scenario": "reproduction",
+  "report_sha256": "BD6375573B1925C82E13F2ABDB16B6FEC684DA651ACF0F11E4A2980066797844",
+  "rubric_sha256": "1B1F6F8A425C1B84AAE88EFDA8E21950F2CF603325414316AEA773A1CD68F40A",
+  "model": "hy3-preview",
+  "provider": "public-synthetic-replay",
+  "reasoning_effort": "high",
+  "temperature": 0.0,
+  "request_sha256": "C7015767B59B935D58595141722892040CE3FE1BEBA1CD7A4017D8C44E09DF62",
+  "response_sha256": "F73DBAB76FC411A184C8C3A719EC52EF17F6E523033390FD120B7857AA5C2B0D",
+  "response": {
+    "schema_version": "1.0",
+    "assessments": [
+      {
+        "dimension": "reasoning_consistency",
+        "score": 3,
+        "rationale": "The report connects the measured gap to a cautious conclusion, but does not fully explain how the five runs narrow the remaining causal alternatives.",
+        "evidence_lines": [
+          5,
+          9
+        ],
+        "error_code": "reasoning_gap"
+      },
+      {
+        "dimension": "clarity_actionability",
+        "score": 4,
+        "rationale": "The report is concise and names a concrete preprocessing-controlled ablation with confidence intervals as the next step.",
+        "evidence_lines": [
+          13
+        ],
+        "error_code": null
+      }
+    ]
+  }
+}

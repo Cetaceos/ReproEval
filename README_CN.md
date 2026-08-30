@@ -15,7 +15,7 @@ Hy3 ReproEval 是一个面向开放式科研报告的 Hy3 多工具应用与可�
 - 合成示例、离线评测集、在线验证门禁和 269 个迁移测试；
 - 对原有 `hy3_reproscope_mcp` 模块和 `hy3-reproscope-mcp` 命令的兼容。
 
-版本化七维 Rubric 和确定性评估核心已经实现，可检查已登记的引用、主张支撑、数值、单位、必需章节、不确定性说明和工件哈希。Hy3 语义 Judge、报告盲化比较、人工标注和 Benchmark 分析仍在开发中，详见[项目方案](docs/PROJECT_PROPOSAL_CN.md)。
+版本化七维 Rubric、确定性校验器和受限 Hy3 语义 Judge 已经实现。Judge 仅评估推理一致性和清晰度/可执行性，不能覆盖本地引用、数值、工件或硬性分数上限结论。报告盲化比较、人工标注和 Benchmark 分析仍在开发中，详见[项目方案](docs/PROJECT_PROPOSAL_CN.md)。
 
 ## 架构
 
@@ -58,7 +58,7 @@ Linux / macOS：
 ./.venv/bin/python -m pip install -e .
 ```
 
-将 `.env.example` 复制为私有 `.env`，或通过 MCP 客户端提供相同环境变量。不得提交真实 API Key。
+请将 `.env.example` 中的变量加载到父进程，或通过 MCP 客户端提供。程序不会自动读取 `.env` 文件，不得提交真实 API Key。
 
 ```text
 HY3_API_PROVIDER=tokenhub
@@ -83,7 +83,7 @@ hy3-reproscope-mcp
 
 项目级客户端配置可参考 [.mcp.json](.mcp.json)，使用时需替换占位路径，并在私有配置中注入密钥。
 
-## 确定性报告评估
+## 报告评估
 
 以下公开样例无需 API Key：
 
@@ -95,7 +95,27 @@ hy3-reproeval evaluate-report \
 
 Case Manifest 登记合法来源定位、必需主张与章节、数值期望、不确定性短语和工件哈希。评估结果包含维度分数、证据位置、错误标签、已评估权重、硬性分数上限、Manifest 与 Rubric 指纹和机器可读质量结论。
 
-没有确定性或语义证据的维度保持 `insufficient_evidence`；已评估权重低于 50% 时不输出总分。在 Hy3 Judge 接入前，只要存在未评估的语义维度，结果就标记为 `provisional=true`。当前契约和限制详见 [EVALUATION_CORE.md](docs/EVALUATION_CORE.md)。
+以下命令使用公开的合成 Judge 记录，无需 API Key：
+
+```bash
+hy3-reproeval evaluate-report \
+  --case examples/evaluation/sample_case.json \
+  --judge replay \
+  --judge-record examples/evaluation/sample_judge_record.json \
+  --output hybrid-evaluation.json
+```
+
+在线调用 Hy3 Judge 并保存可回放记录：
+
+```bash
+hy3-reproeval evaluate-report \
+  --case examples/evaluation/sample_case.json \
+  --judge online \
+  --judge-record judge-record.json \
+  --output hybrid-evaluation.json
+```
+
+在线模式读取现有 `HY3_*` 环境变量。回放记录仅在 Prompt 版本、Case、场景、报告、Rubric、请求和结构化响应指纹全部匹配时生效。没有确定性或语义证据的维度保持 `insufficient_evidence`，已评估权重低于 50% 时不输出总分。评分边界和限制详见 [EVALUATION_CORE.md](docs/EVALUATION_CORE.md)。
 
 ## 已迁移的 MCP Tools
 

@@ -2,6 +2,19 @@
 
 All notable ReproEval changes are documented in this file.
 
+## 0.17.0 - 2026-08-30
+
+### Added
+
+- Constrained Hy3 semantic Judge for reasoning consistency and clarity/actionability.
+- Versioned Judge prompt, deterministic inference parameters, strict structured response schema, and report-line evidence validation.
+- Tamper-evident Judge records with report, Rubric, request, and structured-response SHA-256 fingerprints.
+- Credential-free offline replay and online/replay CLI modes.
+
+### Changed
+
+- Hybrid aggregation fills only previously unassessed semantic dimensions and preserves all deterministic findings and hard caps.
+
 ## 0.16.0 - 2026-08-28
 
 ### Added

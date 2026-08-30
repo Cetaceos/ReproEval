@@ -91,11 +91,16 @@ class Hy3Client:
         response_model: type[ResponseModelT],
         *,
         reasoning_effort: str | None = None,
+        temperature: float | None = None,
         repair_once: bool = True,
     ) -> ResponseModelT:
         """Request JSON, validate it, and optionally make one bounded repair request."""
 
-        raw_response = await self.complete_text(messages, reasoning_effort=reasoning_effort)
+        raw_response = await self.complete_text(
+            messages,
+            reasoning_effort=reasoning_effort,
+            temperature=temperature,
+        )
         try:
             return self._validate_json(raw_response, response_model)
         except (json.JSONDecodeError, ValidationError) as first_error:

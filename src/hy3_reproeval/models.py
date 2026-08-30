@@ -40,6 +40,7 @@ class ErrorCode(StrEnum):
     OVERCONFIDENCE = "overconfidence"
     MISSING_LIMITATION = "missing_limitation"
     VERBOSITY_WITHOUT_EVIDENCE = "verbosity_without_evidence"
+    ACTIONABILITY_GAP = "actionability_gap"
     FORMAT_VIOLATION = "format_violation"
     ARTIFACT_LINEAGE_ERROR = "artifact_lineage_error"
 
@@ -70,6 +71,11 @@ class EvaluationStatus(StrEnum):
 class EvaluationMode(StrEnum):
     DETERMINISTIC_ONLY = "deterministic_only"
     HYBRID = "hybrid"
+
+
+class JudgeExecutionMode(StrEnum):
+    ONLINE = "online"
+    REPLAY = "replay"
 
 
 class QualityBand(StrEnum):
@@ -214,6 +220,85 @@ class DimensionResult(StrictModel):
     finding_ids: list[str] = Field(default_factory=list)
 
 
+class JudgeDimensionAssessment(StrictModel):
+    dimension: DimensionId
+    score: int = Field(ge=0, le=4)
+    rationale: str = Field(min_length=1, max_length=2000)
+    evidence_lines: list[int] = Field(min_length=1, max_length=8)
+    error_code: ErrorCode | None = None
+
+    @field_validator("evidence_lines")
+    @classmethod
+    def evidence_lines_must_be_unique(cls, value: list[int]) -> list[int]:
+        if any(line < 1 for line in value):
+            raise ValueError("Judge evidence line numbers must be positive")
+        if len(value) != len(set(value)):
+            raise ValueError("Judge evidence line numbers must be unique")
+        return value
+
+    @model_validator(mode="after")
+    def validate_semantic_scope(self) -> JudgeDimensionAssessment:
+        allowed = {
+            DimensionId.REASONING_CONSISTENCY: {ErrorCode.REASONING_GAP},
+            DimensionId.CLARITY_ACTIONABILITY: {
+                ErrorCode.VERBOSITY_WITHOUT_EVIDENCE,
+                ErrorCode.ACTIONABILITY_GAP,
+            },
+        }
+        allowed_errors = allowed.get(self.dimension)
+        if allowed_errors is None:
+            raise ValueError("Judge may assess only the two semantic dimensions")
+        if self.score == 4 and self.error_code is not None:
+            raise ValueError("a score of 4 cannot include a semantic error code")
+        if self.score < 4 and self.error_code not in allowed_errors:
+            expected = ", ".join(sorted(item.value for item in allowed_errors))
+            raise ValueError(f"{self.dimension.value} requires one of these error codes below score 4: {expected}")
+        return self
+
+
+class JudgeResponse(StrictModel):
+    schema_version: Literal["1.0"] = "1.0"
+    assessments: list[JudgeDimensionAssessment] = Field(min_length=2, max_length=2)
+
+    @model_validator(mode="after")
+    def require_complete_semantic_dimensions(self) -> JudgeResponse:
+        expected = {
+            DimensionId.REASONING_CONSISTENCY,
+            DimensionId.CLARITY_ACTIONABILITY,
+        }
+        actual = {assessment.dimension for assessment in self.assessments}
+        if actual != expected or len(actual) != len(self.assessments):
+            raise ValueError("Judge response must contain each semantic dimension exactly once")
+        return self
+
+
+class JudgeRecord(StrictModel):
+    schema_version: Literal["1.0"] = "1.0"
+    prompt_version: str = Field(min_length=1)
+    case_id: str = Field(min_length=1)
+    scenario: Scenario
+    report_sha256: str = Field(pattern=r"^[A-F0-9]{64}$")
+    rubric_sha256: str = Field(pattern=r"^[A-F0-9]{64}$")
+    model: str = Field(min_length=1)
+    provider: str = Field(min_length=1)
+    reasoning_effort: Literal["high"] = "high"
+    temperature: float = Field(default=0.0, ge=0, le=2)
+    request_sha256: str = Field(pattern=r"^[A-F0-9]{64}$")
+    response_sha256: str = Field(pattern=r"^[A-F0-9]{64}$")
+    response: JudgeResponse
+
+
+class JudgeTrace(StrictModel):
+    execution_mode: JudgeExecutionMode
+    prompt_version: str
+    model: str
+    provider: str
+    reasoning_effort: Literal["high"]
+    temperature: float = Field(ge=0, le=2)
+    request_sha256: str = Field(pattern=r"^[A-F0-9]{64}$")
+    response_sha256: str = Field(pattern=r"^[A-F0-9]{64}$")
+
+
 class EvaluationResult(StrictModel):
     schema_version: Literal["1.0"] = "1.0"
     engine_version: str
@@ -232,4 +317,5 @@ class EvaluationResult(StrictModel):
     applied_hard_cap: float | None = Field(default=None, ge=0, le=100)
     dimensions: list[DimensionResult]
     findings: list[ValidatorFinding]
+    judge: JudgeTrace | None = None
     warnings: list[str] = Field(default_factory=list)

@@ -1,8 +1,8 @@
-# ReproEval Deterministic Evaluation Core
+# ReproEval Evaluation Core
 
 ## Scope
 
-The deterministic core evaluates claims that can be checked against an explicit case manifest. It does not infer a hidden reference answer from arbitrary documents and does not perform semantic judging.
+The evaluation core runs deterministic checks against an explicit case manifest, then optionally asks a constrained Hy3 Judge to assess two open-ended semantic dimensions. It does not infer a hidden reference answer from arbitrary documents.
 
 Implemented checks:
 
@@ -72,10 +72,44 @@ For each assessed dimension, the deterministic pass ratio maps to a 0-4 score. A
 
 Hard caps are applied after weighted aggregation, so fluent writing cannot compensate for deterministic critical errors.
 
+## Hy3 Semantic Judge
+
+Judge Prompt `reproeval-judge-1.0` receives the scenario, the two relevant Rubric anchors, and a line-numbered copy of the report serialized as untrusted JSON data. Online scoring fixes `reasoning_effort=high` and `temperature=0.0`. The system instruction explicitly excludes facts, citations, numerical values, units, completeness, uncertainty, and overall scoring from the Judge's authority.
+
+The structured response must contain exactly:
+
+- one 0-4 `reasoning_consistency` assessment with report-line evidence;
+- one 0-4 `clarity_actionability` assessment with report-line evidence;
+- `reasoning_gap` for a reasoning score below 4;
+- `actionability_gap` or `verbosity_without_evidence` for a clarity/actionability score below 4;
+- no semantic error code when a dimension receives 4.
+
+Local validation rejects missing or duplicate dimensions, unrelated error codes, unknown fields, and line numbers outside the report. Hybrid aggregation fills only dimensions that remain `insufficient_evidence`; it never replaces a deterministic dimension, finding, or hard cap.
+
+Online runs can save a `JudgeRecord`. The record binds the structured response to the prompt version, case ID, scenario, report SHA-256, Rubric SHA-256, model, provider, reconstructed request SHA-256, and canonical response SHA-256. Replay reconstructs and verifies this contract before aggregation, allowing the scoring path to run without credentials while preventing a record from being silently reused with changed inputs.
+
+```bash
+# Online Hy3 call and record creation
+hy3-reproeval evaluate-report \
+  --case examples/evaluation/sample_case.json \
+  --judge online \
+  --judge-record judge-record.json \
+  --output hybrid-evaluation.json
+
+# Credential-free replay
+hy3-reproeval evaluate-report \
+  --case examples/evaluation/sample_case.json \
+  --judge replay \
+  --judge-record judge-record.json \
+  --output replayed-evaluation.json
+```
+
 ## Current Limitations
 
 - Claim support is checked on the line containing the registered literal marker.
 - Numerical extraction uses the first decimal token after the registered literal label.
 - Citation validity is relative to the manifest's source and locator registry; the registry itself must be prepared independently.
-- Reasoning consistency and clarity/actionability remain `insufficient_evidence` until the Hy3 Judge layer is added.
+- Semantic scores remain model judgments rather than ground truth and require calibration against blinded human labels.
+- The online client performs one bounded JSON repair, so an invalid second response fails instead of being loosely parsed.
+- Replay proves input and structured-response consistency, not that the recorded response came from a trusted remote service.
 - Deterministic scores are not yet calibrated against blinded human labels and must be treated as provisional engineering output.

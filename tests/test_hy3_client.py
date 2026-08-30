@@ -104,6 +104,20 @@ async def test_complete_structured_accepts_json_fence() -> None:
 
 
 @pytest.mark.asyncio
+async def test_complete_structured_allows_deterministic_temperature_override() -> None:
+    fake = FakeOpenAI(['{"answer":"supported","confidence":0.9}'])
+    client = Hy3Client(Settings(HY3_API_KEY="test-key"), client=fake)
+
+    await client.complete_structured(
+        [{"role": "user", "content": "Return JSON"}],
+        ExampleResponse,
+        temperature=0.0,
+    )
+
+    assert fake.chat.completions.calls[0]["temperature"] == 0.0
+
+
+@pytest.mark.asyncio
 async def test_complete_structured_repairs_once() -> None:
     fake = FakeOpenAI(["not-json", '{"answer":"repaired","confidence":0.7}'])
     client = Hy3Client(Settings(HY3_API_KEY="test-key"), client=fake)

@@ -3,12 +3,16 @@
 from __future__ import annotations
 
 import argparse
+import asyncio
 from collections.abc import Sequence
 from pathlib import Path
 
+from hy3_reproscope_mcp.errors import ReproScopeError
+
 from . import __version__
 from .errors import EvaluationInputError
-from .evaluator import evaluate_case_file
+from .evaluator import evaluate_case_file, evaluate_case_file_hybrid
+from .judge import write_judge_record
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -25,6 +29,17 @@ def build_parser() -> argparse.ArgumentParser:
     )
     evaluate_parser.add_argument("--case", required=True, type=Path, help="Path to an evaluation case JSON file.")
     evaluate_parser.add_argument("--output", type=Path, help="Optional path for the evaluation result JSON.")
+    evaluate_parser.add_argument(
+        "--judge",
+        choices=("none", "online", "replay"),
+        default="none",
+        help="Semantic Judge mode. The default runs deterministic validators only.",
+    )
+    evaluate_parser.add_argument(
+        "--judge-record",
+        type=Path,
+        help="Write an online Judge record, or read this record in replay mode.",
+    )
     return parser
 
 
@@ -38,8 +53,19 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 0
     if args.command == "evaluate-report":
         try:
-            result = evaluate_case_file(args.case)
-        except EvaluationInputError as exc:
+            if args.judge == "none":
+                if args.judge_record is not None:
+                    parser.error("--judge-record requires --judge online or --judge replay")
+                result = evaluate_case_file(args.case)
+            elif args.judge == "replay":
+                if args.judge_record is None:
+                    parser.error("--judge replay requires --judge-record")
+                result, _ = asyncio.run(evaluate_case_file_hybrid(args.case, judge_replay_path=args.judge_record))
+            else:
+                result, judge_record = asyncio.run(evaluate_case_file_hybrid(args.case))
+                if args.judge_record is not None:
+                    write_judge_record(args.judge_record, judge_record)
+        except (EvaluationInputError, ReproScopeError) as exc:
             parser.error(str(exc))
         rendered = result.model_dump_json(indent=2) + "\n"
         if args.output is not None:
