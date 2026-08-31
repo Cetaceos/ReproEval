@@ -15,7 +15,7 @@ The first migration milestone is implemented. The repository now contains the va
 - synthetic examples, offline evaluation suites, live-validation gates, and 269 migrated tests;
 - compatibility with existing `hy3_reproscope_mcp` module and `hy3-reproscope-mcp` command names.
 
-The versioned seven-dimension rubric, deterministic validators, constrained Hy3 semantic Judge, and blinded repeated report comparison are implemented. Model judgments cannot replace local citation, numerical, artifact, or hard-cap decisions. Human annotation and benchmark analysis remain in development and are described in [the project proposal](docs/PROJECT_PROPOSAL_CN.md).
+The versioned seven-dimension rubric, deterministic validators, constrained Hy3 semantic Judge, blinded repeated comparison, reproducible dataset protocol, and group-isolated batch runner are implemented. Model judgments cannot replace local citation, numerical, artifact, or hard-cap decisions. Human annotation and held-out benchmark analysis remain in development and are described in [the project proposal](docs/PROJECT_PROPOSAL_CN.md).
 
 ## Architecture
 
@@ -154,6 +154,19 @@ hy3-reproeval replay-mutation \
 
 The validator enforces one evaluation contract per source group, prevents a declared source fingerprint from crossing splits, confines paths, and requires exact closure for locally detectable errors. Semantic mutation labels remain hypotheses for later Hy3 Judge or human validation. The public fixture is one synthetic development group for protocol verification, not a benchmark. See [DATASET_PROTOCOL.md](docs/DATASET_PROTOCOL.md).
 
+## Batch Evaluation
+
+Run the registered synthetic Judge records without an API key:
+
+```bash
+hy3-reproeval benchmark-dataset \
+  --manifest examples/dataset/sample_dataset.json \
+  --mode replay \
+  --output dataset-benchmark.json
+```
+
+The runner evaluates reports only within their source group and reports ranking eligibility, pair coverage and accuracy, complete-order coverage and accuracy, macro group Spearman correlation, and error-label recall. Provisional scores are excluded, undefined metrics remain `null`, and adversarial reports do not enter the high/medium/low order without an explicit attack label. The public replay is a protocol self-check, not evidence of Hy3 performance or model-human agreement. See [BENCHMARK_PROTOCOL.md](docs/BENCHMARK_PROTOCOL.md).
+
 ## Migrated MCP Tools
 
 | Tool | Purpose |
@@ -196,6 +209,7 @@ scripts/                    offline, live, packaging, and evidence checks
 docs/PROJECT_PROPOSAL_CN.md practical-stage design and delivery plan
 docs/EVALUATION_CORE.md     deterministic evaluator contract and limitations
 docs/DATASET_PROTOCOL.md    dataset, split, provenance, and mutation contract
+docs/BENCHMARK_PROTOCOL.md  group-isolated batch metrics and claim boundaries
 docs/reproscope/             selected ReproScope validation evidence and history
 ```
 

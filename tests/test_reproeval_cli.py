@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from hy3_reproeval.benchmark import BenchmarkMode, DatasetBenchmarkResult
 from hy3_reproeval.cli import main
 from hy3_reproeval.dataset import DatasetValidationResult, MutationReplayResult
 from hy3_reproeval.models import EvaluationMode, EvaluationResult, EvaluationStatus
@@ -104,6 +105,7 @@ def test_cli_validates_public_three_tier_dataset(tmp_path: Path) -> None:
     assert result.group_count == 1
     assert result.report_count == 3
     assert result.mutation_count == 2
+    assert result.judge_record_count == 3
 
 
 def test_cli_replays_public_mutation(capsys) -> None:
@@ -124,3 +126,28 @@ def test_cli_replays_public_mutation(capsys) -> None:
     result = MutationReplayResult.model_validate_json(capsys.readouterr().out)
     assert result.mutation_id == "sample-medium-mutation-v1"
     assert result.wrote_output is False
+
+
+def test_cli_runs_public_replay_benchmark(tmp_path: Path) -> None:
+    project_root = Path(__file__).resolve().parents[1]
+    output_path = tmp_path / "dataset-benchmark.json"
+
+    assert (
+        main(
+            [
+                "benchmark-dataset",
+                "--manifest",
+                str(project_root / "examples" / "dataset" / "sample_dataset.json"),
+                "--mode",
+                "replay",
+                "--output",
+                str(output_path),
+            ]
+        )
+        == 0
+    )
+    result = DatasetBenchmarkResult.model_validate_json(output_path.read_text(encoding="utf-8"))
+    assert result.benchmark_mode is BenchmarkMode.REPLAY
+    assert result.overall.pairwise_accuracy == 1
+    assert result.overall.complete_order_accuracy == 1
+    assert result.overall.macro_spearman_correlation == 1

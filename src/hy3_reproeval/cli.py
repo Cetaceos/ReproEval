@@ -10,6 +10,7 @@ from pathlib import Path
 from hy3_reproscope_mcp.errors import ReproScopeError
 
 from . import __version__
+from .benchmark import BenchmarkMode, run_dataset_benchmark
 from .dataset import replay_mutation_manifest, validate_dataset_manifest
 from .errors import EvaluationInputError
 from .evaluator import evaluate_case_file, evaluate_case_file_hybrid
@@ -72,6 +73,19 @@ def build_parser() -> argparse.ArgumentParser:
     mutation_parser.add_argument(
         "--write", action="store_true", help="Write the verified output instead of checking it."
     )
+    benchmark_parser = subparsers.add_parser(
+        "benchmark-dataset",
+        help="Batch-evaluate registered report tiers and compute group-isolated ranking metrics.",
+    )
+    benchmark_parser.add_argument("--manifest", required=True, type=Path)
+    benchmark_parser.add_argument(
+        "--mode",
+        choices=tuple(BenchmarkMode),
+        default=BenchmarkMode.DETERMINISTIC,
+        type=BenchmarkMode,
+        help="Use deterministic validators only, or registered Judge replay records.",
+    )
+    benchmark_parser.add_argument("--output", type=Path, help="Optional path for the benchmark result JSON.")
     return parser
 
 
@@ -134,6 +148,21 @@ def main(argv: Sequence[str] | None = None) -> int:
         except EvaluationInputError as exc:
             parser.error(str(exc))
         print(result.model_dump_json(indent=2))
+        return 0
+    if args.command == "benchmark-dataset":
+        try:
+            result = asyncio.run(run_dataset_benchmark(args.manifest, mode=args.mode))
+        except (EvaluationInputError, ReproScopeError) as exc:
+            parser.error(str(exc))
+        rendered = result.model_dump_json(indent=2) + "\n"
+        if args.output is not None:
+            output_path = args.output.expanduser().resolve()
+            if not output_path.parent.is_dir():
+                parser.error(f"output directory does not exist: {output_path.parent}")
+            output_path.write_text(rendered, encoding="utf-8")
+            print(output_path.as_posix())
+        else:
+            print(rendered, end="")
         return 0
     if args.command == "compare-reports":
         if args.judge == "replay" and args.judge_record is None:

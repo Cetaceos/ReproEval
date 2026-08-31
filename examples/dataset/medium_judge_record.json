@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0",
+  "prompt_version": "reproeval-judge-1.0",
+  "case_id": "dataset-sample-medium-v1",
+  "scenario": "reproduction",
+  "report_sha256": "4ED62198E88589F2D3A25552FB60875862EAAD03890A2479F3C9B3507B14A6A8",
+  "rubric_sha256": "1B1F6F8A425C1B84AAE88EFDA8E21950F2CF603325414316AEA773A1CD68F40A",
+  "model": "hy3-preview",
+  "provider": "public-synthetic-replay",
+  "reasoning_effort": "high",
+  "temperature": 0.0,
+  "request_sha256": "45176E8C7BD72CF0B63132C364E97098C4B4981CD497693C0AF234A258B6EFD6",
+  "response_sha256": "561CD7BF0DB07325100AED42089E060B1237DBC909992B3DFFE88E2B049486E8",
+  "response": {
+    "schema_version": "1.0",
+    "assessments": [
+      {
+        "dimension": "reasoning_consistency",
+        "score": 2,
+        "rationale": "Synthetic replay assessment for controlled reasoning quality.",
+        "evidence_lines": [9],
+        "error_code": "reasoning_gap"
+      },
+      {
+        "dimension": "clarity_actionability",
+        "score": 1,
+        "rationale": "Synthetic replay assessment for controlled actionability quality.",
+        "evidence_lines": [13],
+        "error_code": "actionability_gap"
+      }
+    ]
+  }
+}

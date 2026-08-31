@@ -14,8 +14,10 @@ from pydantic import Field, field_validator, model_validator
 
 from . import __version__
 from .errors import EvaluationInputError
-from .evaluator import evaluate_case_file
+from .evaluator import _rubric_sha256, evaluate_case_file
+from .judge import MAX_JUDGE_RECORD_BYTES, load_judge_record
 from .models import DimensionId, ErrorCode, FindingStatus, Scenario, StrictModel
+from .rubric import load_public_rubric
 from .validators import LoadedEvaluationCase, load_evaluation_case
 
 MAX_DATASET_MANIFEST_BYTES = 4 * 1024 * 1024
@@ -115,6 +117,8 @@ class DatasetReportEntry(StrictModel):
     report_sha256: str = Field(pattern=r"^[A-F0-9]{64}$")
     label_source: Literal["reference_revision", "synthetic_mutation", "human_reviewed"]
     mutation_manifest_path: str | None = None
+    judge_record_path: str | None = None
+    judge_record_sha256: str | None = Field(default=None, pattern=r"^[A-F0-9]{64}$")
     expected_error_codes: list[ErrorCode] = Field(default_factory=list)
 
     @field_validator("expected_error_codes")
@@ -130,6 +134,8 @@ class DatasetReportEntry(StrictModel):
             raise ValueError("synthetic mutation report requires mutation_manifest_path")
         if self.quality_tier is QualityTier.HIGH and self.label_source == "synthetic_mutation":
             raise ValueError("high-quality reference cannot be labeled as a synthetic mutation")
+        if (self.judge_record_path is None) != (self.judge_record_sha256 is None):
+            raise ValueError("judge_record_path and judge_record_sha256 must be declared together")
         return self
 
 
@@ -199,6 +205,7 @@ class DatasetValidationResult(StrictModel):
     group_count: int = Field(ge=1)
     report_count: int = Field(ge=3)
     mutation_count: int = Field(ge=0)
+    judge_record_count: int = Field(ge=0)
     split_counts: dict[DatasetSplit, int]
     tier_counts: dict[QualityTier, int]
     scenario_counts: dict[Scenario, int]
@@ -213,17 +220,42 @@ class _LoadedReport:
     loaded_case: LoadedEvaluationCase
 
 
-def validate_dataset_manifest(path: str | Path) -> DatasetValidationResult:
+@dataclass(frozen=True, slots=True)
+class LoadedDatasetManifest:
+    manifest: DatasetManifest
+    manifest_path: Path
+    root: Path
+    manifest_sha256: str
+
+    def resolve(self, raw_path: str, label: str = "dataset file") -> Path:
+        return _resolve_registered_path(self.root, raw_path, label)
+
+
+def load_dataset_manifest(path: str | Path) -> LoadedDatasetManifest:
     manifest_path = Path(path).expanduser().resolve()
     manifest_bytes = _read_limited(manifest_path, MAX_DATASET_MANIFEST_BYTES, "dataset manifest")
     try:
         manifest = DatasetManifest.model_validate_json(manifest_bytes)
     except ValueError as exc:
         raise EvaluationInputError(f"invalid dataset manifest: {exc}") from exc
-    root = manifest_path.parent.resolve()
+    return LoadedDatasetManifest(
+        manifest=manifest,
+        manifest_path=manifest_path,
+        root=manifest_path.parent.resolve(),
+        manifest_sha256=_sha256(manifest_bytes),
+    )
+
+
+def validate_dataset_manifest(path: str | Path) -> DatasetValidationResult:
+    loaded_dataset = load_dataset_manifest(path)
+    manifest = loaded_dataset.manifest
+    root = loaded_dataset.root
     mutation_count = 0
+    judge_record_count = 0
     deterministic_error_counts: Counter[ErrorCode] = Counter()
     human_reviewed = 0
+    rubric = load_public_rubric()
+    rubric_sha256 = _rubric_sha256(rubric)
 
     for group in manifest.groups:
         loaded_reports = _load_group_reports(root, group)
@@ -234,6 +266,13 @@ def validate_dataset_manifest(path: str | Path) -> DatasetValidationResult:
                 human_reviewed += 1
             actual_errors = _validate_expected_errors(item)
             deterministic_error_counts.update(actual_errors)
+            if item.entry.judge_record_path is not None:
+                judge_record_count += 1
+                judge_record_path = _resolve_registered_path(root, item.entry.judge_record_path, "Judge record")
+                judge_record_bytes = _read_limited(judge_record_path, MAX_JUDGE_RECORD_BYTES, "Judge record")
+                if _sha256(judge_record_bytes) != item.entry.judge_record_sha256:
+                    raise EvaluationInputError(f"report '{item.entry.report_id}' Judge record SHA-256 does not match")
+                load_judge_record(judge_record_path, item.loaded_case, rubric, rubric_sha256)
             if item.entry.mutation_manifest_path:
                 mutation_count += 1
                 mutation_path = _resolve_registered_path(
@@ -253,10 +292,11 @@ def validate_dataset_manifest(path: str | Path) -> DatasetValidationResult:
         engine_version=__version__,
         dataset_id=manifest.dataset_id,
         dataset_version=manifest.dataset_version,
-        manifest_sha256=hashlib.sha256(manifest_bytes).hexdigest().upper(),
+        manifest_sha256=loaded_dataset.manifest_sha256,
         group_count=len(manifest.groups),
         report_count=sum(len(group.reports) for group in manifest.groups),
         mutation_count=mutation_count,
+        judge_record_count=judge_record_count,
         split_counts=dict(split_counts),
         tier_counts=dict(tier_counts),
         scenario_counts=dict(scenario_counts),

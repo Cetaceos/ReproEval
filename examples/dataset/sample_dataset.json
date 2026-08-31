@@ -22,6 +22,8 @@
           "case_path": "high_case.json",
           "report_sha256": "41C2348FD062926A4DA4BDC60562872B6B745BC07F4963551228650F62881E9A",
           "label_source": "reference_revision",
+          "judge_record_path": "high_judge_record.json",
+          "judge_record_sha256": "43B5867C7A3143B75D665A53A53E14AFA3AEF31981A5A4EA74CD4E42F225C11D",
           "expected_error_codes": []
         },
         {
@@ -31,6 +33,8 @@
           "report_sha256": "4ED62198E88589F2D3A25552FB60875862EAAD03890A2479F3C9B3507B14A6A8",
           "label_source": "synthetic_mutation",
           "mutation_manifest_path": "medium_mutation.json",
+          "judge_record_path": "medium_judge_record.json",
+          "judge_record_sha256": "164B4475E4DDBEB51A52FB464B386AA3B354A35E428694D4B6A007A92C911343",
           "expected_error_codes": ["reasoning_gap", "actionability_gap"]
         },
         {
@@ -40,6 +44,8 @@
           "report_sha256": "98C49B4F88AA15CE1E27F531739987CB158410DCE6C234B43648F02C82BE60E0",
           "label_source": "synthetic_mutation",
           "mutation_manifest_path": "low_mutation.json",
+          "judge_record_path": "low_judge_record.json",
+          "judge_record_sha256": "E785B14F2649915F37F5D9BF50F10F738354A48637579E4EBCAFEAE5B759465F",
           "expected_error_codes": [
             "reasoning_gap",
             "actionability_gap",

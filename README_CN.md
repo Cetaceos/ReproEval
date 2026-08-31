@@ -15,7 +15,7 @@ Hy3 ReproEval 是一个面向开放式科研报告的 Hy3 多工具应用与可�
 - 合成示例、离线评测集、在线验证门禁和 269 个迁移测试；
 - 对原有 `hy3_reproscope_mcp` 模块和 `hy3-reproscope-mcp` 命令的兼容。
 
-版本化七维 Rubric、确定性校验器、受限 Hy3 语义 Judge 和盲化重复报告比较已经实现。模型判断不能覆盖本地引用、数值、工件或硬性分数上限结论。人工标注和 Benchmark 分析仍在开发中，详见[项目方案](docs/PROJECT_PROPOSAL_CN.md)。
+版本化七维 Rubric、确定性校验器、受限 Hy3 语义 Judge、盲化重复比较、可复现数据协议和组内批量运行器已经实现。模型判断不能覆盖本地引用、数值、工件或硬性分数上限结论。人工标注和冻结测试集分析仍在开发中，详见[项目方案](docs/PROJECT_PROPOSAL_CN.md)。
 
 ## 架构
 
@@ -154,6 +154,19 @@ hy3-reproeval replay-mutation \
 
 验证器要求同一来源组使用同一评测契约，阻止登记的同一来源指纹跨数据集划分复用，限制路径范围，并要求本地可检查错误与声明标签严格闭合。语义类变异标签仍需后续 Hy3 Judge 或人工实验验证。公开样例仅含一个合成开发组，用于验证协议，不是 Benchmark。详见 [DATASET_PROTOCOL.md](docs/DATASET_PROTOCOL.md)。
 
+## 批量评估
+
+以下命令无需 API Key，可回放清单中登记的合成 Judge Record：
+
+```bash
+hy3-reproeval benchmark-dataset \
+  --manifest examples/dataset/sample_dataset.json \
+  --mode replay \
+  --output dataset-benchmark.json
+```
+
+运行器只在同一来源组内比较报告，输出排序资格、成对覆盖率与准确率、完整排序覆盖率与准确率、组级 Spearman 宏平均和错误标签召回率。Provisional 分数不参与排序，未定义指标保持 `null`；没有明确攻击标签时，对抗档不进入高、中、低顺序。公开回放仅用于协议自检，不代表 Hy3 性能或人机一致性。详见 [BENCHMARK_PROTOCOL.md](docs/BENCHMARK_PROTOCOL.md)。
+
 ## 已迁移的 MCP Tools
 
 | Tool | 功能 |
@@ -194,6 +207,7 @@ scripts/                    离线评测、在线验证、打包与证据检查�
 docs/PROJECT_PROPOSAL_CN.md 实战阶段设计和交付计划
 docs/EVALUATION_CORE.md     确定性评估器契约和能力边界
 docs/DATASET_PROTOCOL.md    数据集、划分、来源与变异协议
+docs/BENCHMARK_PROTOCOL.md  组内批量指标和结论边界
 docs/reproscope/             ReproScope 验证证据与历史材料
 ```
 

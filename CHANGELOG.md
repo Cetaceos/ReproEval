@@ -2,6 +2,23 @@
 
 All notable ReproEval changes are documented in this file.
 
+## 0.20.0 - 2026-08-31
+
+### Added
+
+- Group-isolated batch evaluation for versioned ReproEval datasets.
+- Deterministic and registered Judge replay modes with explicit ranking eligibility.
+- Pairwise ordering accuracy, complete-order coverage/accuracy, macro group Spearman correlation, and error-label recall.
+- Per-report expected, detected, missing, and unexpected error inventories.
+- Tamper-evident Judge Record registration in Dataset Manifests and a public three-tier synthetic replay fixture.
+- `benchmark-dataset` CLI command and a versioned Benchmark protocol document.
+
+### Safety
+
+- Provisional deterministic-only scores are excluded from ranking metrics.
+- Adversarial reports are excluded from high/medium/low ordering until an explicit attack label contract is available.
+- Synthetic replay metrics are identified as protocol checks, not model-human benchmark evidence.
+
 ## 0.19.0 - 2026-08-30
 
 ### Added
