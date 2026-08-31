@@ -15,7 +15,7 @@ Hy3 ReproEval 是一个面向开放式科研报告的 Hy3 多工具应用与可�
 - 合成示例、离线评测集、在线验证门禁和 269 个迁移测试；
 - 对原有 `hy3_reproscope_mcp` 模块和 `hy3-reproscope-mcp` 命令的兼容。
 
-版本化七维 Rubric、确定性校验器、受限 Hy3 语义 Judge、盲化重复比较、可复现数据协议和组内批量运行器已经实现。模型判断不能覆盖本地引用、数值、工件或硬性分数上限结论。人工标注和冻结测试集分析仍在开发中，详见[项目方案](docs/PROJECT_PROPOSAL_CN.md)。
+版本化七维 Rubric、确定性校验器、受限 Hy3 语义 Judge、盲化重复比较、可复现数据协议、可恢复批量 Judge、组内 Benchmark 和去标识化标注校验已经实现。模型判断不能覆盖本地引用、数值、工件或硬性分数上限结论。真实专家标签、一致性分析和冻结测试集结果仍属于后续验证工作，详见[项目方案](docs/PROJECT_PROPOSAL_CN.md)。
 
 ## 架构
 
@@ -167,6 +167,36 @@ hy3-reproeval benchmark-dataset \
 
 运行器只在同一来源组内比较报告，输出排序资格、成对覆盖率与准确率、完整排序覆盖率与准确率、组级 Spearman 宏平均和错误标签召回率。Provisional 分数不参与排序，未定义指标保持 `null`；没有明确攻击标签时，对抗档不进入高、中、低顺序。公开回放仅用于协议自检，不代表 Hy3 性能或人机一致性。详见 [BENCHMARK_PROTOCOL.md](docs/BENCHMARK_PROTOCOL.md)。
 
+### 可恢复在线 Judge 记录
+
+在已经创建的私有目录中为每份报告生成经过校验的 Hy3 记录，再通过完整索引直接执行回放 Benchmark：
+
+```bash
+hy3-reproeval generate-judge-records \
+  --manifest examples/dataset/sample_dataset.json \
+  --output-dir .reproeval/judge-run
+
+hy3-reproeval benchmark-dataset \
+  --manifest examples/dataset/sample_dataset.json \
+  --mode replay \
+  --judge-index .reproeval/judge-run/judge_record_index.json \
+  --output .reproeval/dataset-benchmark.json
+```
+
+需先创建输出目录；中断后应先检查已有文件，再使用 `--resume`。详见 [JUDGE_BATCH.md](docs/JUDGE_BATCH.md)。
+
+### Annotation Bundle 校验
+
+以下命令无需 API Key，可校验公开的合成协议样例：
+
+```bash
+hy3-reproeval validate-annotations \
+  --manifest examples/dataset/sample_dataset.json \
+  --bundle examples/annotations/synthetic_annotation_bundle.json
+```
+
+真实 Benchmark 就绪要求每份 validation/test 报告都获得两位合格标注者相互独立且盲化的人工标注。公开合成 Bundle 永远不计为人工证据。详见 [ANNOTATION_PROTOCOL.md](docs/ANNOTATION_PROTOCOL.md)。
+
 ## 已迁移的 MCP Tools
 
 | Tool | 功能 |
@@ -208,6 +238,8 @@ docs/PROJECT_PROPOSAL_CN.md 实战阶段设计和交付计划
 docs/EVALUATION_CORE.md     确定性评估器契约和能力边界
 docs/DATASET_PROTOCOL.md    数据集、划分、来源与变异协议
 docs/BENCHMARK_PROTOCOL.md  组内批量指标和结论边界
+docs/JUDGE_BATCH.md         可恢复在线 Judge Record 生成协议
+docs/ANNOTATION_PROTOCOL.md 去标识化标注和就绪条件
 docs/reproscope/             ReproScope 验证证据与历史材料
 ```
 

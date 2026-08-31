@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from hy3_reproeval.annotations import AnnotationValidationResult
 from hy3_reproeval.benchmark import BenchmarkMode, DatasetBenchmarkResult
 from hy3_reproeval.cli import main
 from hy3_reproeval.dataset import DatasetValidationResult, MutationReplayResult
@@ -151,3 +152,27 @@ def test_cli_runs_public_replay_benchmark(tmp_path: Path) -> None:
     assert result.overall.pairwise_accuracy == 1
     assert result.overall.complete_order_accuracy == 1
     assert result.overall.macro_spearman_correlation == 1
+
+
+def test_cli_validates_public_synthetic_annotation_fixture(tmp_path: Path) -> None:
+    project_root = Path(__file__).resolve().parents[1]
+    output_path = tmp_path / "annotation-validation.json"
+
+    assert (
+        main(
+            [
+                "validate-annotations",
+                "--manifest",
+                str(project_root / "examples" / "dataset" / "sample_dataset.json"),
+                "--bundle",
+                str(project_root / "examples" / "annotations" / "synthetic_annotation_bundle.json"),
+                "--output",
+                str(output_path),
+            ]
+        )
+        == 0
+    )
+    result = AnnotationValidationResult.model_validate_json(output_path.read_bytes())
+    assert result.synthetic_annotation_count == 1
+    assert result.human_annotation_count == 0
+    assert result.benchmark_ready is False

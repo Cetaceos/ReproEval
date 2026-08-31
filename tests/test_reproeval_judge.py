@@ -174,6 +174,7 @@ async def test_replay_reproduces_hybrid_score_without_a_client(tmp_path: Path) -
         judge_provider="test-provider",
     )
     record_path = write_judge_record(tmp_path / "judge-record.json", record)
+    assert b"\r\n" not in record_path.read_bytes()
 
     replayed, replay_record = await evaluate_case_file_hybrid(case_path, judge_replay_path=record_path)
 

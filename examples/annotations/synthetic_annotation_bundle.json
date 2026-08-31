@@ -1,0 +1,86 @@
+{
+  "schema_version": "1.0",
+  "annotation_bundle_id": "public-synthetic-annotation-v1",
+  "annotation_source": "synthetic_protocol_fixture",
+  "annotation_round": "independent",
+  "annotation_date": "2026-08-31",
+  "dataset_id": "reproeval-public-synthetic-sample",
+  "dataset_version": "0.1.0",
+  "dataset_manifest_sha256": "1CA552BF92472F5DDB91042ABF15B5C725B45A805BC3F8F6BF863982EF0361BE",
+  "rubric_version": "0.1.0",
+  "rubric_sha256": "1B1F6F8A425C1B84AAE88EFDA8E21950F2CF603325414316AEA773A1CD68F40A",
+  "annotator": {
+    "annotator_id": "synthetic-annotator-a",
+    "expertise_description": "Repository-authored protocol fixture; not a human expert.",
+    "independent_annotation": true,
+    "blind_to_system_scores": true,
+    "rubric_training_completed": true,
+    "conflict_of_interest_disclosed": true,
+    "conflict_of_interest_present": false
+  },
+  "annotations": [
+    {
+      "group_id": "synthetic-reproduction-group-001",
+      "report_id": "sample-report-high-v1",
+      "report_sha256": "41C2348FD062926A4DA4BDC60562872B6B745BC07F4963551228650F62881E9A",
+      "dimensions": [
+        {
+          "dimension": "factual_accuracy",
+          "status": "assessed",
+          "score": 4,
+          "rationale": "The registered claim matches the synthetic evidence contract.",
+          "evidence_lines": [5],
+          "error_codes": []
+        },
+        {
+          "dimension": "evidence_traceability",
+          "status": "assessed",
+          "score": 4,
+          "rationale": "Both registered source locators are present on the claim line.",
+          "evidence_lines": [5],
+          "error_codes": []
+        },
+        {
+          "dimension": "numerical_consistency",
+          "status": "assessed",
+          "score": 4,
+          "rationale": "The registered numerical value is reproduced exactly.",
+          "evidence_lines": [5],
+          "error_codes": []
+        },
+        {
+          "dimension": "reasoning_consistency",
+          "status": "assessed",
+          "score": 4,
+          "rationale": "The evidence statement keeps the causal conclusion bounded.",
+          "evidence_lines": [9],
+          "error_codes": []
+        },
+        {
+          "dimension": "uncertainty_handling",
+          "status": "assessed",
+          "score": 4,
+          "rationale": "The report explicitly states the remaining evidence limitation.",
+          "evidence_lines": [9],
+          "error_codes": []
+        },
+        {
+          "dimension": "content_completeness",
+          "status": "assessed",
+          "score": 4,
+          "rationale": "The summary, evidence, limitations, and next-step sections are present.",
+          "evidence_lines": [3, 7, 11],
+          "error_codes": []
+        },
+        {
+          "dimension": "clarity_actionability",
+          "status": "assessed",
+          "score": 4,
+          "rationale": "The final line provides a concrete controlled ablation.",
+          "evidence_lines": [13],
+          "error_codes": []
+        }
+      ]
+    }
+  ]
+}

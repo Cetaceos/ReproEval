@@ -15,7 +15,7 @@ The first migration milestone is implemented. The repository now contains the va
 - synthetic examples, offline evaluation suites, live-validation gates, and 269 migrated tests;
 - compatibility with existing `hy3_reproscope_mcp` module and `hy3-reproscope-mcp` command names.
 
-The versioned seven-dimension rubric, deterministic validators, constrained Hy3 semantic Judge, blinded repeated comparison, reproducible dataset protocol, and group-isolated batch runner are implemented. Model judgments cannot replace local citation, numerical, artifact, or hard-cap decisions. Human annotation and held-out benchmark analysis remain in development and are described in [the project proposal](docs/PROJECT_PROPOSAL_CN.md).
+The versioned seven-dimension rubric, deterministic validators, constrained Hy3 semantic Judge, blinded repeated comparison, reproducible dataset protocol, resumable batch Judge runs, group-isolated benchmark runner, and de-identified annotation validation are implemented. Model judgments cannot replace local citation, numerical, artifact, or hard-cap decisions. Real expert labels, agreement analysis, and frozen held-out results remain future validation work described in [the project proposal](docs/PROJECT_PROPOSAL_CN.md).
 
 ## Architecture
 
@@ -167,6 +167,36 @@ hy3-reproeval benchmark-dataset \
 
 The runner evaluates reports only within their source group and reports ranking eligibility, pair coverage and accuracy, complete-order coverage and accuracy, macro group Spearman correlation, and error-label recall. Provisional scores are excluded, undefined metrics remain `null`, and adversarial reports do not enter the high/medium/low order without an explicit attack label. The public replay is a protocol self-check, not evidence of Hy3 performance or model-human agreement. See [BENCHMARK_PROTOCOL.md](docs/BENCHMARK_PROTOCOL.md).
 
+### Resumable online Judge records
+
+Generate one verified Hy3 record per dataset report in an existing private directory, then consume the complete index directly in replay mode:
+
+```bash
+hy3-reproeval generate-judge-records \
+  --manifest examples/dataset/sample_dataset.json \
+  --output-dir .reproeval/judge-run
+
+hy3-reproeval benchmark-dataset \
+  --manifest examples/dataset/sample_dataset.json \
+  --mode replay \
+  --judge-index .reproeval/judge-run/judge_record_index.json \
+  --output .reproeval/dataset-benchmark.json
+```
+
+Create the output directory first and use `--resume` only after reviewing an interrupted run. See [JUDGE_BATCH.md](docs/JUDGE_BATCH.md).
+
+### Annotation Bundle validation
+
+Validate the public synthetic protocol fixture without an API key:
+
+```bash
+hy3-reproeval validate-annotations \
+  --manifest examples/dataset/sample_dataset.json \
+  --bundle examples/annotations/synthetic_annotation_bundle.json
+```
+
+Real benchmark readiness requires two eligible independent, blinded human annotations for every validation/test report. The public synthetic Bundle never counts as human evidence. See [ANNOTATION_PROTOCOL.md](docs/ANNOTATION_PROTOCOL.md).
+
 ## Migrated MCP Tools
 
 | Tool | Purpose |
@@ -210,6 +240,8 @@ docs/PROJECT_PROPOSAL_CN.md practical-stage design and delivery plan
 docs/EVALUATION_CORE.md     deterministic evaluator contract and limitations
 docs/DATASET_PROTOCOL.md    dataset, split, provenance, and mutation contract
 docs/BENCHMARK_PROTOCOL.md  group-isolated batch metrics and claim boundaries
+docs/JUDGE_BATCH.md         resumable online Judge Record generation
+docs/ANNOTATION_PROTOCOL.md de-identified annotation and readiness contract
 docs/reproscope/             selected ReproScope validation evidence and history
 ```
 

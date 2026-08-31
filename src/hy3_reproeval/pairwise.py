@@ -401,7 +401,7 @@ def write_pairwise_bundle(path: str | Path, bundle: PairwiseJudgeBundle) -> Path
     output_path = Path(path).expanduser().resolve()
     if not output_path.parent.is_dir():
         raise EvaluationInputError(f"pairwise record output directory does not exist: {output_path.parent}")
-    output_path.write_text(bundle.model_dump_json(indent=2) + "\n", encoding="utf-8")
+    output_path.write_bytes((bundle.model_dump_json(indent=2) + "\n").encode("utf-8"))
     return output_path
 
 

@@ -1,6 +1,6 @@
 # ReproEval Batch Benchmark Protocol
 
-ReproEval 0.20.0 batch-evaluates reports registered by the Dataset Protocol and aggregates results without comparing scores across unrelated source groups. It supports deterministic protocol checks and credential-free Judge replay; neither mode creates human ground truth.
+ReproEval 0.21.0 batch-evaluates reports registered by the Dataset Protocol and aggregates results without comparing scores across unrelated source groups. It supports deterministic protocol checks and Judge replay; neither mode creates human ground truth.
 
 ## Modes
 
@@ -24,7 +24,17 @@ hy3-reproeval benchmark-dataset \
   --output replay-benchmark.json
 ```
 
-Replay requires every report to register both `judge_record_path` and `judge_record_sha256`. ReproEval reconstructs the versioned prompt and verifies the Case, scenario, report, Rubric, model request, structured response, evidence lines, and file hash before using the record. Missing or mismatched records fail closed.
+Replay accepts either a Judge Record registered on every report or one complete external index produced by `generate-judge-records`:
+
+```bash
+hy3-reproeval benchmark-dataset \
+  --manifest path/to/dataset.json \
+  --mode replay \
+  --judge-index .reproeval/judge-run/judge_record_index.json \
+  --output replay-benchmark.json
+```
+
+ReproEval reconstructs the versioned prompt and verifies the Dataset, Case, scenario, report, Rubric, model, provider, request, structured response, evidence lines, and file hashes before using a record. Partial indexes and missing or mismatched records fail closed. See [JUDGE_BATCH.md](JUDGE_BATCH.md) for online generation and resume semantics.
 
 ## Ranking Eligibility
 
@@ -54,3 +64,5 @@ Undefined metrics are serialized as `null`, never rewritten as zero. Macro Spear
 The public fixture contains one repository-authored synthetic development group. Its Judge records were deliberately constructed for credential-free replay and identify their provider as `public-synthetic-replay`. A perfect ordering or error-label result on this fixture proves only that hashing, replay, aggregation, and expected protocol behavior close correctly.
 
 Claims about Hy3 quality, held-out generalization, model-human agreement, stability, or adversarial robustness require frozen validation/test groups, real model runs, and independently reviewed human labels. Dataset validation warnings keep these missing conditions visible.
+
+Annotation Bundle validation and the double-annotation readiness gate are defined in [ANNOTATION_PROTOCOL.md](ANNOTATION_PROTOCOL.md). Passing that gate establishes input coverage, not agreement quality.

@@ -176,6 +176,7 @@ async def test_pairwise_replay_reproduces_result_without_client(tmp_path: Path) 
         judge_client=ContentAwarePairwiseClient(),
     )
     bundle_path = write_pairwise_bundle(tmp_path / "pairwise-record.json", bundle)
+    assert b"\r\n" not in bundle_path.read_bytes()
 
     replayed, replay_bundle = await compare_case_files(
         left_path,

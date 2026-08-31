@@ -63,7 +63,7 @@ For errors that local Python can determine, declared labels must close exactly o
 
 Semantic labels such as `reasoning_gap`, `verbosity_without_evidence`, and `actionability_gap` are recorded for later Hy3 Judge or human experiments. Dataset validation does not claim to prove those labels. This boundary prevents synthetic mutation intent from being presented as measured model performance.
 
-When a Judge Record is registered, validation reconstructs its versioned prompt and checks its Case, scenario, report, Rubric, request, response, evidence lines, and file hash. Batch ranking uses these records only in explicit replay mode; see [BENCHMARK_PROTOCOL.md](BENCHMARK_PROTOCOL.md).
+When a Judge Record is registered, validation reconstructs its versioned prompt and checks its Case, scenario, report, Rubric, request, response, evidence lines, and file hash. Batch ranking uses records only in explicit replay mode. A complete external index can be generated without mutating the Dataset Manifest; see [JUDGE_BATCH.md](JUDGE_BATCH.md) and [BENCHMARK_PROTOCOL.md](BENCHMARK_PROTOCOL.md).
 
 ## Validation
 

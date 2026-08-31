@@ -154,7 +154,7 @@ def write_judge_record(path: str | Path, record: JudgeRecord) -> Path:
     output_path = Path(path).expanduser().resolve()
     if not output_path.parent.is_dir():
         raise EvaluationInputError(f"Judge record output directory does not exist: {output_path.parent}")
-    output_path.write_text(record.model_dump_json(indent=2) + "\n", encoding="utf-8")
+    output_path.write_bytes((record.model_dump_json(indent=2) + "\n").encode("utf-8"))
     return output_path
 
 

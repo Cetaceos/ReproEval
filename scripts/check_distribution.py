@@ -31,11 +31,14 @@ REQUIRED_PACKAGE_DATA = {
     },
 }
 REQUIRED_SDIST_DOCS = {
+    "docs/ANNOTATION_PROTOCOL.md",
+    "docs/JUDGE_BATCH.md",
     "docs/PROJECT_PROPOSAL_CN.md",
     "docs/reproscope/RELEASE_EVIDENCE_0.15_CN.md",
 }
 REQUIRED_SDIST_FILES = {
     "CHANGELOG.md",
+    "examples/annotations/synthetic_annotation_bundle.json",
     "requirements.lock",
 }
 FORBIDDEN_SDIST_PATHS = {

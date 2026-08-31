@@ -21,6 +21,7 @@ from .dataset import (
 )
 from .errors import EvaluationInputError
 from .evaluator import evaluate_case_file, evaluate_case_file_hybrid
+from .judge_batch import validate_judge_record_index
 from .models import (
     ErrorCode,
     EvaluationMode,
@@ -126,6 +127,7 @@ class DatasetBenchmarkResult(StrictModel):
     benchmark_mode: BenchmarkMode
     rubric_version: str
     rubric_sha256: str = Field(pattern=r"^[A-F0-9]{64}$")
+    judge_record_index_sha256: str | None = Field(default=None, pattern=r"^[A-F0-9]{64}$")
     groups: list[BenchmarkGroupResult] = Field(min_length=1)
     overall: AggregateBenchmarkMetrics
     splits: dict[DatasetSplit, AggregateBenchmarkMetrics]
@@ -136,6 +138,7 @@ async def run_dataset_benchmark(
     path: str | Path,
     *,
     mode: BenchmarkMode | str = BenchmarkMode.DETERMINISTIC,
+    judge_index_path: str | Path | None = None,
 ) -> DatasetBenchmarkResult:
     """Evaluate every registered report and aggregate only within source groups."""
 
@@ -143,8 +146,11 @@ async def run_dataset_benchmark(
         active_mode = BenchmarkMode(mode)
     except ValueError as exc:
         raise EvaluationInputError(f"unsupported dataset benchmark mode: {mode}") from exc
+    if active_mode is BenchmarkMode.DETERMINISTIC and judge_index_path is not None:
+        raise EvaluationInputError("Judge Record index requires replay benchmark mode")
     validation = validate_dataset_manifest(path)
     loaded_dataset = load_dataset_manifest(path)
+    loaded_index = validate_judge_record_index(judge_index_path, path) if judge_index_path is not None else None
     group_results: list[BenchmarkGroupResult] = []
     rubric_versions: set[str] = set()
     rubric_hashes: set[str] = set()
@@ -154,11 +160,14 @@ async def run_dataset_benchmark(
         for entry in group.reports:
             case_path = loaded_dataset.resolve(entry.case_path, "evaluation case")
             if active_mode is BenchmarkMode.REPLAY:
-                if entry.judge_record_path is None:
+                if loaded_index is not None:
+                    record_path = loaded_index.record_paths_by_report_id[entry.report_id]
+                elif entry.judge_record_path is not None:
+                    record_path = loaded_dataset.resolve(entry.judge_record_path, "Judge record")
+                else:
                     raise EvaluationInputError(
                         f"replay benchmark requires a Judge record for report '{entry.report_id}'"
                     )
-                record_path = loaded_dataset.resolve(entry.judge_record_path, "Judge record")
                 evaluation, _ = await evaluate_case_file_hybrid(case_path, judge_replay_path=record_path)
             else:
                 evaluation = evaluate_case_file(case_path)
@@ -200,6 +209,7 @@ async def run_dataset_benchmark(
         benchmark_mode=active_mode,
         rubric_version=next(iter(rubric_versions)),
         rubric_sha256=next(iter(rubric_hashes)),
+        judge_record_index_sha256=(loaded_index.index_sha256 if loaded_index is not None else None),
         groups=group_results,
         overall=overall,
         splits={

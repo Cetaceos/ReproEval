@@ -2,6 +2,22 @@
 
 All notable ReproEval changes are documented in this file.
 
+## 0.21.0 - 2026-08-31
+
+### Added
+
+- Resumable online Hy3 Judge Record generation for every report in a versioned Dataset Manifest.
+- Tamper-evident Judge Record indexes that bind model, provider, Dataset, Rubric, requests, responses, and files.
+- Direct replay benchmarking from a complete Judge Record index without mutating the Dataset Manifest.
+- A strict de-identified annotation Bundle schema with report-line evidence, eligibility checks, and validation/test double-annotation coverage gates.
+- Public synthetic annotation fixture and protocol documentation that cannot be counted as human ground truth.
+
+### Safety
+
+- Partial online runs remain explicitly incomplete and cannot enter replay benchmarks.
+- Existing record directories require explicit resume mode, and every resumed record is revalidated before reuse.
+- Human identity and expertise metadata remain self-attested; this release validates annotation inputs but does not report agreement or adjudication metrics.
+
 ## 0.20.0 - 2026-08-31
 
 ### Added
