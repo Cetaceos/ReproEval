@@ -162,6 +162,23 @@ hy3-reproeval benchmark-dataset \
 
 The validator enforces one evaluation contract per source group, prevents a declared source fingerprint from crossing splits, confines paths, and requires exact closure for locally detectable errors. Adversarial reports must additionally register each attack type, target dimension, and expected error with Mutation closure. Semantic labels remain hypotheses for later Hy3 Judge or human validation. Both public fixtures are synthetic development groups for protocol verification, not held-out benchmarks. See [DATASET_PROTOCOL.md](docs/DATASET_PROTOCOL.md) and [ADVERSARIAL_PROTOCOL.md](docs/ADVERSARIAL_PROTOCOL.md).
 
+### Dataset freeze
+
+Before generating Judge Records or collecting blinded annotations, freeze every registered input:
+
+```bash
+mkdir .reproeval
+hy3-reproeval freeze-dataset \
+  --manifest examples/dataset/sample_adversarial_dataset.json \
+  --output .reproeval/dataset-freeze.json
+
+hy3-reproeval verify-dataset-freeze \
+  --freeze .reproeval/dataset-freeze.json \
+  --manifest examples/dataset/sample_adversarial_dataset.json
+```
+
+The Freeze binds the Rubric version and hash and records relative paths, roles, byte sizes, and SHA-256 fingerprints for the Dataset, Cases, reports, evidence attachments, Mutations, and registered Judge Records. `--require-p0-ready` rejects a Dataset below 12 source groups, validation/test coverage, or 8 adversarial reports. The public development fixture freezes successfully with `meets_p0_dataset_targets=false`; freezing does not establish annotation, Judge, or held-out result readiness. See [DATASET_FREEZE.md](docs/DATASET_FREEZE.md).
+
 ## Batch Evaluation
 
 Run the registered synthetic Judge records without an API key:
@@ -273,6 +290,7 @@ scripts/                    offline, live, packaging, and evidence checks
 docs/PROJECT_PROPOSAL_CN.md practical-stage design and delivery plan
 docs/EVALUATION_CORE.md     deterministic evaluator contract and limitations
 docs/DATASET_PROTOCOL.md    dataset, split, provenance, and mutation contract
+docs/DATASET_FREEZE.md      experiment-input freeze, verification, and P0 gate
 docs/BENCHMARK_PROTOCOL.md  group-isolated batch metrics and claim boundaries
 docs/ADVERSARIAL_PROTOCOL.md adversarial attack registration and detection metrics
 docs/JUDGE_BATCH.md         resumable online Judge Record generation

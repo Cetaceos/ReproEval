@@ -36,6 +36,8 @@ hy3-reproeval benchmark-dataset \
 
 ReproEval reconstructs the versioned prompt and verifies the Dataset, Case, scenario, report, Rubric, model, provider, request, structured response, evidence lines, and file hashes before using a record. Partial indexes and missing or mismatched records fail closed. See [JUDGE_BATCH.md](JUDGE_BATCH.md) for online generation and resume semantics.
 
+For validation/test experiments, create and verify a [Dataset Freeze](DATASET_FREEZE.md) before generating Judge Records. The Freeze fingerprint identifies the exact Dataset inputs used by later Benchmark and annotation artifacts.
+
 ## Ranking Eligibility
 
 A report is eligible for ranking only when it has an overall score and `provisional=false`. Expected ordering is defined only for `high > medium > low` within one source group. Reports in the same tier are not compared. `adversarial` reports are evaluated under their attack contracts but excluded from this order because adversarial intent does not define a quality position.

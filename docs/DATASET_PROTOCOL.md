@@ -81,3 +81,5 @@ hy3-reproeval validate-dataset \
 The result reports group, report, mutation, split, tier, scenario, deterministic-error, human-review, adversarial-report, attack-instance, and attack-type counts. It also warns when the dataset lacks validation/test splits, the planned 12 source groups, 8 adversarial reports, or human-reviewed labels.
 
 The repository includes a three-tier synthetic development fixture and a separate synthetic adversarial development fixture. They verify schema, hash, replay, isolation, deterministic-error, and attack-metric behavior only. Ranking accuracy, model-human agreement, stability, and adversarial robustness require the larger group-isolated and human-reviewed dataset planned in the project proposal.
+
+Before collecting Judge or annotation outputs, bind the validated Dataset and all registered input files with the [Dataset Freeze Protocol](DATASET_FREEZE.md). Dataset validation proves current consistency; a Freeze supplies the reviewed fingerprint needed to detect later input changes.

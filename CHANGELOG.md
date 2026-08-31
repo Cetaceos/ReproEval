@@ -2,6 +2,22 @@
 
 All notable ReproEval changes are documented in this file.
 
+## 0.25.0 - 2026-08-31
+
+### Added
+
+- Deterministic Dataset Freeze artifacts binding the Dataset Manifest, public Rubric, Case Manifests, reports, evidence attachments, Mutation Manifests, and registered Judge Records.
+- Canonically ordered file inventories with path, role, byte size, SHA-256, and a self-digest over the complete Freeze payload.
+- Explicit P0 Dataset readiness checks for source-group scale, validation/test presence, and adversarial-report coverage.
+- `freeze-dataset` and `verify-dataset-freeze` CLI commands, including an optional fail-closed `--require-p0-ready` gate.
+- A versioned Dataset Freeze protocol and tests for payload tampering, post-freeze input changes, evidence attachments, and development-only readiness refusal.
+
+### Safety
+
+- Every frozen path must remain inside the Dataset root, and duplicate paths or roles are rejected.
+- Freeze verification revalidates the Dataset before comparing its identity, Rubric, complete file inventory, and readiness state.
+- Meeting Dataset targets does not claim Judge completeness, human annotation coverage, agreement, consensus, held-out performance, or adversarial robustness.
+
 ## 0.24.0 - 2026-08-31
 
 ### Added

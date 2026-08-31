@@ -33,6 +33,7 @@ REQUIRED_PACKAGE_DATA = {
 REQUIRED_SDIST_DOCS = {
     "docs/ADVERSARIAL_PROTOCOL.md",
     "docs/ANNOTATION_PROTOCOL.md",
+    "docs/DATASET_FREEZE.md",
     "docs/JUDGE_BATCH.md",
     "docs/PROJECT_PROPOSAL_CN.md",
     "docs/reproscope/RELEASE_EVIDENCE_0.15_CN.md",

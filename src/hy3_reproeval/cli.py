@@ -17,6 +17,7 @@ from .consensus import finalize_annotation_consensus
 from .dataset import replay_mutation_manifest, validate_dataset_manifest
 from .errors import EvaluationInputError
 from .evaluator import evaluate_case_file, evaluate_case_file_hybrid
+from .freeze import create_dataset_freeze, verify_dataset_freeze
 from .judge import write_judge_record
 from .judge_batch import generate_dataset_judge_records
 from .pairwise import compare_case_files, write_pairwise_bundle
@@ -68,6 +69,24 @@ def build_parser() -> argparse.ArgumentParser:
     )
     dataset_parser.add_argument("--manifest", required=True, type=Path)
     dataset_parser.add_argument("--output", type=Path, help="Optional path for the validation result JSON.")
+    freeze_parser = subparsers.add_parser(
+        "freeze-dataset",
+        help="Create a tamper-evident inventory of every registered Dataset input.",
+    )
+    freeze_parser.add_argument("--manifest", required=True, type=Path)
+    freeze_parser.add_argument("--output", required=True, type=Path)
+    freeze_parser.add_argument(
+        "--require-p0-ready",
+        action="store_true",
+        help="Reject a Dataset below the declared P0 group, split, or adversarial targets.",
+    )
+    verify_freeze_parser = subparsers.add_parser(
+        "verify-dataset-freeze",
+        help="Verify a Dataset Freeze against its self-digest and current registered inputs.",
+    )
+    verify_freeze_parser.add_argument("--freeze", required=True, type=Path)
+    verify_freeze_parser.add_argument("--manifest", required=True, type=Path)
+    verify_freeze_parser.add_argument("--output", type=Path)
     mutation_parser = subparsers.add_parser(
         "replay-mutation",
         help="Deterministically replay and verify one literal Mutation Manifest.",
@@ -200,6 +219,35 @@ def main(argv: Sequence[str] | None = None) -> int:
             if not output_path.parent.is_dir():
                 parser.error(f"output directory does not exist: {output_path.parent}")
             output_path.write_text(rendered, encoding="utf-8")
+            print(output_path.as_posix())
+        else:
+            print(rendered, end="")
+        return 0
+    if args.command == "freeze-dataset":
+        try:
+            result = create_dataset_freeze(
+                args.manifest,
+                require_p0_ready=args.require_p0_ready,
+            )
+        except EvaluationInputError as exc:
+            parser.error(str(exc))
+        output_path = args.output.expanduser().resolve()
+        if not output_path.parent.is_dir():
+            parser.error(f"output directory does not exist: {output_path.parent}")
+        output_path.write_bytes((result.model_dump_json(indent=2) + "\n").encode("utf-8"))
+        print(output_path.as_posix())
+        return 0
+    if args.command == "verify-dataset-freeze":
+        try:
+            result = verify_dataset_freeze(args.freeze, args.manifest)
+        except EvaluationInputError as exc:
+            parser.error(str(exc))
+        rendered = result.model_dump_json(indent=2) + "\n"
+        if args.output is not None:
+            output_path = args.output.expanduser().resolve()
+            if not output_path.parent.is_dir():
+                parser.error(f"output directory does not exist: {output_path.parent}")
+            output_path.write_bytes(rendered.encode("utf-8"))
             print(output_path.as_posix())
         else:
             print(rendered, end="")

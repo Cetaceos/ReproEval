@@ -162,6 +162,23 @@ hy3-reproeval benchmark-dataset \
 
 验证器要求同一来源组使用同一评测契约，阻止登记的同一来源指纹跨数据集划分复用，限制路径范围，并要求本地可检查错误与声明标签严格闭合。对抗报告还必须逐项登记攻击类型、目标维度和预期错误，并与 Mutation 操作闭合。语义类标签仍需后续 Hy3 Judge 或人工实验验证。两个公开样例均为合成开发组，只用于验证协议，不是 held-out Benchmark。详见 [DATASET_PROTOCOL.md](docs/DATASET_PROTOCOL.md) 和 [ADVERSARIAL_PROTOCOL.md](docs/ADVERSARIAL_PROTOCOL.md)。
 
+### 数据集冻结
+
+在正式生成 Judge Record 或组织人工盲评前，冻结所有登记输入：
+
+```bash
+mkdir .reproeval
+hy3-reproeval freeze-dataset \
+  --manifest examples/dataset/sample_adversarial_dataset.json \
+  --output .reproeval/dataset-freeze.json
+
+hy3-reproeval verify-dataset-freeze \
+  --freeze .reproeval/dataset-freeze.json \
+  --manifest examples/dataset/sample_adversarial_dataset.json
+```
+
+Freeze 绑定 Rubric 版本与哈希，并记录 Dataset、Case、报告、证据附件、Mutation 和已登记 Judge Record 的相对路径、角色、字节数与 SHA-256。`--require-p0-ready` 可拒绝未达到 12 个来源组、validation/test 划分和 8 份对抗报告的 Dataset。公开开发样例会正常冻结，但 `meets_p0_dataset_targets=false`；冻结不代表人工标注、Judge 或 held-out 结果已经就绪。详见 [DATASET_FREEZE.md](docs/DATASET_FREEZE.md)。
+
 ## 批量评估
 
 以下命令无需 API Key，可回放清单中登记的合成 Judge Record：
@@ -271,6 +288,7 @@ scripts/                    离线评测、在线验证、打包与证据检查�
 docs/PROJECT_PROPOSAL_CN.md 实战阶段设计和交付计划
 docs/EVALUATION_CORE.md     确定性评估器契约和能力边界
 docs/DATASET_PROTOCOL.md    数据集、划分、来源与变异协议
+docs/DATASET_FREEZE.md      实验输入冻结、复核与 P0 门槛
 docs/BENCHMARK_PROTOCOL.md  组内批量指标和结论边界
 docs/ADVERSARIAL_PROTOCOL.md 对抗攻击登记与检测指标协议
 docs/JUDGE_BATCH.md         可恢复在线 Judge Record 生成协议

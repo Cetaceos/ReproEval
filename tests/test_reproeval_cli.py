@@ -8,6 +8,7 @@ from hy3_reproeval.benchmark import BenchmarkMode, DatasetBenchmarkResult
 from hy3_reproeval.cli import main
 from hy3_reproeval.consensus import AnnotationConsensusResult
 from hy3_reproeval.dataset import DatasetValidationResult, MutationReplayResult
+from hy3_reproeval.freeze import DatasetFreeze, DatasetFreezeVerification
 from hy3_reproeval.models import EvaluationMode, EvaluationResult, EvaluationStatus
 from hy3_reproeval.pairwise import ComparisonPreference, PairwiseComparisonResult
 
@@ -109,6 +110,49 @@ def test_cli_validates_public_three_tier_dataset(tmp_path: Path) -> None:
     assert result.report_count == 3
     assert result.mutation_count == 2
     assert result.judge_record_count == 3
+
+
+def test_cli_creates_and_verifies_public_dataset_freeze(tmp_path: Path) -> None:
+    project_root = Path(__file__).resolve().parents[1]
+    manifest_path = project_root / "examples" / "dataset" / "sample_adversarial_dataset.json"
+    freeze_path = tmp_path / "dataset-freeze.json"
+    verification_path = tmp_path / "dataset-freeze-verification.json"
+
+    assert (
+        main(
+            [
+                "freeze-dataset",
+                "--manifest",
+                str(manifest_path),
+                "--output",
+                str(freeze_path),
+            ]
+        )
+        == 0
+    )
+    freeze = DatasetFreeze.model_validate_json(freeze_path.read_text(encoding="utf-8"))
+    assert freeze.file_count == 12
+    assert freeze.readiness.meets_p0_dataset_targets is False
+
+    assert (
+        main(
+            [
+                "verify-dataset-freeze",
+                "--freeze",
+                str(freeze_path),
+                "--manifest",
+                str(manifest_path),
+                "--output",
+                str(verification_path),
+            ]
+        )
+        == 0
+    )
+    verification = DatasetFreezeVerification.model_validate_json(
+        verification_path.read_text(encoding="utf-8")
+    )
+    assert verification.valid is True
+    assert verification.freeze_sha256 == freeze.freeze_sha256
 
 
 def test_cli_replays_public_mutation(capsys) -> None:
