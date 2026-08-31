@@ -1,4 +1,4 @@
-"""Run the three live Hy3 workflows from one exact 0.15.0 wheel.
+"""Run the three live Hy3 workflows from one exact release wheel.
 
 The command is deliberately opt-in.  Without ``--execute`` it only verifies
 the wheel metadata and digest.  With ``--execute`` it requires
@@ -330,7 +330,7 @@ def _execute(
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--wheel", type=Path, help="Exact 0.15.0 wheel; defaults to the sole wheel in dist/")
+    parser.add_argument("--wheel", type=Path, help="Exact release wheel; defaults to the sole wheel in dist/")
     parser.add_argument("--execute", action="store_true", help="Install the wheel and call the real Hy3 endpoint")
     parser.add_argument(
         "--workflow",

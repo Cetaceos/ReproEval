@@ -152,7 +152,15 @@ hy3-reproeval replay-mutation \
   --root examples/dataset
 ```
 
-The validator enforces one evaluation contract per source group, prevents a declared source fingerprint from crossing splits, confines paths, and requires exact closure for locally detectable errors. Semantic mutation labels remain hypotheses for later Hy3 Judge or human validation. The public fixture is one synthetic development group for protocol verification, not a benchmark. See [DATASET_PROTOCOL.md](docs/DATASET_PROTOCOL.md).
+Validate attack registration and metric aggregation on the public synthetic adversarial fixture without an API key:
+
+```bash
+hy3-reproeval benchmark-dataset \
+  --manifest examples/dataset/sample_adversarial_dataset.json \
+  --mode deterministic
+```
+
+The validator enforces one evaluation contract per source group, prevents a declared source fingerprint from crossing splits, confines paths, and requires exact closure for locally detectable errors. Adversarial reports must additionally register each attack type, target dimension, and expected error with Mutation closure. Semantic labels remain hypotheses for later Hy3 Judge or human validation. Both public fixtures are synthetic development groups for protocol verification, not held-out benchmarks. See [DATASET_PROTOCOL.md](docs/DATASET_PROTOCOL.md) and [ADVERSARIAL_PROTOCOL.md](docs/ADVERSARIAL_PROTOCOL.md).
 
 ## Batch Evaluation
 
@@ -165,7 +173,7 @@ hy3-reproeval benchmark-dataset \
   --output dataset-benchmark.json
 ```
 
-The runner evaluates reports only within their source group and reports ranking eligibility, pair coverage and accuracy, complete-order coverage and accuracy, macro group Spearman correlation, and error-label recall. Provisional scores are excluded, undefined metrics remain `null`, and adversarial reports do not enter the high/medium/low order without an explicit attack label. The public replay is a protocol self-check, not evidence of Hy3 performance or model-human agreement. See [BENCHMARK_PROTOCOL.md](docs/BENCHMARK_PROTOCOL.md).
+The runner evaluates reports only within their source group and reports ranking eligibility, pair coverage and accuracy, complete-order coverage and accuracy, macro group Spearman correlation, and error-label recall. Adversarial reports have separate per-attack-type detection, false-acceptance, and label-recall metrics and never enter the high/medium/low order. Provisional scores are excluded and undefined metrics remain `null`. The public replay is a protocol self-check, not evidence of Hy3 performance, model-human agreement, or adversarial robustness. See [BENCHMARK_PROTOCOL.md](docs/BENCHMARK_PROTOCOL.md).
 
 ### Resumable online Judge records
 
@@ -266,6 +274,7 @@ docs/PROJECT_PROPOSAL_CN.md practical-stage design and delivery plan
 docs/EVALUATION_CORE.md     deterministic evaluator contract and limitations
 docs/DATASET_PROTOCOL.md    dataset, split, provenance, and mutation contract
 docs/BENCHMARK_PROTOCOL.md  group-isolated batch metrics and claim boundaries
+docs/ADVERSARIAL_PROTOCOL.md adversarial attack registration and detection metrics
 docs/JUDGE_BATCH.md         resumable online Judge Record generation
 docs/ANNOTATION_PROTOCOL.md de-identified annotation and readiness contract
 docs/reproscope/             selected ReproScope validation evidence and history

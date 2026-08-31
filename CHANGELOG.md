@@ -2,6 +2,23 @@
 
 All notable ReproEval changes are documented in this file.
 
+## 0.24.0 - 2026-08-31
+
+### Added
+
+- A versioned adversarial attack contract covering length inflation, terminology stuffing, conclusion repetition, fabricated authority, calculation corruption, limitation suppression, and unsupported overconfidence.
+- Per-attack bindings to target Rubric dimensions, expected error labels, mutation operations, and globally unique attack IDs.
+- Per-report, per-group, per-split, aggregate, and per-attack-type detection metrics.
+- Attack detection rate, attack false-acceptance rate, report-level complete detection, and adversarial error-label recall.
+- A public synthetic adversarial development fixture for credential-free deterministic protocol checks.
+
+### Safety
+
+- Adversarial reports require an explicit attack specification and cannot be labeled as reference revisions.
+- Attack labels must be a subset of report labels, and synthetic attack dimensions must be covered by registered Mutation operations.
+- Adversarial reports remain outside the high/medium/low quality order; attack metrics do not alter ranking scores.
+- Public attack metrics are synthetic development checks, so this release establishes the protocol but makes no robustness claim.
+
 ## 0.23.0 - 2026-08-31
 
 ### Added

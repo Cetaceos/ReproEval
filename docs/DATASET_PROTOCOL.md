@@ -29,10 +29,13 @@ The strict `1.0` schema records:
 - one group-level split: `development`, `validation`, or `test`;
 - one scenario and one provenance record per group;
 - report ID, tier, Case Manifest, report hash, label source, expected errors, and optional Mutation Manifest;
+- for every adversarial report, one or more globally unique attacks with type, target dimensions, expected errors, and a description;
 - an optional Judge Record path and SHA-256, which must be declared together;
 - provenance kind, license signal, acquisition date, source-group fingerprint, and public description.
 
 Each group must contain at least three reports, exactly one `high` report, and at least one `medium` and one `low` report. All reports in a group must use the same deterministic evaluation contract. The validator rejects duplicate report content, duplicate IDs, and reuse of one declared source-group fingerprint across groups or splits.
+
+An `adversarial` report cannot be a reference revision and must include an `adversarial_spec`. Attack errors must be declared in the report's expected-error inventory. For synthetic mutations, every attack target dimension must also be covered by at least one registered Mutation operation. See [ADVERSARIAL_PROTOCOL.md](ADVERSARIAL_PROTOCOL.md).
 
 The source-group fingerprint is a registered provenance value. ReproEval detects duplicate declarations but cannot derive that value from external material absent from the repository; dataset maintainers remain responsible for its construction and review.
 
@@ -75,6 +78,6 @@ hy3-reproeval validate-dataset \
   --output dataset-validation.json
 ```
 
-The result reports group, report, mutation, split, tier, scenario, deterministic-error, and human-review counts. It also warns when the dataset lacks validation/test splits, the planned 12 source groups, 8 adversarial reports, or human-reviewed labels.
+The result reports group, report, mutation, split, tier, scenario, deterministic-error, human-review, adversarial-report, attack-instance, and attack-type counts. It also warns when the dataset lacks validation/test splits, the planned 12 source groups, 8 adversarial reports, or human-reviewed labels.
 
-The repository fixture contains one synthetic development group and three quality tiers. It verifies schema, hash, replay, isolation, and deterministic-error behavior only. Ranking accuracy, model-human agreement, stability, and adversarial detection require the larger group-isolated and human-reviewed dataset planned in the project proposal.
+The repository includes a three-tier synthetic development fixture and a separate synthetic adversarial development fixture. They verify schema, hash, replay, isolation, deterministic-error, and attack-metric behavior only. Ranking accuracy, model-human agreement, stability, and adversarial robustness require the larger group-isolated and human-reviewed dataset planned in the project proposal.

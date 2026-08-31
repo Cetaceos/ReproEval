@@ -152,7 +152,15 @@ hy3-reproeval replay-mutation \
   --root examples/dataset
 ```
 
-验证器要求同一来源组使用同一评测契约，阻止登记的同一来源指纹跨数据集划分复用，限制路径范围，并要求本地可检查错误与声明标签严格闭合。语义类变异标签仍需后续 Hy3 Judge 或人工实验验证。公开样例仅含一个合成开发组，用于验证协议，不是 Benchmark。详见 [DATASET_PROTOCOL.md](docs/DATASET_PROTOCOL.md)。
+公开合成对抗样例可在无 API Key 的确定性模式下验证攻击登记与指标聚合：
+
+```bash
+hy3-reproeval benchmark-dataset \
+  --manifest examples/dataset/sample_adversarial_dataset.json \
+  --mode deterministic
+```
+
+验证器要求同一来源组使用同一评测契约，阻止登记的同一来源指纹跨数据集划分复用，限制路径范围，并要求本地可检查错误与声明标签严格闭合。对抗报告还必须逐项登记攻击类型、目标维度和预期错误，并与 Mutation 操作闭合。语义类标签仍需后续 Hy3 Judge 或人工实验验证。两个公开样例均为合成开发组，只用于验证协议，不是 held-out Benchmark。详见 [DATASET_PROTOCOL.md](docs/DATASET_PROTOCOL.md) 和 [ADVERSARIAL_PROTOCOL.md](docs/ADVERSARIAL_PROTOCOL.md)。
 
 ## 批量评估
 
@@ -165,7 +173,7 @@ hy3-reproeval benchmark-dataset \
   --output dataset-benchmark.json
 ```
 
-运行器只在同一来源组内比较报告，输出排序资格、成对覆盖率与准确率、完整排序覆盖率与准确率、组级 Spearman 宏平均和错误标签召回率。Provisional 分数不参与排序，未定义指标保持 `null`；没有明确攻击标签时，对抗档不进入高、中、低顺序。公开回放仅用于协议自检，不代表 Hy3 性能或人机一致性。详见 [BENCHMARK_PROTOCOL.md](docs/BENCHMARK_PROTOCOL.md)。
+运行器只在同一来源组内比较报告，输出排序资格、成对覆盖率与准确率、完整排序覆盖率与准确率、组级 Spearman 宏平均和错误标签召回率。对抗报告单独输出逐攻击类型检测率、错误放行率和标签召回率，不参与高、中、低排序。Provisional 分数不参与排序，未定义指标保持 `null`。公开回放仅用于协议自检，不代表 Hy3 性能、人机一致性或对抗鲁棒性。详见 [BENCHMARK_PROTOCOL.md](docs/BENCHMARK_PROTOCOL.md)。
 
 ### 可恢复在线 Judge 记录
 
@@ -264,6 +272,7 @@ docs/PROJECT_PROPOSAL_CN.md 实战阶段设计和交付计划
 docs/EVALUATION_CORE.md     确定性评估器契约和能力边界
 docs/DATASET_PROTOCOL.md    数据集、划分、来源与变异协议
 docs/BENCHMARK_PROTOCOL.md  组内批量指标和结论边界
+docs/ADVERSARIAL_PROTOCOL.md 对抗攻击登记与检测指标协议
 docs/JUDGE_BATCH.md         可恢复在线 Judge Record 生成协议
 docs/ANNOTATION_PROTOCOL.md 去标识化标注和就绪条件
 docs/reproscope/             ReproScope 验证证据与历史材料

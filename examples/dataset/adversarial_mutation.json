@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.0",
+  "mutation_id": "sample-adversarial-mutation-v1",
+  "parent_report_id": "sample-report-high-v1",
+  "output_report_id": "sample-report-adversarial-v1",
+  "parent_path": "high_report.md",
+  "output_path": "adversarial_report.md",
+  "parent_sha256": "41C2348FD062926A4DA4BDC60562872B6B745BC07F4963551228650F62881E9A",
+  "output_sha256": "B7510F12BBA68D9E2D9EC49B4363F97E8E8CEB575898EE2DB3CDC83798527EEB",
+  "operations": [
+    {
+      "operation_id": "adversarial-corrupt-result-and-citation",
+      "kind": "replace_once",
+      "target": "The reproduced Accuracy is 0.876 [paper@L3-L4] [results@rows:1-5].",
+      "replacement": "The reproduced Accuracy is 0.500 [invented@L1] [results@rows:1-5].",
+      "expected_dimensions": [
+        "factual_accuracy",
+        "evidence_traceability",
+        "numerical_consistency"
+      ],
+      "expected_error_codes": [
+        "fabricated_citation",
+        "unsupported_claim",
+        "numeric_error"
+      ]
+    }
+  ]
+}

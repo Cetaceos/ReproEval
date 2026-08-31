@@ -44,6 +44,16 @@ class QualityTier(StrEnum):
     ADVERSARIAL = "adversarial"
 
 
+class AdversarialAttackType(StrEnum):
+    LENGTH_INFLATION = "length_inflation"
+    TERMINOLOGY_STUFFING = "terminology_stuffing"
+    CONCLUSION_REPETITION = "conclusion_repetition"
+    FABRICATED_AUTHORITY = "fabricated_authority"
+    CALCULATION_CORRUPTION = "calculation_corruption"
+    LIMITATION_SUPPRESSION = "limitation_suppression"
+    UNSUPPORTED_OVERCONFIDENCE = "unsupported_overconfidence"
+
+
 class ProvenanceKind(StrEnum):
     SYNTHETIC = "synthetic"
     OPEN_ACCESS = "open_access"
@@ -110,6 +120,34 @@ class MutationManifest(StrictModel):
         return self
 
 
+class AdversarialAttack(StrictModel):
+    attack_id: str = Field(min_length=1, pattern=r"^[A-Za-z0-9][A-Za-z0-9_.:-]*$")
+    attack_type: AdversarialAttackType
+    target_dimensions: list[DimensionId] = Field(min_length=1)
+    expected_error_codes: list[ErrorCode] = Field(min_length=1)
+    description: str = Field(min_length=1, max_length=1000)
+
+    @model_validator(mode="after")
+    def validate_attack(self) -> AdversarialAttack:
+        if len(self.target_dimensions) != len(set(self.target_dimensions)):
+            raise ValueError("adversarial attack target dimensions must be unique")
+        if len(self.expected_error_codes) != len(set(self.expected_error_codes)):
+            raise ValueError("adversarial attack expected error codes must be unique")
+        return self
+
+
+class AdversarialSpec(StrictModel):
+    schema_version: Literal["1.0"] = "1.0"
+    attacks: list[AdversarialAttack] = Field(min_length=1)
+
+    @model_validator(mode="after")
+    def validate_inventory(self) -> AdversarialSpec:
+        attack_ids = [attack.attack_id for attack in self.attacks]
+        if len(attack_ids) != len(set(attack_ids)):
+            raise ValueError("adversarial attack IDs must be unique within a report")
+        return self
+
+
 class DatasetReportEntry(StrictModel):
     report_id: str = Field(min_length=1, pattern=r"^[A-Za-z0-9][A-Za-z0-9_.:-]*$")
     quality_tier: QualityTier
@@ -120,6 +158,7 @@ class DatasetReportEntry(StrictModel):
     judge_record_path: str | None = None
     judge_record_sha256: str | None = Field(default=None, pattern=r"^[A-F0-9]{64}$")
     expected_error_codes: list[ErrorCode] = Field(default_factory=list)
+    adversarial_spec: AdversarialSpec | None = None
 
     @field_validator("expected_error_codes")
     @classmethod
@@ -134,6 +173,18 @@ class DatasetReportEntry(StrictModel):
             raise ValueError("synthetic mutation report requires mutation_manifest_path")
         if self.quality_tier is QualityTier.HIGH and self.label_source == "synthetic_mutation":
             raise ValueError("high-quality reference cannot be labeled as a synthetic mutation")
+        if self.quality_tier is QualityTier.ADVERSARIAL:
+            if self.adversarial_spec is None:
+                raise ValueError("adversarial report requires adversarial_spec")
+            if self.label_source == "reference_revision":
+                raise ValueError("adversarial report cannot use reference_revision as its label source")
+            attack_errors = {
+                error for attack in self.adversarial_spec.attacks for error in attack.expected_error_codes
+            }
+            if not attack_errors.issubset(set(self.expected_error_codes)):
+                raise ValueError("adversarial attack errors must be declared by the report")
+        elif self.adversarial_spec is not None:
+            raise ValueError("only adversarial reports may define adversarial_spec")
         if (self.judge_record_path is None) != (self.judge_record_sha256 is None):
             raise ValueError("judge_record_path and judge_record_sha256 must be declared together")
         return self
@@ -182,6 +233,15 @@ class DatasetManifest(StrictModel):
         source_hashes = [group.provenance.source_group_sha256 for group in self.groups]
         if len(source_hashes) != len(set(source_hashes)):
             raise ValueError("one source group cannot appear in multiple dataset groups or splits")
+        attack_ids = [
+            attack.attack_id
+            for group in self.groups
+            for report in group.reports
+            if report.adversarial_spec is not None
+            for attack in report.adversarial_spec.attacks
+        ]
+        if len(attack_ids) != len(set(attack_ids)):
+            raise ValueError("adversarial attack IDs must be globally unique")
         return self
 
 
@@ -211,6 +271,9 @@ class DatasetValidationResult(StrictModel):
     scenario_counts: dict[Scenario, int]
     deterministic_error_counts: dict[ErrorCode, int]
     human_reviewed_report_count: int = Field(ge=0)
+    adversarial_report_count: int = Field(default=0, ge=0)
+    attack_instance_count: int = Field(default=0, ge=0)
+    attack_type_counts: dict[AdversarialAttackType, int] = Field(default_factory=dict)
     warnings: list[str] = Field(default_factory=list)
 
 
@@ -253,6 +316,7 @@ def validate_dataset_manifest(path: str | Path) -> DatasetValidationResult:
     mutation_count = 0
     judge_record_count = 0
     deterministic_error_counts: Counter[ErrorCode] = Counter()
+    attack_type_counts: Counter[AdversarialAttackType] = Counter()
     human_reviewed = 0
     rubric = load_public_rubric()
     rubric_sha256 = _rubric_sha256(rubric)
@@ -262,6 +326,10 @@ def validate_dataset_manifest(path: str | Path) -> DatasetValidationResult:
         _validate_group_contract(group, loaded_reports)
         by_id = {item.entry.report_id: item for item in loaded_reports}
         for item in loaded_reports:
+            if item.entry.adversarial_spec is not None:
+                attack_type_counts.update(
+                    attack.attack_type for attack in item.entry.adversarial_spec.attacks
+                )
             if item.entry.label_source == "human_reviewed":
                 human_reviewed += 1
             actual_errors = _validate_expected_errors(item)
@@ -302,6 +370,9 @@ def validate_dataset_manifest(path: str | Path) -> DatasetValidationResult:
         scenario_counts=dict(scenario_counts),
         deterministic_error_counts=dict(deterministic_error_counts),
         human_reviewed_report_count=human_reviewed,
+        adversarial_report_count=tier_counts[QualityTier.ADVERSARIAL],
+        attack_instance_count=sum(attack_type_counts.values()),
+        attack_type_counts=dict(attack_type_counts),
         warnings=warnings,
     )
 
@@ -415,6 +486,19 @@ def _validate_mutation_links(
     report_errors = set(output.entry.expected_error_codes)
     if operation_errors != report_errors:
         raise EvaluationInputError("mutation operation errors do not close over the output report's expected errors")
+    if output.entry.adversarial_spec is not None:
+        operation_dimensions = {
+            dimension for operation in mutation.operations for dimension in operation.expected_dimensions
+        }
+        attack_dimensions = {
+            dimension
+            for attack in output.entry.adversarial_spec.attacks
+            for dimension in attack.target_dimensions
+        }
+        if not attack_dimensions.issubset(operation_dimensions):
+            raise EvaluationInputError(
+                "adversarial attack dimensions must be covered by mutation operations"
+            )
 
 
 def _apply_operation(text: str, operation: MutationOperation) -> str:

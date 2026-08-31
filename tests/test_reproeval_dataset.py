@@ -7,6 +7,7 @@ from pathlib import Path
 import pytest
 
 from hy3_reproeval.dataset import (
+    AdversarialAttackType,
     DatasetSplit,
     QualityTier,
     replay_mutation_manifest,
@@ -111,13 +112,23 @@ def _operation(
     }
 
 
-def _write_dataset(tmp_path: Path) -> Path:
+def _write_dataset(tmp_path: Path, *, include_adversarial: bool = False) -> Path:
     high = _high_report()
     medium = _medium_report()
     low = _low_report()
-    for name, text in (("high.md", high), ("medium.md", medium), ("low.md", low)):
+    adversarial = high.replace(
+        "The reproduced Accuracy is 0.876 [paper@L3-L4] [results@rows:1-5].",
+        "The reproduced Accuracy is 0.500 [invented@L1] [results@rows:1-5].",
+    )
+    reports = [("high.md", high), ("medium.md", medium), ("low.md", low)]
+    if include_adversarial:
+        reports.append(("adversarial.md", adversarial))
+    for name, text in reports:
         (tmp_path / name).write_bytes(text.encode("utf-8"))
-    for case_id, report_path in (("case-high", "high.md"), ("case-medium", "medium.md"), ("case-low", "low.md")):
+    cases = [("case-high", "high.md"), ("case-medium", "medium.md"), ("case-low", "low.md")]
+    if include_adversarial:
+        cases.append(("case-adversarial", "adversarial.md"))
+    for case_id, report_path in cases:
         (tmp_path / f"{case_id}.json").write_text(
             json.dumps(_case(case_id, report_path)),
             encoding="utf-8",
@@ -149,10 +160,29 @@ def _write_dataset(tmp_path: Path) -> Path:
             ["fabricated_citation", "unsupported_claim", "numeric_error"],
         ),
     ]
-    for mutation_id, report_id, output_path, output_text, operations in (
+    mutations = [
         ("mutation-medium", "report-medium", "medium.md", medium, medium_operations),
         ("mutation-low", "report-low", "low.md", low, low_operations),
-    ):
+    ]
+    if include_adversarial:
+        mutations.append(
+            (
+                "mutation-adversarial",
+                "report-adversarial",
+                "adversarial.md",
+                adversarial,
+                [
+                    _operation(
+                        "adversarial-corrupt-result",
+                        "The reproduced Accuracy is 0.876 [paper@L3-L4] [results@rows:1-5].",
+                        "The reproduced Accuracy is 0.500 [invented@L1] [results@rows:1-5].",
+                        ["factual_accuracy", "evidence_traceability", "numerical_consistency"],
+                        ["fabricated_citation", "unsupported_claim", "numeric_error"],
+                    )
+                ],
+            )
+        )
+    for mutation_id, report_id, output_path, output_text, operations in mutations:
         payload = {
             "schema_version": "1.0",
             "mutation_id": mutation_id,
@@ -220,6 +250,41 @@ def _write_dataset(tmp_path: Path) -> Path:
             }
         ],
     }
+    if include_adversarial:
+        manifest["groups"][0]["reports"].append(
+            {
+                "report_id": "report-adversarial",
+                "quality_tier": "adversarial",
+                "case_path": "case-adversarial.json",
+                "report_sha256": _sha256(adversarial),
+                "label_source": "synthetic_mutation",
+                "mutation_manifest_path": "mutation-adversarial.json",
+                "expected_error_codes": [
+                    "fabricated_citation",
+                    "unsupported_claim",
+                    "numeric_error",
+                ],
+                "adversarial_spec": {
+                    "schema_version": "1.0",
+                    "attacks": [
+                        {
+                            "attack_id": "attack-fabricated-authority-001",
+                            "attack_type": "fabricated_authority",
+                            "target_dimensions": ["factual_accuracy", "evidence_traceability"],
+                            "expected_error_codes": ["fabricated_citation", "unsupported_claim"],
+                            "description": "Replace valid evidence with an invented authority marker.",
+                        },
+                        {
+                            "attack_id": "attack-calculation-corruption-001",
+                            "attack_type": "calculation_corruption",
+                            "target_dimensions": ["numerical_consistency"],
+                            "expected_error_codes": ["numeric_error"],
+                            "description": "Replace the registered result with an incorrect value.",
+                        },
+                    ],
+                },
+            }
+        )
     manifest_path = tmp_path / "dataset.json"
     manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
     return manifest_path
@@ -238,6 +303,68 @@ def test_dataset_validator_replays_mutations_and_closes_expected_errors(tmp_path
     assert result.deterministic_error_counts[ErrorCode.UNSUPPORTED_CLAIM] == 1
     assert result.deterministic_error_counts[ErrorCode.NUMERIC_ERROR] == 1
     assert any("P0 target" in warning for warning in result.warnings)
+
+
+def test_dataset_validates_adversarial_attack_contract(tmp_path: Path) -> None:
+    result = validate_dataset_manifest(_write_dataset(tmp_path, include_adversarial=True))
+
+    assert result.report_count == 4
+    assert result.adversarial_report_count == 1
+    assert result.attack_instance_count == 2
+    assert result.attack_type_counts == {
+        AdversarialAttackType.FABRICATED_AUTHORITY: 1,
+        AdversarialAttackType.CALCULATION_CORRUPTION: 1,
+    }
+
+
+def test_dataset_rejects_adversarial_report_without_attack_spec(tmp_path: Path) -> None:
+    manifest_path = _write_dataset(tmp_path, include_adversarial=True)
+    payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+    del payload["groups"][0]["reports"][3]["adversarial_spec"]
+    manifest_path.write_text(json.dumps(payload), encoding="utf-8")
+
+    with pytest.raises(EvaluationInputError, match="requires adversarial_spec"):
+        validate_dataset_manifest(manifest_path)
+
+
+def test_dataset_rejects_attack_error_absent_from_report_labels(tmp_path: Path) -> None:
+    manifest_path = _write_dataset(tmp_path, include_adversarial=True)
+    payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+    payload["groups"][0]["reports"][3]["adversarial_spec"]["attacks"][0][
+        "expected_error_codes"
+    ].append("overconfidence")
+    manifest_path.write_text(json.dumps(payload), encoding="utf-8")
+
+    with pytest.raises(EvaluationInputError, match="attack errors must be declared"):
+        validate_dataset_manifest(manifest_path)
+
+
+def test_dataset_rejects_attack_dimension_absent_from_mutation(tmp_path: Path) -> None:
+    manifest_path = _write_dataset(tmp_path, include_adversarial=True)
+    payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+    payload["groups"][0]["reports"][3]["adversarial_spec"]["attacks"][0][
+        "target_dimensions"
+    ].append("content_completeness")
+    manifest_path.write_text(json.dumps(payload), encoding="utf-8")
+
+    with pytest.raises(EvaluationInputError, match="dimensions must be covered"):
+        validate_dataset_manifest(manifest_path)
+
+
+def test_dataset_rejects_attack_id_reused_by_another_report(tmp_path: Path) -> None:
+    manifest_path = _write_dataset(tmp_path, include_adversarial=True)
+    payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+    duplicate = json.loads(json.dumps(payload["groups"][0]["reports"][3]))
+    duplicate["report_id"] = "report-adversarial-human-reviewed"
+    duplicate["case_path"] = "unused-case.json"
+    duplicate["report_sha256"] = "A" * 64
+    duplicate["label_source"] = "human_reviewed"
+    del duplicate["mutation_manifest_path"]
+    payload["groups"][0]["reports"].append(duplicate)
+    manifest_path.write_text(json.dumps(payload), encoding="utf-8")
+
+    with pytest.raises(EvaluationInputError, match="attack IDs must be globally unique"):
+        validate_dataset_manifest(manifest_path)
 
 
 def test_mutation_replay_rejects_tampered_output(tmp_path: Path) -> None:

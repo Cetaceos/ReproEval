@@ -13,6 +13,8 @@ from pydantic import Field
 
 from . import __version__
 from .dataset import (
+    AdversarialAttack,
+    AdversarialAttackType,
     DatasetReportEntry,
     DatasetSplit,
     QualityTier,
@@ -23,6 +25,7 @@ from .errors import EvaluationInputError
 from .evaluator import evaluate_case_file, evaluate_case_file_hybrid
 from .judge_batch import validate_judge_record_index
 from .models import (
+    DimensionId,
     ErrorCode,
     EvaluationMode,
     EvaluationResult,
@@ -64,6 +67,41 @@ class BenchmarkReportResult(StrictModel):
     detected_expected_error_codes: list[ErrorCode]
     missing_expected_error_codes: list[ErrorCode]
     unexpected_error_codes: list[ErrorCode]
+    attacks: list[BenchmarkAttackResult] = Field(default_factory=list)
+
+
+class BenchmarkAttackResult(StrictModel):
+    attack_id: str
+    attack_type: AdversarialAttackType
+    target_dimensions: list[DimensionId]
+    expected_error_codes: list[ErrorCode]
+    detected_error_codes: list[ErrorCode]
+    missing_error_codes: list[ErrorCode]
+    detected: bool
+
+
+class AttackTypeMetrics(StrictModel):
+    attack_instance_count: int = Field(ge=0)
+    detected_attack_instance_count: int = Field(ge=0)
+    attack_detection_rate: float | None = Field(default=None, ge=0, le=1)
+    attack_false_acceptance_rate: float | None = Field(default=None, ge=0, le=1)
+    expected_error_count: int = Field(ge=0)
+    detected_expected_error_count: int = Field(ge=0)
+    error_label_recall: float | None = Field(default=None, ge=0, le=1)
+
+
+class AdversarialDetectionMetrics(StrictModel):
+    adversarial_report_count: int = Field(ge=0)
+    fully_detected_report_count: int = Field(ge=0)
+    report_detection_rate: float | None = Field(default=None, ge=0, le=1)
+    attack_instance_count: int = Field(ge=0)
+    detected_attack_instance_count: int = Field(ge=0)
+    attack_detection_rate: float | None = Field(default=None, ge=0, le=1)
+    attack_false_acceptance_rate: float | None = Field(default=None, ge=0, le=1)
+    expected_error_count: int = Field(ge=0)
+    detected_expected_error_count: int = Field(ge=0)
+    error_label_recall: float | None = Field(default=None, ge=0, le=1)
+    by_attack_type: dict[AdversarialAttackType, AttackTypeMetrics] = Field(default_factory=dict)
 
 
 class GroupOrderingMetrics(StrictModel):
@@ -84,6 +122,7 @@ class GroupOrderingMetrics(StrictModel):
     detected_expected_error_count: int = Field(ge=0)
     unexpected_error_count: int = Field(ge=0)
     error_label_recall: float | None = Field(default=None, ge=0, le=1)
+    adversarial: AdversarialDetectionMetrics = Field(default_factory=lambda: _empty_adversarial_metrics())
 
 
 class BenchmarkGroupResult(StrictModel):
@@ -116,6 +155,7 @@ class AggregateBenchmarkMetrics(StrictModel):
     detected_expected_error_count: int = Field(ge=0)
     unexpected_error_count: int = Field(ge=0)
     error_label_recall: float | None = Field(default=None, ge=0, le=1)
+    adversarial: AdversarialDetectionMetrics = Field(default_factory=lambda: _empty_adversarial_metrics())
 
 
 class DatasetBenchmarkResult(StrictModel):
@@ -196,6 +236,11 @@ async def run_dataset_benchmark(
             "Synthetic mutation labels and replay records validate protocol behavior; "
             "they are not model-human benchmark evidence."
         )
+    if validation.adversarial_report_count:
+        warnings.append(
+            "Adversarial metrics from synthetic or development labels validate attack-protocol behavior; "
+            "they are not held-out robustness evidence."
+        )
     if active_mode is BenchmarkMode.DETERMINISTIC:
         warnings.append("Provisional deterministic-only scores are excluded from ordering metrics.")
     overall = _aggregate_metrics(group_results)
@@ -228,6 +273,10 @@ def _summarize_report(entry: DatasetReportEntry, evaluation: EvaluationResult) -
         if finding.status is FindingStatus.FAILED and finding.error_code is not None
     }
     expected = set(entry.expected_error_codes)
+    attacks = [
+        _summarize_attack(attack, observed)
+        for attack in (entry.adversarial_spec.attacks if entry.adversarial_spec is not None else [])
+    ]
     return BenchmarkReportResult(
         report_id=entry.report_id,
         quality_tier=entry.quality_tier,
@@ -247,6 +296,22 @@ def _summarize_report(entry: DatasetReportEntry, evaluation: EvaluationResult) -
         detected_expected_error_codes=sorted(expected & observed, key=str),
         missing_expected_error_codes=sorted(expected - observed, key=str),
         unexpected_error_codes=sorted(observed - expected, key=str),
+        attacks=attacks,
+    )
+
+
+def _summarize_attack(attack: AdversarialAttack, observed: set[ErrorCode]) -> BenchmarkAttackResult:
+    expected = set(attack.expected_error_codes)
+    detected = expected & observed
+    missing = expected - observed
+    return BenchmarkAttackResult(
+        attack_id=attack.attack_id,
+        attack_type=attack.attack_type,
+        target_dimensions=attack.target_dimensions,
+        expected_error_codes=sorted(expected, key=str),
+        detected_error_codes=sorted(detected, key=str),
+        missing_error_codes=sorted(missing, key=str),
+        detected=not missing,
     )
 
 
@@ -295,6 +360,7 @@ def _group_metrics(reports: list[BenchmarkReportResult]) -> GroupOrderingMetrics
         detected_expected_error_count=detected_errors,
         unexpected_error_count=unexpected_errors,
         error_label_recall=_ratio(detected_errors, expected_errors),
+        adversarial=_adversarial_metrics(reports),
     )
 
 
@@ -335,6 +401,65 @@ def _aggregate_metrics(groups: Iterable[BenchmarkGroupResult]) -> AggregateBench
         detected_expected_error_count=detected_errors,
         unexpected_error_count=sum(group.metrics.unexpected_error_count for group in materialized),
         error_label_recall=_ratio(detected_errors, expected_errors),
+        adversarial=_adversarial_metrics(
+            report for group in materialized for report in group.reports
+        ),
+    )
+
+
+def _adversarial_metrics(reports: Iterable[BenchmarkReportResult]) -> AdversarialDetectionMetrics:
+    adversarial_reports = [report for report in reports if report.quality_tier is QualityTier.ADVERSARIAL]
+    attacks = [attack for report in adversarial_reports for attack in report.attacks]
+    fully_detected_reports = sum(
+        bool(report.attacks) and all(attack.detected for attack in report.attacks)
+        for report in adversarial_reports
+    )
+    detected_attacks = sum(attack.detected for attack in attacks)
+    expected_errors = sum(len(attack.expected_error_codes) for attack in attacks)
+    detected_errors = sum(len(attack.detected_error_codes) for attack in attacks)
+    by_type: dict[AdversarialAttackType, AttackTypeMetrics] = {}
+    for attack_type in AdversarialAttackType:
+        typed = [attack for attack in attacks if attack.attack_type is attack_type]
+        if typed:
+            typed_detected = sum(attack.detected for attack in typed)
+            typed_expected_errors = sum(len(attack.expected_error_codes) for attack in typed)
+            typed_detected_errors = sum(len(attack.detected_error_codes) for attack in typed)
+            by_type[attack_type] = AttackTypeMetrics(
+                attack_instance_count=len(typed),
+                detected_attack_instance_count=typed_detected,
+                attack_detection_rate=_ratio(typed_detected, len(typed)),
+                attack_false_acceptance_rate=_ratio(len(typed) - typed_detected, len(typed)),
+                expected_error_count=typed_expected_errors,
+                detected_expected_error_count=typed_detected_errors,
+                error_label_recall=_ratio(typed_detected_errors, typed_expected_errors),
+            )
+    return AdversarialDetectionMetrics(
+        adversarial_report_count=len(adversarial_reports),
+        fully_detected_report_count=fully_detected_reports,
+        report_detection_rate=_ratio(fully_detected_reports, len(adversarial_reports)),
+        attack_instance_count=len(attacks),
+        detected_attack_instance_count=detected_attacks,
+        attack_detection_rate=_ratio(detected_attacks, len(attacks)),
+        attack_false_acceptance_rate=_ratio(len(attacks) - detected_attacks, len(attacks)),
+        expected_error_count=expected_errors,
+        detected_expected_error_count=detected_errors,
+        error_label_recall=_ratio(detected_errors, expected_errors),
+        by_attack_type=by_type,
+    )
+
+
+def _empty_adversarial_metrics() -> AdversarialDetectionMetrics:
+    return AdversarialDetectionMetrics(
+        adversarial_report_count=0,
+        fully_detected_report_count=0,
+        report_detection_rate=None,
+        attack_instance_count=0,
+        detected_attack_instance_count=0,
+        attack_detection_rate=None,
+        attack_false_acceptance_rate=None,
+        expected_error_count=0,
+        detected_expected_error_count=0,
+        error_label_recall=None,
     )
 
 

@@ -31,6 +31,7 @@ REQUIRED_PACKAGE_DATA = {
     },
 }
 REQUIRED_SDIST_DOCS = {
+    "docs/ADVERSARIAL_PROTOCOL.md",
     "docs/ANNOTATION_PROTOCOL.md",
     "docs/JUDGE_BATCH.md",
     "docs/PROJECT_PROPOSAL_CN.md",
@@ -39,6 +40,10 @@ REQUIRED_SDIST_DOCS = {
 REQUIRED_SDIST_FILES = {
     "CHANGELOG.md",
     "examples/annotations/synthetic_annotation_bundle.json",
+    "examples/dataset/adversarial_case.json",
+    "examples/dataset/adversarial_mutation.json",
+    "examples/dataset/adversarial_report.md",
+    "examples/dataset/sample_adversarial_dataset.json",
     "requirements.lock",
 }
 FORBIDDEN_SDIST_PATHS = {

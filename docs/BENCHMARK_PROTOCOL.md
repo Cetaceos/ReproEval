@@ -1,6 +1,6 @@
 # ReproEval Batch Benchmark Protocol
 
-ReproEval 0.21.0 batch-evaluates reports registered by the Dataset Protocol and aggregates results without comparing scores across unrelated source groups. It supports deterministic protocol checks and Judge replay; neither mode creates human ground truth.
+ReproEval batch-evaluates reports registered by the Dataset Protocol and aggregates results without comparing scores across unrelated source groups. Version 0.24.0 adds attack-specific metrics for explicitly registered adversarial reports. Deterministic checks and Judge replay do not create human ground truth.
 
 ## Modes
 
@@ -38,7 +38,7 @@ ReproEval reconstructs the versioned prompt and verifies the Dataset, Case, scen
 
 ## Ranking Eligibility
 
-A report is eligible for ranking only when it has an overall score and `provisional=false`. Expected ordering is defined only for `high > medium > low` within one source group. Reports in the same tier are not compared. `adversarial` reports are retained for future attack-specific analysis but excluded from this order because adversarial intent alone does not define a quality position.
+A report is eligible for ranking only when it has an overall score and `provisional=false`. Expected ordering is defined only for `high > medium > low` within one source group. Reports in the same tier are not compared. `adversarial` reports are evaluated under their attack contracts but excluded from this order because adversarial intent does not define a quality position.
 
 No pair is formed across different papers, solutions, scenarios, or source groups. This avoids treating task difficulty as report quality.
 
@@ -56,14 +56,20 @@ Every result reports its numerator, denominator, and coverage:
 | Macro Spearman | Mean of group-level Spearman correlations for complete groups |
 | Error-label recall | Detected expected error labels divided by registered expected labels |
 | Unexpected errors | Failed evaluator error labels absent from the registered expectation |
+| Adversarial report detection | Reports for which every registered attack instance is completely detected |
+| Attack detection rate | Attack instances for which every expected attack error is detected, divided by registered attack instances |
+| Attack false-acceptance rate | Attack instances not completely detected, divided by registered attack instances |
+| Adversarial error-label recall | Detected expected attack-error labels divided by registered attack-error labels |
 
 Undefined metrics are serialized as `null`, never rewritten as zero. Macro Spearman gives each source group equal weight and is not pooled across unrelated tasks.
+
+Attack metrics are emitted per report, group, split, whole dataset, and attack type. A partially detected attack contributes its detected labels to error-label recall but is not counted as a detected attack instance. This keeps strict attack detection separate from diagnostic label coverage. See [ADVERSARIAL_PROTOCOL.md](ADVERSARIAL_PROTOCOL.md).
 
 ## Public Fixture Boundary
 
 The public fixture contains one repository-authored synthetic development group. Its Judge records were deliberately constructed for credential-free replay and identify their provider as `public-synthetic-replay`. A perfect ordering or error-label result on this fixture proves only that hashing, replay, aggregation, and expected protocol behavior close correctly.
 
-Claims about Hy3 quality, held-out generalization, model-human agreement, stability, or adversarial robustness require frozen validation/test groups, real model runs, and independently reviewed human labels. Dataset validation warnings keep these missing conditions visible.
+Claims about Hy3 quality, held-out generalization, model-human agreement, stability, or adversarial robustness require frozen validation/test groups, real model runs, and independently reviewed human labels. The public three-tier fixture has `null` adversarial metrics; the separate synthetic attack fixture exercises only deterministic protocol behavior. Dataset and Benchmark warnings keep these missing conditions visible.
 
 Annotation Bundle validation and the double-annotation readiness gate are defined in [ANNOTATION_PROTOCOL.md](ANNOTATION_PROTOCOL.md). Passing that gate establishes input coverage, not agreement quality.
 

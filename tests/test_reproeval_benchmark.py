@@ -6,14 +6,25 @@ from pathlib import Path
 
 import pytest
 
-from hy3_reproeval.benchmark import BenchmarkMode, BenchmarkReportResult, _group_metrics, run_dataset_benchmark
-from hy3_reproeval.dataset import DatasetSplit, validate_dataset_manifest
+from hy3_reproeval.benchmark import (
+    BenchmarkAttackResult,
+    BenchmarkMode,
+    BenchmarkReportResult,
+    _adversarial_metrics,
+    _group_metrics,
+    run_dataset_benchmark,
+)
+from hy3_reproeval.dataset import AdversarialAttackType, DatasetSplit, validate_dataset_manifest
 from hy3_reproeval.errors import EvaluationInputError
-from hy3_reproeval.models import EvaluationMode, EvaluationStatus, QualityBand
+from hy3_reproeval.models import DimensionId, ErrorCode, EvaluationMode, EvaluationStatus, QualityBand
 
 
 def _public_manifest() -> Path:
     return Path(__file__).resolve().parents[1] / "examples" / "dataset" / "sample_dataset.json"
+
+
+def _public_adversarial_manifest() -> Path:
+    return Path(__file__).resolve().parents[1] / "examples" / "dataset" / "sample_adversarial_dataset.json"
 
 
 def _report_result(report_id: str, tier: str, score: float) -> BenchmarkReportResult:
@@ -74,6 +85,19 @@ async def test_replay_benchmark_computes_group_isolated_ranking_metrics() -> Non
     }
 
 
+async def test_public_adversarial_fixture_reports_deterministic_attack_metrics() -> None:
+    result = await run_dataset_benchmark(_public_adversarial_manifest())
+
+    assert result.overall.adversarial.adversarial_report_count == 1
+    assert result.overall.adversarial.fully_detected_report_count == 1
+    assert result.overall.adversarial.attack_instance_count == 2
+    assert result.overall.adversarial.attack_detection_rate == 1
+    assert result.overall.adversarial.attack_false_acceptance_rate == 0
+    assert result.overall.adversarial.expected_error_count == 3
+    assert result.overall.adversarial.error_label_recall == 1
+    assert any("not held-out robustness evidence" in warning for warning in result.warnings)
+
+
 async def test_benchmark_rejects_an_unknown_mode() -> None:
     with pytest.raises(EvaluationInputError, match="unsupported dataset benchmark mode"):
         await run_dataset_benchmark(_public_manifest(), mode="unknown")
@@ -110,6 +134,58 @@ def test_group_metrics_exclude_adversarial_tier_from_unlabeled_order() -> None:
     assert metrics.ranking_eligible_report_count == 3
     assert metrics.expected_pair_count == 3
     assert metrics.complete_order_correct is True
+
+
+def test_adversarial_metrics_report_complete_partial_and_per_type_detection() -> None:
+    adversarial = _report_result("adversarial", "adversarial", 99)
+    adversarial.attacks = [
+        BenchmarkAttackResult(
+            attack_id="attack-citation",
+            attack_type=AdversarialAttackType.FABRICATED_AUTHORITY,
+            target_dimensions=[DimensionId.EVIDENCE_TRACEABILITY],
+            expected_error_codes=[ErrorCode.FABRICATED_CITATION, ErrorCode.UNSUPPORTED_CLAIM],
+            detected_error_codes=[ErrorCode.FABRICATED_CITATION, ErrorCode.UNSUPPORTED_CLAIM],
+            missing_error_codes=[],
+            detected=True,
+        ),
+        BenchmarkAttackResult(
+            attack_id="attack-verbosity",
+            attack_type=AdversarialAttackType.TERMINOLOGY_STUFFING,
+            target_dimensions=[DimensionId.CLARITY_ACTIONABILITY],
+            expected_error_codes=[ErrorCode.VERBOSITY_WITHOUT_EVIDENCE],
+            detected_error_codes=[],
+            missing_error_codes=[ErrorCode.VERBOSITY_WITHOUT_EVIDENCE],
+            detected=False,
+        ),
+    ]
+
+    metrics = _adversarial_metrics([adversarial, _report_result("high", "high", 100)])
+
+    assert metrics.adversarial_report_count == 1
+    assert metrics.fully_detected_report_count == 0
+    assert metrics.report_detection_rate == 0
+    assert metrics.attack_instance_count == 2
+    assert metrics.detected_attack_instance_count == 1
+    assert metrics.attack_detection_rate == 0.5
+    assert metrics.attack_false_acceptance_rate == 0.5
+    assert metrics.error_label_recall == pytest.approx(2 / 3, abs=1e-6)
+    assert (
+        metrics.by_attack_type[AdversarialAttackType.FABRICATED_AUTHORITY].attack_detection_rate
+        == 1
+    )
+    assert (
+        metrics.by_attack_type[AdversarialAttackType.TERMINOLOGY_STUFFING].attack_detection_rate
+        == 0
+    )
+
+
+def test_adversarial_metrics_are_undefined_without_registered_attacks() -> None:
+    metrics = _adversarial_metrics([_report_result("high", "high", 100)])
+
+    assert metrics.attack_instance_count == 0
+    assert metrics.attack_detection_rate is None
+    assert metrics.attack_false_acceptance_rate is None
+    assert metrics.error_label_recall is None
 
 
 def test_dataset_rejects_tampered_registered_judge_record(tmp_path: Path) -> None:
