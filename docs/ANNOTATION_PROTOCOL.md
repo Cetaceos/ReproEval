@@ -1,6 +1,6 @@
 # Human Annotation Bundle Protocol
 
-ReproEval 0.21.0 and later define a strict, de-identified format for collecting report-quality judgments against the same seven-dimension public Rubric used by the evaluator. ReproEval 0.22.0 adds agreement analysis, deterministic adjudication queues, and optional system-human comparison.
+ReproEval 0.21.0 and later define a strict, de-identified format for collecting report-quality judgments against the same seven-dimension public Rubric used by the evaluator. ReproEval 0.22.0 adds agreement analysis and optional system-human comparison; 0.23.0 adds repeat/adjudication lineage and fail-closed consensus aggregation.
 
 ## Annotation Unit
 
@@ -59,7 +59,36 @@ The result reports all metric denominators and includes:
 
 Kappa is calculated only over pairs where both dimensions are assessed. It remains `null` when there are no scored pairs or expected score variance is zero. `agreement_ready=true` means every validation/test report has the required double annotation; it does not establish label correctness or annotator expertise.
 
-The queue identifies disagreements but does not resolve them. A human adjudicator must review both evidence trails and deliver a separate `adjudication` round Bundle; adjudicated-label aggregation is a later protocol step.
+The queue identifies disagreements but does not resolve them. A human adjudicator must review both evidence trails and deliver a separate `adjudication` round Bundle.
+
+## Repeat Stability
+
+A `repeat` Bundle must set `parent_annotation_bundle_ids` to exactly one independent Bundle from the same pseudonymous annotator. Submit both files to `analyze-annotations`. ReproEval compares their shared validation/test reports and emits a separate `repeat_stability` result with the same descriptive and weighted-Kappa metrics.
+
+Repeat stability is an intra-annotator measurement. It is never counted toward double annotation or described as human-human agreement. The repeat protocol should keep the annotator blind to prior labels and record the elapsed interval outside private research records; the current schema verifies Bundle lineage, not that experimental condition.
+
+## Adjudication and Consensus
+
+An `adjudication` Bundle must reference at least two independent human parent Bundles through `parent_annotation_bundle_ids`. Its adjudicator must be distinct from all referenced parent annotators, trained on the Rubric, blind to system scores, and free of a disclosed conflict. Every adjudicated report must occur in at least two parent Bundles. Because every report annotation contains all seven dimensions, the adjudication Bundle should include only reports that have queued disputes.
+
+```bash
+hy3-reproeval finalize-annotations \
+  --manifest path/to/frozen_dataset.json \
+  --bundle private_annotations/annotator-01.json \
+  --bundle private_annotations/annotator-02.json \
+  --bundle private_annotations/adjudication-01.json \
+  --output .reproeval/annotation-consensus.json
+```
+
+Consensus follows fixed rules:
+
+- non-disputed assessed scores use the mean of eligible independent annotations;
+- agreed `insufficient_evidence` remains insufficient;
+- status mismatches, error-code-set mismatches, and score gaps above one point use the matching adjudicator's value;
+- Rubric weights, minimum assessed weight, and declared hard caps determine each consensus report score;
+- missing adjudication remains unresolved, while duplicate or unrelated adjudication fails closed.
+
+`consensus_ready=true` requires `agreement_ready=true`, no unresolved dimension, and one complete consensus report for every validation/test report. It establishes a complete declared human-label artifact, not proof of annotator identity or scientific correctness.
 
 ## Compare System and Human Scores
 

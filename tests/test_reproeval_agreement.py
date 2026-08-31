@@ -10,6 +10,7 @@ import pytest
 
 from hy3_reproeval.agreement import AdjudicationReason, analyze_annotation_agreement
 from hy3_reproeval.benchmark import BenchmarkMode, run_dataset_benchmark
+from hy3_reproeval.consensus import ConsensusSource, finalize_annotation_consensus
 from hy3_reproeval.errors import EvaluationInputError
 from hy3_reproeval.models import DimensionId
 
@@ -232,3 +233,119 @@ def test_public_synthetic_fixture_cannot_become_agreement_evidence() -> None:
     assert result.pooled_metrics.comparison_count == 0
     assert result.pooled_metrics.quadratic_weighted_kappa is None
     assert any("not benchmark-ready" in warning for warning in result.warnings)
+
+
+def test_repeat_round_reports_single_annotator_stability_separately(tmp_path: Path) -> None:
+    manifest_path, _, first, second = _two_bundles(tmp_path)
+    repeat_payload = json.loads(first.read_text(encoding="utf-8"))
+    repeat_payload.update(
+        annotation_bundle_id="bundle-a-repeat",
+        annotation_round="repeat",
+        parent_annotation_bundle_ids=["bundle-a"],
+    )
+    repeat = _write_bundle(tmp_path / "annotator-a-repeat.json", repeat_payload)
+
+    result = analyze_annotation_agreement(manifest_path, [first, second, repeat])
+
+    assert result.repeat_stability_count == 1
+    stability = result.repeat_stability[0]
+    assert stability.annotator_id == "annotator-a"
+    assert stability.shared_report_count == 3
+    assert stability.metrics.comparison_count == 21
+    assert stability.metrics.exact_score_agreement == 1
+    assert stability.metrics.quadratic_weighted_kappa == 1
+
+
+def test_error_code_disagreement_enters_adjudication_queue(tmp_path: Path) -> None:
+    manifest_path, _, first, second = _two_bundles(tmp_path)
+    first_payload = json.loads(first.read_text(encoding="utf-8"))
+    second_payload = json.loads(second.read_text(encoding="utf-8"))
+    first_payload["annotations"][1]["dimensions"][0].update(
+        score=2,
+        error_codes=["unsupported_claim"],
+    )
+    second_payload["annotations"][1]["dimensions"][0].update(score=2)
+    _write_bundle(first, first_payload)
+    _write_bundle(second, second_payload)
+
+    result = analyze_annotation_agreement(manifest_path, [first, second])
+
+    assert any(item.reason is AdjudicationReason.ERROR_CODE_MISMATCH for item in result.adjudication_items)
+
+
+def test_consensus_aggregates_non_disputed_independent_scores(tmp_path: Path) -> None:
+    manifest_path, _, first, second = _two_bundles(tmp_path)
+
+    result = finalize_annotation_consensus(manifest_path, [first, second])
+
+    assert result.consensus_ready is True
+    assert result.consensus_report_count == 3
+    assert result.adjudication_required_item_count == 0
+    scores = {report.report_id: report.human_score for report in result.reports}
+    assert sorted(scores.values()) == [12.5, 62.5, 100.0]
+    assert all(
+        dimension.source is ConsensusSource.INDEPENDENT_AGGREGATE
+        for report in result.reports
+        for dimension in report.dimensions
+    )
+
+
+def test_consensus_keeps_unadjudicated_score_gap_unresolved(tmp_path: Path) -> None:
+    manifest_path, _, first, second = _two_bundles(tmp_path)
+    second_payload = json.loads(second.read_text(encoding="utf-8"))
+    second_payload["annotations"][1]["dimensions"][0]["score"] = 0
+    _write_bundle(second, second_payload)
+
+    result = finalize_annotation_consensus(manifest_path, [first, second])
+
+    assert result.consensus_ready is False
+    assert result.consensus_report_count == 2
+    assert result.adjudication_required_item_count == 1
+    assert result.unresolved_adjudication_item_count == 1
+    assert result.unresolved_adjudication_items[0].dimension is DimensionId.FACTUAL_ACCURACY
+
+
+def test_parent_bound_adjudication_resolves_consensus(tmp_path: Path) -> None:
+    manifest_path, _, first, second = _two_bundles(tmp_path)
+    second_payload = json.loads(second.read_text(encoding="utf-8"))
+    second_payload["annotations"][1]["dimensions"][0]["score"] = 0
+    _write_bundle(second, second_payload)
+    adjudication_payload = json.loads(first.read_text(encoding="utf-8"))
+    adjudication_payload.update(
+        annotation_bundle_id="bundle-adjudication",
+        annotation_round="adjudication",
+        parent_annotation_bundle_ids=["bundle-a", "bundle-b"],
+    )
+    adjudication_payload["annotator"]["annotator_id"] = "adjudicator-c"
+    adjudication_payload["annotations"] = [adjudication_payload["annotations"][1]]
+    adjudication_payload["annotations"][0]["dimensions"][0]["score"] = 1
+    adjudication = _write_bundle(tmp_path / "adjudication.json", adjudication_payload)
+
+    result = finalize_annotation_consensus(manifest_path, [first, second, adjudication])
+
+    assert result.consensus_ready is True
+    assert result.adjudication_resolved_item_count == 1
+    assert result.unresolved_adjudication_item_count == 0
+    assert result.used_adjudication_bundle_ids == ["bundle-adjudication"]
+    medium = next(report for report in result.reports if report.report_id == "sample-report-medium-v1")
+    factual = next(item for item in medium.dimensions if item.dimension is DimensionId.FACTUAL_ACCURACY)
+    assert factual.source is ConsensusSource.ADJUDICATION
+    assert factual.score == 1
+
+
+def test_adjudication_bundle_rejects_reports_without_disputes(tmp_path: Path) -> None:
+    manifest_path, _, first, second = _two_bundles(tmp_path)
+    second_payload = json.loads(second.read_text(encoding="utf-8"))
+    second_payload["annotations"][1]["dimensions"][0]["score"] = 0
+    _write_bundle(second, second_payload)
+    adjudication_payload = json.loads(first.read_text(encoding="utf-8"))
+    adjudication_payload.update(
+        annotation_bundle_id="bundle-adjudication",
+        annotation_round="adjudication",
+        parent_annotation_bundle_ids=["bundle-a", "bundle-b"],
+    )
+    adjudication_payload["annotator"]["annotator_id"] = "adjudicator-c"
+    adjudication = _write_bundle(tmp_path / "adjudication.json", adjudication_payload)
+
+    with pytest.raises(EvaluationInputError, match="reports without queued disputes"):
+        finalize_annotation_consensus(manifest_path, [first, second, adjudication])

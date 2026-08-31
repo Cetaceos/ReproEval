@@ -123,6 +123,7 @@ class AnnotationBundle(StrictModel):
     rubric_version: str
     rubric_sha256: str = Field(pattern=r"^[A-F0-9]{64}$")
     annotator: AnnotatorProfile
+    parent_annotation_bundle_ids: list[str] = Field(default_factory=list, max_length=32)
     annotations: list[ReportAnnotation] = Field(min_length=1)
 
     @model_validator(mode="after")
@@ -130,6 +131,19 @@ class AnnotationBundle(StrictModel):
         report_ids = [annotation.report_id for annotation in self.annotations]
         if len(report_ids) != len(set(report_ids)):
             raise ValueError("annotation bundle report IDs must be unique")
+        if len(self.parent_annotation_bundle_ids) != len(set(self.parent_annotation_bundle_ids)):
+            raise ValueError("parent annotation Bundle IDs must be unique")
+        if self.annotation_round is AnnotationRound.INDEPENDENT and self.parent_annotation_bundle_ids:
+            raise ValueError("independent annotation Bundle cannot declare parent Bundles")
+        if self.annotation_round is AnnotationRound.REPEAT and len(self.parent_annotation_bundle_ids) != 1:
+            raise ValueError("repeat annotation Bundle requires exactly one parent Bundle")
+        if self.annotation_round is AnnotationRound.ADJUDICATION and len(self.parent_annotation_bundle_ids) < 2:
+            raise ValueError("adjudication annotation Bundle requires at least two parent Bundles")
+        if (
+            self.annotation_source is AnnotationSource.SYNTHETIC_PROTOCOL_FIXTURE
+            and self.annotation_round is not AnnotationRound.INDEPENDENT
+        ):
+            raise ValueError("synthetic protocol fixtures cannot represent repeat or adjudication rounds")
         return self
 
 
@@ -198,6 +212,7 @@ def validate_annotation_bundles(
     ]
     if len(independent_annotators) != len(set(independent_annotators)):
         raise EvaluationInputError("one annotator cannot submit multiple independent annotation bundles")
+    _validate_bundle_lineage(bundles)
 
     split_counts: Counter[DatasetSplit] = Counter()
     eligible_annotators_by_report: dict[str, set[str]] = {}
@@ -272,6 +287,73 @@ def validate_annotation_bundles(
         bundles=summaries,
         warnings=warnings,
     )
+
+
+def load_validated_annotation_bundles(
+    bundle_paths: list[str | Path],
+    validation: AnnotationValidationResult,
+) -> list[AnnotationBundle]:
+    """Reload Bundle bytes only when they still match a completed validation result."""
+
+    expected_hashes = {summary.annotation_bundle_id: summary.annotation_bundle_sha256 for summary in validation.bundles}
+    bundles: list[AnnotationBundle] = []
+    for raw_path in bundle_paths:
+        path = Path(raw_path).expanduser().resolve()
+        payload = _read_limited(path, MAX_ANNOTATION_BUNDLE_BYTES, "annotation bundle")
+        try:
+            bundle = AnnotationBundle.model_validate_json(payload)
+        except ValueError as exc:  # pragma: no cover - validation already parsed the same bytes
+            raise EvaluationInputError(f"invalid annotation bundle: {exc}") from exc
+        if expected_hashes.get(bundle.annotation_bundle_id) != _sha256(payload):
+            raise EvaluationInputError("annotation bundle changed after validation")
+        bundles.append(bundle)
+    return bundles
+
+
+def _validate_bundle_lineage(bundles: list[tuple[AnnotationBundle, str]]) -> None:
+    by_id = {bundle.annotation_bundle_id: bundle for bundle, _ in bundles}
+    for bundle, _ in bundles:
+        if bundle.annotation_round is AnnotationRound.INDEPENDENT:
+            continue
+        unknown = sorted(set(bundle.parent_annotation_bundle_ids) - set(by_id))
+        if unknown:
+            raise EvaluationInputError(
+                f"annotation bundle '{bundle.annotation_bundle_id}' references unknown parent Bundles: "
+                + ", ".join(unknown)
+            )
+        parents = [by_id[parent_id] for parent_id in bundle.parent_annotation_bundle_ids]
+        if any(
+            parent.annotation_round is not AnnotationRound.INDEPENDENT
+            or parent.annotation_source is not AnnotationSource.HUMAN
+            for parent in parents
+        ):
+            raise EvaluationInputError("repeat and adjudication parents must be independent human Bundles")
+        parent_annotators = {parent.annotator.annotator_id for parent in parents}
+        if bundle.annotation_source is not AnnotationSource.HUMAN:
+            raise EvaluationInputError("repeat and adjudication Bundles must have human provenance")
+        profile = bundle.annotator
+        if (
+            not profile.blind_to_system_scores
+            or not profile.rubric_training_completed
+            or not profile.conflict_of_interest_disclosed
+            or profile.conflict_of_interest_present
+        ):
+            raise EvaluationInputError(
+                "repeat and adjudication annotators must be trained, system-score-blind, and conflict-free"
+            )
+        child_reports = {annotation.report_id for annotation in bundle.annotations}
+        parent_report_sets = [{annotation.report_id for annotation in parent.annotations} for parent in parents]
+        if bundle.annotation_round is AnnotationRound.REPEAT:
+            if bundle.annotator.annotator_id not in parent_annotators:
+                raise EvaluationInputError("repeat annotation Bundle must use the same annotator as its parent")
+            if not child_reports.issubset(parent_report_sets[0]):
+                raise EvaluationInputError("repeat annotation reports must be present in the parent Bundle")
+        elif len(parent_annotators) < 2:
+            raise EvaluationInputError("adjudication Bundle parents must represent at least two annotators")
+        elif bundle.annotator.annotator_id in parent_annotators:
+            raise EvaluationInputError("adjudicator must be distinct from the parent annotators")
+        elif any(sum(report_id in reports for reports in parent_report_sets) < 2 for report_id in child_reports):
+            raise EvaluationInputError("each adjudicated report must be present in at least two parent Bundles")
 
 
 def _validate_bundle_identity(

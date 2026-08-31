@@ -15,7 +15,7 @@ The first migration milestone is implemented. The repository now contains the va
 - synthetic examples, offline evaluation suites, live-validation gates, and 269 migrated tests;
 - compatibility with existing `hy3_reproscope_mcp` module and `hy3-reproscope-mcp` command names.
 
-The versioned seven-dimension rubric, deterministic validators, constrained Hy3 semantic Judge, blinded repeated comparison, reproducible dataset protocol, resumable batch Judge runs, group-isolated benchmark runner, de-identified annotation validation, and agreement analysis are implemented. Model judgments cannot replace local citation, numerical, artifact, or hard-cap decisions. Real expert labels and frozen held-out results remain future validation work described in [the project proposal](docs/PROJECT_PROPOSAL_CN.md).
+The versioned seven-dimension rubric, deterministic validators, constrained Hy3 semantic Judge, blinded repeated comparison, reproducible dataset protocol, resumable batch Judge runs, group-isolated benchmark runner, de-identified annotation validation, agreement analysis, and adjudicated consensus aggregation are implemented. Model judgments cannot replace local citation, numerical, artifact, or hard-cap decisions. Real expert labels and frozen held-out results remain future validation work described in [the project proposal](docs/PROJECT_PROPOSAL_CN.md).
 
 ## Architecture
 
@@ -209,6 +209,19 @@ hy3-reproeval analyze-annotations \
 ```
 
 The result includes quadratic weighted Cohen's Kappa, exact and within-one-point agreement, mean absolute score difference, per-dimension and per-pair metrics, and an adjudication queue for status mismatches or score gaps above one point. The queue does not resolve disputes automatically. System-human comparison requires at least two eligible human scores per report and reports Spearman correlation and MAE only after Dataset, Rubric, report inventory, split, and content hashes match. Undefined statistics remain `null`; `agreement_ready=true` establishes coverage, not expert provenance or label quality.
+
+Repeat and adjudication Bundles declare `parent_annotation_bundle_ids`. A repeat round references one independent Bundle from the same annotator and appears as repeat stability, not human-human agreement. An adjudication round references at least two independent Bundles, covers reports present in at least two parents, and uses a trained, system-score-blind, conflict-free separate adjudicator. Finalize consensus with the complete lineage set:
+
+```bash
+hy3-reproeval finalize-annotations \
+  --manifest path/to/frozen_dataset.json \
+  --bundle private_annotations/annotator-01.json \
+  --bundle private_annotations/annotator-02.json \
+  --bundle private_annotations/adjudication-01.json \
+  --output .reproeval/annotation-consensus.json
+```
+
+Non-disputed assessed scores are averaged under the public Rubric. Status mismatches, error-code mismatches, and score gaps above one point require a matching adjudication Bundle. Missing decisions remain unresolved; unrelated or duplicate adjudication is rejected. `consensus_ready=true` requires complete double annotation and a resolved consensus report for every validation/test item.
 
 ## Migrated MCP Tools
 

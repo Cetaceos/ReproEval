@@ -6,6 +6,7 @@ from hy3_reproeval.agreement import AnnotationAgreementResult
 from hy3_reproeval.annotations import AnnotationValidationResult
 from hy3_reproeval.benchmark import BenchmarkMode, DatasetBenchmarkResult
 from hy3_reproeval.cli import main
+from hy3_reproeval.consensus import AnnotationConsensusResult
 from hy3_reproeval.dataset import DatasetValidationResult, MutationReplayResult
 from hy3_reproeval.models import EvaluationMode, EvaluationResult, EvaluationStatus
 from hy3_reproeval.pairwise import ComparisonPreference, PairwiseComparisonResult
@@ -201,3 +202,27 @@ def test_cli_refuses_to_promote_synthetic_annotations_to_agreement_evidence(tmp_
     assert result.agreement_ready is False
     assert result.eligible_annotator_count == 0
     assert result.pooled_metrics.quadratic_weighted_kappa is None
+
+
+def test_cli_refuses_to_finalize_synthetic_annotations_as_consensus(tmp_path: Path) -> None:
+    project_root = Path(__file__).resolve().parents[1]
+    output_path = tmp_path / "annotation-consensus.json"
+
+    assert (
+        main(
+            [
+                "finalize-annotations",
+                "--manifest",
+                str(project_root / "examples" / "dataset" / "sample_dataset.json"),
+                "--bundle",
+                str(project_root / "examples" / "annotations" / "synthetic_annotation_bundle.json"),
+                "--output",
+                str(output_path),
+            ]
+        )
+        == 0
+    )
+    result = AnnotationConsensusResult.model_validate_json(output_path.read_bytes())
+    assert result.consensus_ready is False
+    assert result.target_report_count == 0
+    assert result.consensus_report_count == 0

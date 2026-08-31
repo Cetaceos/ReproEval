@@ -15,12 +15,13 @@ from pydantic import Field
 
 from . import __version__
 from .annotations import (
-    MAX_ANNOTATION_BUNDLE_BYTES,
     AnnotationBundle,
+    AnnotationRound,
     AnnotationValidationResult,
     DimensionAnnotation,
     ReportAnnotation,
     is_benchmark_eligible,
+    load_validated_annotation_bundles,
     validate_annotation_bundles,
 )
 from .benchmark import DatasetBenchmarkResult
@@ -36,6 +37,7 @@ MAX_BENCHMARK_RESULT_BYTES = 32 * 1024 * 1024
 class AdjudicationReason(StrEnum):
     STATUS_MISMATCH = "status_mismatch"
     SCORE_GAP = "score_gap"
+    ERROR_CODE_MISMATCH = "error_code_mismatch"
 
 
 class AgreementMetrics(StrictModel):
@@ -58,6 +60,15 @@ class AnnotatorPairAgreement(StrictModel):
     annotator_a: str
     annotator_b: str
     shared_report_count: int = Field(ge=1)
+    metrics: AgreementMetrics
+    dimensions: list[DimensionAgreement] = Field(min_length=7, max_length=7)
+
+
+class RepeatStability(StrictModel):
+    annotator_id: str
+    independent_bundle_id: str
+    repeat_bundle_id: str
+    shared_report_count: int = Field(ge=0)
     metrics: AgreementMetrics
     dimensions: list[DimensionAgreement] = Field(min_length=7, max_length=7)
 
@@ -112,6 +123,8 @@ class AnnotationAgreementResult(StrictModel):
     pooled_metrics: AgreementMetrics
     dimensions: list[DimensionAgreement] = Field(min_length=7, max_length=7)
     annotator_pairs: list[AnnotatorPairAgreement]
+    repeat_stability_count: int = Field(ge=0)
+    repeat_stability: list[RepeatStability]
     adjudication_item_count: int = Field(ge=0)
     adjudication_items: list[AdjudicationItem]
     system_human: SystemHumanAgreement | None = None
@@ -139,7 +152,7 @@ def analyze_annotation_agreement(
     validation = validate_annotation_bundles(dataset_path, bundle_paths)
     dataset = load_dataset_manifest(dataset_path)
     rubric = load_public_rubric()
-    bundles = _load_validated_bundles(bundle_paths, validation)
+    bundles = load_validated_annotation_bundles(bundle_paths, validation)
     inventory = _report_inventory(dataset)
     by_report: dict[str, dict[str, ReportAnnotation]] = defaultdict(dict)
     for bundle in bundles:
@@ -189,6 +202,7 @@ def analyze_annotation_agreement(
         )
         for (annotator_a, annotator_b), items in sorted(pair_observations.items())
     ]
+    repeat_stability = _repeat_stability(bundles, inventory)
     adjudication_items = _adjudication_items(observations)
     system_human = (
         _system_human_agreement(
@@ -214,6 +228,8 @@ def analyze_annotation_agreement(
         )
     if adjudication_items:
         warnings.append(f"{len(adjudication_items)} pairwise dimension disagreements require adjudication.")
+    if any(item.shared_report_count == 0 for item in repeat_stability):
+        warnings.append("At least one repeat Bundle shares no validation/test report with its independent parent.")
     if system_human is not None and not system_human.complete_coverage:
         warnings.append("System-human comparison does not cover every validation/test report.")
     eligible_annotators = {annotator_id for annotations in by_report.values() for annotator_id in annotations}
@@ -232,30 +248,13 @@ def analyze_annotation_agreement(
         pooled_metrics=pooled_metrics,
         dimensions=dimensions,
         annotator_pairs=pair_results,
+        repeat_stability_count=len(repeat_stability),
+        repeat_stability=repeat_stability,
         adjudication_item_count=len(adjudication_items),
         adjudication_items=adjudication_items,
         system_human=system_human,
         warnings=warnings,
     )
-
-
-def _load_validated_bundles(
-    bundle_paths: list[str | Path],
-    validation: AnnotationValidationResult,
-) -> list[AnnotationBundle]:
-    expected_hashes = {summary.annotation_bundle_id: summary.annotation_bundle_sha256 for summary in validation.bundles}
-    bundles: list[AnnotationBundle] = []
-    for raw_path in bundle_paths:
-        path = Path(raw_path).expanduser().resolve()
-        payload = _read_limited(path, MAX_ANNOTATION_BUNDLE_BYTES, "annotation bundle")
-        try:
-            bundle = AnnotationBundle.model_validate_json(payload)
-        except ValueError as exc:  # pragma: no cover - validation already parsed the same bytes
-            raise EvaluationInputError(f"invalid annotation bundle: {exc}") from exc
-        if expected_hashes.get(bundle.annotation_bundle_id) != _sha256(payload):
-            raise EvaluationInputError("annotation bundle changed after validation")
-        bundles.append(bundle)
-    return bundles
 
 
 def _report_inventory(dataset: LoadedDatasetManifest) -> dict[str, tuple[str, DatasetSplit, str, str]]:
@@ -274,6 +273,58 @@ def _report_inventory(dataset: LoadedDatasetManifest) -> dict[str, tuple[str, Da
 
 def _dimensions_by_id(annotation: ReportAnnotation) -> dict[DimensionId, DimensionAnnotation]:
     return {item.dimension: item for item in annotation.dimensions}
+
+
+def _repeat_stability(
+    bundles: list[AnnotationBundle],
+    inventory: dict[str, tuple[str, DatasetSplit, str, str]],
+) -> list[RepeatStability]:
+    by_id = {bundle.annotation_bundle_id: bundle for bundle in bundles}
+    results: list[RepeatStability] = []
+    for repeat in sorted(
+        (bundle for bundle in bundles if bundle.annotation_round is AnnotationRound.REPEAT),
+        key=lambda bundle: bundle.annotation_bundle_id,
+    ):
+        parent = by_id[repeat.parent_annotation_bundle_ids[0]]
+        parent_reports = {annotation.report_id: annotation for annotation in parent.annotations}
+        repeat_reports = {annotation.report_id: annotation for annotation in repeat.annotations}
+        shared_reports = sorted(
+            report_id
+            for report_id in set(parent_reports) & set(repeat_reports)
+            if inventory[report_id][1] in {DatasetSplit.VALIDATION, DatasetSplit.TEST}
+        )
+        observations: list[_Observation] = []
+        for report_id in shared_reports:
+            parent_dimensions = _dimensions_by_id(parent_reports[report_id])
+            repeat_dimensions = _dimensions_by_id(repeat_reports[report_id])
+            observations.extend(
+                _Observation(
+                    report_id=report_id,
+                    dimension=dimension,
+                    annotator_a=parent.annotator.annotator_id,
+                    annotator_b=repeat.annotator.annotator_id,
+                    annotation_a=parent_dimensions[dimension],
+                    annotation_b=repeat_dimensions[dimension],
+                )
+                for dimension in DimensionId
+            )
+        results.append(
+            RepeatStability(
+                annotator_id=repeat.annotator.annotator_id,
+                independent_bundle_id=parent.annotation_bundle_id,
+                repeat_bundle_id=repeat.annotation_bundle_id,
+                shared_report_count=len(shared_reports),
+                metrics=_agreement_metrics(observations),
+                dimensions=[
+                    DimensionAgreement(
+                        dimension=dimension,
+                        metrics=_agreement_metrics([item for item in observations if item.dimension is dimension]),
+                    )
+                    for dimension in DimensionId
+                ],
+            )
+        )
+    return results
 
 
 def _agreement_metrics(observations: list[_Observation]) -> AgreementMetrics:
@@ -315,8 +366,11 @@ def _adjudication_items(observations: list[_Observation]) -> list[AdjudicationIt
                 continue
             gap = abs(left.score - right.score)
             if gap <= 1:
-                continue
-            reason = AdjudicationReason.SCORE_GAP
+                if set(left.error_codes) == set(right.error_codes):
+                    continue
+                reason = AdjudicationReason.ERROR_CODE_MISMATCH
+            else:
+                reason = AdjudicationReason.SCORE_GAP
         else:
             continue
         results.append(

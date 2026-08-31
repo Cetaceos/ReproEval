@@ -179,3 +179,113 @@ def test_annotation_rejects_error_code_from_another_dimension(tmp_path: Path) ->
 
     with pytest.raises(EvaluationInputError, match="incompatible error codes"):
         validate_annotation_bundles(manifest_path, [path])
+
+
+def test_repeat_bundle_requires_and_accepts_same_annotator_parent(tmp_path: Path) -> None:
+    manifest_path, manifest = _validation_dataset(tmp_path)
+    parent_payload = _human_bundle(
+        manifest_path,
+        manifest,
+        annotator_id="annotator-a",
+        bundle_id="bundle-a",
+    )
+    repeat_payload = json.loads(json.dumps(parent_payload))
+    repeat_payload.update(
+        annotation_bundle_id="bundle-a-repeat",
+        annotation_round="repeat",
+        parent_annotation_bundle_ids=["bundle-a"],
+    )
+    parent = _write_bundle(tmp_path / "bundle-a.json", parent_payload)
+    repeat = _write_bundle(tmp_path / "bundle-a-repeat.json", repeat_payload)
+
+    result = validate_annotation_bundles(manifest_path, [parent, repeat])
+
+    assert result.bundle_count == 2
+    assert {summary.annotation_round.value for summary in result.bundles} == {"independent", "repeat"}
+
+
+def test_repeat_bundle_rejects_unknown_parent(tmp_path: Path) -> None:
+    manifest_path, manifest = _validation_dataset(tmp_path)
+    repeat_payload = _human_bundle(
+        manifest_path,
+        manifest,
+        annotator_id="annotator-a",
+        bundle_id="bundle-a-repeat",
+    )
+    repeat_payload.update(
+        annotation_round="repeat",
+        parent_annotation_bundle_ids=["missing-parent"],
+    )
+    repeat = _write_bundle(tmp_path / "bundle-a-repeat.json", repeat_payload)
+
+    with pytest.raises(EvaluationInputError, match="unknown parent Bundles"):
+        validate_annotation_bundles(manifest_path, [repeat])
+
+
+def test_adjudication_bundle_requires_distinct_parent_annotators_and_adjudicator(tmp_path: Path) -> None:
+    manifest_path, manifest = _validation_dataset(tmp_path)
+    first_payload = _human_bundle(
+        manifest_path,
+        manifest,
+        annotator_id="annotator-a",
+        bundle_id="bundle-a",
+    )
+    second_payload = _human_bundle(
+        manifest_path,
+        manifest,
+        annotator_id="annotator-b",
+        bundle_id="bundle-b",
+    )
+    adjudication_payload = json.loads(json.dumps(first_payload))
+    adjudication_payload.update(
+        annotation_bundle_id="bundle-adjudication",
+        annotation_round="adjudication",
+        parent_annotation_bundle_ids=["bundle-a", "bundle-b"],
+    )
+    adjudication_payload["annotator"]["annotator_id"] = "adjudicator-c"
+    paths = [
+        _write_bundle(tmp_path / "bundle-a.json", first_payload),
+        _write_bundle(tmp_path / "bundle-b.json", second_payload),
+        _write_bundle(tmp_path / "bundle-adjudication.json", adjudication_payload),
+    ]
+
+    assert validate_annotation_bundles(manifest_path, paths).bundle_count == 3
+
+    adjudication_payload["annotator"]["annotator_id"] = "annotator-a"
+    paths[2] = _write_bundle(tmp_path / "bundle-adjudication.json", adjudication_payload)
+    with pytest.raises(EvaluationInputError, match="adjudicator must be distinct"):
+        validate_annotation_bundles(manifest_path, paths)
+
+
+def test_adjudication_bundle_rejects_unqualified_adjudicator_profile(tmp_path: Path) -> None:
+    manifest_path, manifest = _validation_dataset(tmp_path)
+    first_payload = _human_bundle(
+        manifest_path,
+        manifest,
+        annotator_id="annotator-a",
+        bundle_id="bundle-a",
+    )
+    second_payload = _human_bundle(
+        manifest_path,
+        manifest,
+        annotator_id="annotator-b",
+        bundle_id="bundle-b",
+    )
+    adjudication_payload = json.loads(json.dumps(first_payload))
+    adjudication_payload.update(
+        annotation_bundle_id="bundle-adjudication",
+        annotation_round="adjudication",
+        parent_annotation_bundle_ids=["bundle-a", "bundle-b"],
+    )
+    adjudication_payload["annotator"].update(
+        annotator_id="adjudicator-c",
+        conflict_of_interest_present=True,
+    )
+    paths = [
+        _write_bundle(tmp_path / "bundle-a.json", first_payload),
+        _write_bundle(tmp_path / "bundle-b.json", second_payload),
+        _write_bundle(tmp_path / "bundle-adjudication.json", adjudication_payload),
+    ]
+
+    with pytest.raises(EvaluationInputError, match="trained, system-score-blind, and conflict-free"):
+        validate_annotation_bundles(manifest_path, paths)

@@ -2,6 +2,22 @@
 
 All notable ReproEval changes are documented in this file.
 
+## 0.23.0 - 2026-08-31
+
+### Added
+
+- Parent-bound Annotation Bundle lineage for independent, repeat, and adjudication rounds.
+- Same-annotator repeat stability with pooled and per-dimension agreement metrics, kept separate from human-human agreement.
+- Error-code disagreement detection in addition to status mismatch and score-gap adjudication triggers.
+- Fail-closed human consensus aggregation with independent score means, Rubric weighting, minimum coverage, and declared hard caps.
+- `finalize-annotations` CLI command with resolved/unresolved dispute inventories and consensus report scores.
+
+### Safety
+
+- Repeat Bundles must reference one independent Bundle from the same annotator; adjudication Bundles must reference at least two distinct independent annotators and use a separate adjudicator.
+- Missing adjudication keeps a dimension unresolved, while duplicate, unrelated, or unused adjudication Bundles are rejected.
+- Repeat stability is never presented as multi-annotator agreement, and incomplete consensus cannot enter benchmark use.
+
 ## 0.22.0 - 2026-08-31
 
 ### Added

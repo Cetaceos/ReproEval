@@ -15,7 +15,7 @@ Hy3 ReproEval 是一个面向开放式科研报告的 Hy3 多工具应用与可�
 - 合成示例、离线评测集、在线验证门禁和 269 个迁移测试；
 - 对原有 `hy3_reproscope_mcp` 模块和 `hy3-reproscope-mcp` 命令的兼容。
 
-版本化七维 Rubric、确定性校验器、受限 Hy3 语义 Judge、盲化重复比较、可复现数据协议、可恢复批量 Judge、组内 Benchmark、去标识化标注校验和一致性分析已经实现。模型判断不能覆盖本地引用、数值、工件或硬性分数上限结论。真实专家标签和冻结测试集结果仍属于后续验证工作，详见[项目方案](docs/PROJECT_PROPOSAL_CN.md)。
+版本化七维 Rubric、确定性校验器、受限 Hy3 语义 Judge、盲化重复比较、可复现数据协议、可恢复批量 Judge、组内 Benchmark、去标识化标注校验、一致性分析和裁决共识聚合已经实现。模型判断不能覆盖本地引用、数值、工件或硬性分数上限结论。真实专家标签和冻结测试集结果仍属于后续验证工作，详见[项目方案](docs/PROJECT_PROPOSAL_CN.md)。
 
 ## 架构
 
@@ -209,6 +209,19 @@ hy3-reproeval analyze-annotations \
 ```
 
 结果包含二次加权 Cohen's Kappa、精确一致率、±1 分一致率、平均绝对分差、逐维和逐标注者对指标，以及状态冲突或分差超过 1 分时生成的裁决清单；清单不会自动解决争议。系统-人工比较要求每份报告至少有两个人工有效总分，并且只有在 Dataset、Rubric、报告清单、数据划分和内容哈希完全一致时才输出 Spearman 相关系数与 MAE。不可定义的统计量保持 `null`；`agreement_ready=true` 只说明覆盖条件满足，不证明专家身份或标签质量。
+
+重复标注和裁决 Bundle 通过 `parent_annotation_bundle_ids` 声明血缘。重复轮次引用同一标注者的一份独立 Bundle，只输出重复稳定性，不计为多人一致性；裁决轮次引用至少两份独立 Bundle，每份被裁决报告必须出现在至少两个父级中，并由完成 Rubric 培训、对系统分数盲化且无利益冲突的不同裁决者完成。提交完整血缘集合后生成共识：
+
+```bash
+hy3-reproeval finalize-annotations \
+  --manifest path/to/frozen_dataset.json \
+  --bundle private_annotations/annotator-01.json \
+  --bundle private_annotations/annotator-02.json \
+  --bundle private_annotations/adjudication-01.json \
+  --output .reproeval/annotation-consensus.json
+```
+
+无争议的已评估分数按公开 Rubric 取均值；状态冲突、错误码冲突和分差超过 1 分的维度必须由匹配父级的裁决 Bundle 解决。缺少裁决时保持 unresolved，无关或重复裁决会被拒绝。只有每份 validation/test 报告都完成双人标注并形成完整共识时，`consensus_ready` 才为 `true`。
 
 ## 已迁移的 MCP Tools
 

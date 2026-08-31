@@ -13,6 +13,7 @@ from . import __version__
 from .agreement import analyze_annotation_agreement
 from .annotations import validate_annotation_bundles
 from .benchmark import BenchmarkMode, run_dataset_benchmark
+from .consensus import finalize_annotation_consensus
 from .dataset import replay_mutation_manifest, validate_dataset_manifest
 from .errors import EvaluationInputError
 from .evaluator import evaluate_case_file, evaluate_case_file_hybrid
@@ -138,6 +139,19 @@ def build_parser() -> argparse.ArgumentParser:
         help="Optional bound Dataset Benchmark JSON for system-human comparison.",
     )
     agreement_parser.add_argument("--output", type=Path, help="Optional agreement result JSON path.")
+    consensus_parser = subparsers.add_parser(
+        "finalize-annotations",
+        help="Aggregate independent labels and resolve queued disputes through parent-bound adjudication Bundles.",
+    )
+    consensus_parser.add_argument("--manifest", required=True, type=Path)
+    consensus_parser.add_argument(
+        "--bundle",
+        required=True,
+        action="append",
+        type=Path,
+        help="Independent, repeat, or adjudication Bundle JSON; repeat for the complete lineage set.",
+    )
+    consensus_parser.add_argument("--output", type=Path, help="Optional consensus result JSON path.")
     return parser
 
 
@@ -259,6 +273,21 @@ def main(argv: Sequence[str] | None = None) -> int:
                 args.bundle,
                 benchmark_result_path=args.benchmark_result,
             )
+        except EvaluationInputError as exc:
+            parser.error(str(exc))
+        rendered = result.model_dump_json(indent=2) + "\n"
+        if args.output is not None:
+            output_path = args.output.expanduser().resolve()
+            if not output_path.parent.is_dir():
+                parser.error(f"output directory does not exist: {output_path.parent}")
+            output_path.write_bytes(rendered.encode("utf-8"))
+            print(output_path.as_posix())
+        else:
+            print(rendered, end="")
+        return 0
+    if args.command == "finalize-annotations":
+        try:
+            result = finalize_annotation_consensus(args.manifest, args.bundle)
         except EvaluationInputError as exc:
             parser.error(str(exc))
         rendered = result.model_dump_json(indent=2) + "\n"
