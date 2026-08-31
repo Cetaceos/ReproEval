@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from hy3_reproeval.agreement import AnnotationAgreementResult
 from hy3_reproeval.annotations import AnnotationValidationResult
 from hy3_reproeval.benchmark import BenchmarkMode, DatasetBenchmarkResult
 from hy3_reproeval.cli import main
@@ -176,3 +177,27 @@ def test_cli_validates_public_synthetic_annotation_fixture(tmp_path: Path) -> No
     assert result.synthetic_annotation_count == 1
     assert result.human_annotation_count == 0
     assert result.benchmark_ready is False
+
+
+def test_cli_refuses_to_promote_synthetic_annotations_to_agreement_evidence(tmp_path: Path) -> None:
+    project_root = Path(__file__).resolve().parents[1]
+    output_path = tmp_path / "annotation-agreement.json"
+
+    assert (
+        main(
+            [
+                "analyze-annotations",
+                "--manifest",
+                str(project_root / "examples" / "dataset" / "sample_dataset.json"),
+                "--bundle",
+                str(project_root / "examples" / "annotations" / "synthetic_annotation_bundle.json"),
+                "--output",
+                str(output_path),
+            ]
+        )
+        == 0
+    )
+    result = AnnotationAgreementResult.model_validate_json(output_path.read_bytes())
+    assert result.agreement_ready is False
+    assert result.eligible_annotator_count == 0
+    assert result.pooled_metrics.quadratic_weighted_kappa is None

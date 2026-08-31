@@ -221,7 +221,7 @@ def validate_annotation_bundles(
                 human_annotations += 1
             else:
                 synthetic_annotations += 1
-            if _is_benchmark_eligible(bundle, split):
+            if is_benchmark_eligible(bundle, split):
                 eligible_count += 1
                 eligible_annotators_by_report.setdefault(annotation.report_id, set()).add(bundle.annotator.annotator_id)
         summaries.append(
@@ -319,7 +319,9 @@ def _validate_annotation_lines(annotation: ReportAnnotation, line_count: int) ->
         )
 
 
-def _is_benchmark_eligible(bundle: AnnotationBundle, split: DatasetSplit) -> bool:
+def is_benchmark_eligible(bundle: AnnotationBundle, split: DatasetSplit) -> bool:
+    """Return whether one Bundle may contribute a report annotation to benchmark analysis."""
+
     profile = bundle.annotator
     return (
         bundle.annotation_source is AnnotationSource.HUMAN

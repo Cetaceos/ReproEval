@@ -10,6 +10,7 @@ from pathlib import Path
 from hy3_reproscope_mcp.errors import ReproScopeError
 
 from . import __version__
+from .agreement import analyze_annotation_agreement
 from .annotations import validate_annotation_bundles
 from .benchmark import BenchmarkMode, run_dataset_benchmark
 from .dataset import replay_mutation_manifest, validate_dataset_manifest
@@ -119,6 +120,24 @@ def build_parser() -> argparse.ArgumentParser:
         help="Annotation Bundle JSON; repeat for multiple independent annotators.",
     )
     annotations_parser.add_argument("--output", type=Path, help="Optional validation result JSON path.")
+    agreement_parser = subparsers.add_parser(
+        "analyze-annotations",
+        help="Compute human agreement, adjudication items, and optional system-human metrics.",
+    )
+    agreement_parser.add_argument("--manifest", required=True, type=Path)
+    agreement_parser.add_argument(
+        "--bundle",
+        required=True,
+        action="append",
+        type=Path,
+        help="Annotation Bundle JSON; repeat for each independent annotator.",
+    )
+    agreement_parser.add_argument(
+        "--benchmark-result",
+        type=Path,
+        help="Optional bound Dataset Benchmark JSON for system-human comparison.",
+    )
+    agreement_parser.add_argument("--output", type=Path, help="Optional agreement result JSON path.")
     return parser
 
 
@@ -221,6 +240,25 @@ def main(argv: Sequence[str] | None = None) -> int:
     if args.command == "validate-annotations":
         try:
             result = validate_annotation_bundles(args.manifest, args.bundle)
+        except EvaluationInputError as exc:
+            parser.error(str(exc))
+        rendered = result.model_dump_json(indent=2) + "\n"
+        if args.output is not None:
+            output_path = args.output.expanduser().resolve()
+            if not output_path.parent.is_dir():
+                parser.error(f"output directory does not exist: {output_path.parent}")
+            output_path.write_bytes(rendered.encode("utf-8"))
+            print(output_path.as_posix())
+        else:
+            print(rendered, end="")
+        return 0
+    if args.command == "analyze-annotations":
+        try:
+            result = analyze_annotation_agreement(
+                args.manifest,
+                args.bundle,
+                benchmark_result_path=args.benchmark_result,
+            )
         except EvaluationInputError as exc:
             parser.error(str(exc))
         rendered = result.model_dump_json(indent=2) + "\n"

@@ -66,3 +66,5 @@ The public fixture contains one repository-authored synthetic development group.
 Claims about Hy3 quality, held-out generalization, model-human agreement, stability, or adversarial robustness require frozen validation/test groups, real model runs, and independently reviewed human labels. Dataset validation warnings keep these missing conditions visible.
 
 Annotation Bundle validation and the double-annotation readiness gate are defined in [ANNOTATION_PROTOCOL.md](ANNOTATION_PROTOCOL.md). Passing that gate establishes input coverage, not agreement quality.
+
+A bound Benchmark result may be passed to `analyze-annotations` for system-human Spearman correlation and mean absolute error. ReproEval requires exact Dataset, Rubric, group, split, report, and report-hash closure before comparison; undefined correlations remain `null`.

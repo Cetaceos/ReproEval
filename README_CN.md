@@ -15,7 +15,7 @@ Hy3 ReproEval 是一个面向开放式科研报告的 Hy3 多工具应用与可�
 - 合成示例、离线评测集、在线验证门禁和 269 个迁移测试；
 - 对原有 `hy3_reproscope_mcp` 模块和 `hy3-reproscope-mcp` 命令的兼容。
 
-版本化七维 Rubric、确定性校验器、受限 Hy3 语义 Judge、盲化重复比较、可复现数据协议、可恢复批量 Judge、组内 Benchmark 和去标识化标注校验已经实现。模型判断不能覆盖本地引用、数值、工件或硬性分数上限结论。真实专家标签、一致性分析和冻结测试集结果仍属于后续验证工作，详见[项目方案](docs/PROJECT_PROPOSAL_CN.md)。
+版本化七维 Rubric、确定性校验器、受限 Hy3 语义 Judge、盲化重复比较、可复现数据协议、可恢复批量 Judge、组内 Benchmark、去标识化标注校验和一致性分析已经实现。模型判断不能覆盖本地引用、数值、工件或硬性分数上限结论。真实专家标签和冻结测试集结果仍属于后续验证工作，详见[项目方案](docs/PROJECT_PROPOSAL_CN.md)。
 
 ## 架构
 
@@ -196,6 +196,19 @@ hy3-reproeval validate-annotations \
 ```
 
 真实 Benchmark 就绪要求每份 validation/test 报告都获得两位合格标注者相互独立且盲化的人工标注。公开合成 Bundle 永远不计为人工证据。详见 [ANNOTATION_PROTOCOL.md](docs/ANNOTATION_PROTOCOL.md)。
+
+分析人工一致性，并可选择将人工聚合分数与同一数据集上的 Dataset Benchmark 结果进行比较：
+
+```bash
+hy3-reproeval analyze-annotations \
+  --manifest path/to/frozen_dataset.json \
+  --bundle private_annotations/annotator-01.json \
+  --bundle private_annotations/annotator-02.json \
+  --benchmark-result .reproeval/dataset-benchmark.json \
+  --output .reproeval/annotation-agreement.json
+```
+
+结果包含二次加权 Cohen's Kappa、精确一致率、±1 分一致率、平均绝对分差、逐维和逐标注者对指标，以及状态冲突或分差超过 1 分时生成的裁决清单；清单不会自动解决争议。系统-人工比较要求每份报告至少有两个人工有效总分，并且只有在 Dataset、Rubric、报告清单、数据划分和内容哈希完全一致时才输出 Spearman 相关系数与 MAE。不可定义的统计量保持 `null`；`agreement_ready=true` 只说明覆盖条件满足，不证明专家身份或标签质量。
 
 ## 已迁移的 MCP Tools
 

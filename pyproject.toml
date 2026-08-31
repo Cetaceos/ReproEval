@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "hy3-reproeval"
-version = "0.21.0"
+version = "0.22.0"
 description = "Evidence-grounded Hy3 application generation and evaluation for open-ended research reports"
 readme = "README.md"
 requires-python = ">=3.11"

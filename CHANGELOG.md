@@ -2,6 +2,23 @@
 
 All notable ReproEval changes are documented in this file.
 
+## 0.22.0 - 2026-08-31
+
+### Added
+
+- Human-human agreement analysis over eligible independent Annotation Bundles.
+- Pooled, per-dimension, and per-annotator-pair status agreement, exact score agreement, within-one-point agreement, mean absolute difference, error-code agreement, and quadratic weighted Cohen's Kappa.
+- Deterministic adjudication queues for status mismatches and dimension score gaps greater than one point.
+- Optional system-human Spearman correlation and mean absolute error from a bound Dataset Benchmark result.
+- `analyze-annotations` CLI command with machine-readable coverage, denominators, warnings, and fingerprints.
+
+### Safety
+
+- Synthetic fixtures and development-only reports never contribute to agreement metrics.
+- Undefined Kappa or correlation values remain `null`; missing variance or coverage is not rewritten as zero.
+- System-human analysis rejects mismatched Dataset, Rubric, group, report, split, or report-content fingerprints.
+- Agreement readiness establishes annotation coverage only and does not prove annotator identity, expertise, or label quality.
+
 ## 0.21.0 - 2026-08-31
 
 ### Added

@@ -15,7 +15,7 @@ The first migration milestone is implemented. The repository now contains the va
 - synthetic examples, offline evaluation suites, live-validation gates, and 269 migrated tests;
 - compatibility with existing `hy3_reproscope_mcp` module and `hy3-reproscope-mcp` command names.
 
-The versioned seven-dimension rubric, deterministic validators, constrained Hy3 semantic Judge, blinded repeated comparison, reproducible dataset protocol, resumable batch Judge runs, group-isolated benchmark runner, and de-identified annotation validation are implemented. Model judgments cannot replace local citation, numerical, artifact, or hard-cap decisions. Real expert labels, agreement analysis, and frozen held-out results remain future validation work described in [the project proposal](docs/PROJECT_PROPOSAL_CN.md).
+The versioned seven-dimension rubric, deterministic validators, constrained Hy3 semantic Judge, blinded repeated comparison, reproducible dataset protocol, resumable batch Judge runs, group-isolated benchmark runner, de-identified annotation validation, and agreement analysis are implemented. Model judgments cannot replace local citation, numerical, artifact, or hard-cap decisions. Real expert labels and frozen held-out results remain future validation work described in [the project proposal](docs/PROJECT_PROPOSAL_CN.md).
 
 ## Architecture
 
@@ -196,6 +196,19 @@ hy3-reproeval validate-annotations \
 ```
 
 Real benchmark readiness requires two eligible independent, blinded human annotations for every validation/test report. The public synthetic Bundle never counts as human evidence. See [ANNOTATION_PROTOCOL.md](docs/ANNOTATION_PROTOCOL.md).
+
+Analyze human-human agreement and optionally compare aggregated human scores with a bound Dataset Benchmark result:
+
+```bash
+hy3-reproeval analyze-annotations \
+  --manifest path/to/frozen_dataset.json \
+  --bundle private_annotations/annotator-01.json \
+  --bundle private_annotations/annotator-02.json \
+  --benchmark-result .reproeval/dataset-benchmark.json \
+  --output .reproeval/annotation-agreement.json
+```
+
+The result includes quadratic weighted Cohen's Kappa, exact and within-one-point agreement, mean absolute score difference, per-dimension and per-pair metrics, and an adjudication queue for status mismatches or score gaps above one point. The queue does not resolve disputes automatically. System-human comparison requires at least two eligible human scores per report and reports Spearman correlation and MAE only after Dataset, Rubric, report inventory, split, and content hashes match. Undefined statistics remain `null`; `agreement_ready=true` establishes coverage, not expert provenance or label quality.
 
 ## Migrated MCP Tools
 
