@@ -22,6 +22,7 @@ from .judge import write_judge_record
 from .judge_batch import generate_dataset_judge_records
 from .p0_dataset import materialize_p0_dataset
 from .pairwise import compare_case_files, write_pairwise_bundle
+from .stability import analyze_benchmark_stability
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -130,6 +131,18 @@ def build_parser() -> argparse.ArgumentParser:
         help="Optional verified Dataset Freeze binding for this benchmark.",
     )
     benchmark_parser.add_argument("--output", type=Path, help="Optional path for the benchmark result JSON.")
+    stability_parser = subparsers.add_parser(
+        "analyze-benchmark-stability",
+        help="Analyze repeated replay Benchmarks bound to one Dataset Freeze.",
+    )
+    stability_parser.add_argument(
+        "--benchmark",
+        required=True,
+        action="append",
+        type=Path,
+        help="Dataset Benchmark result JSON; repeat for each independent Judge run.",
+    )
+    stability_parser.add_argument("--output", type=Path, help="Optional stability result JSON path.")
     generate_parser = subparsers.add_parser(
         "generate-judge-records",
         help="Generate one resumable online Hy3 Judge Record per dataset report.",
@@ -324,6 +337,21 @@ def main(argv: Sequence[str] | None = None) -> int:
             if not output_path.parent.is_dir():
                 parser.error(f"output directory does not exist: {output_path.parent}")
             output_path.write_text(rendered, encoding="utf-8")
+            print(output_path.as_posix())
+        else:
+            print(rendered, end="")
+        return 0
+    if args.command == "analyze-benchmark-stability":
+        try:
+            result = analyze_benchmark_stability(args.benchmark)
+        except EvaluationInputError as exc:
+            parser.error(str(exc))
+        rendered = result.model_dump_json(indent=2) + "\n"
+        if args.output is not None:
+            output_path = args.output.expanduser().resolve()
+            if not output_path.parent.is_dir():
+                parser.error(f"output directory does not exist: {output_path.parent}")
+            output_path.write_bytes(rendered.encode("utf-8"))
             print(output_path.as_posix())
         else:
             print(rendered, end="")

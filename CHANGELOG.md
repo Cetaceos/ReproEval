@@ -2,6 +2,22 @@
 
 All notable ReproEval changes are documented in this file.
 
+## 0.28.0 - 2026-09-01
+
+### Added
+
+- Dataset-wide repeated Benchmark stability analysis with report- and dimension-level score dispersion,
+  quality-band flips, coverage gates, and the preregistered maximum-standard-deviation target.
+- Independent `run_id` and UTC start-time provenance for resumable Judge Record indexes, propagated into
+  Dataset Benchmark results alongside per-report Judge Record hashes.
+- A fail-closed CLI protocol requiring replay mode, one Dataset Freeze, one Rubric, matching report inventories,
+  and distinct Judge runs and indexes.
+
+### Compatibility
+
+- Older Judge Record indexes and Benchmark results remain readable, but lack the run identity required to make
+  an independent repeated-run stability claim.
+
 ## 0.27.0 - 2026-09-01
 
 ### Added

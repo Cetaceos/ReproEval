@@ -68,6 +68,8 @@ async def test_batch_generation_writes_complete_lf_index_and_records(tmp_path: P
 
     assert index.complete is True
     assert index.record_count == 3
+    assert index.run_id is not None and len(index.run_id) == 32
+    assert index.started_at_utc is not None and index.started_at_utc.endswith("Z")
     assert client.call_count == 3
     index_path = tmp_path / JUDGE_RECORD_INDEX_NAME
     assert index_path.is_file()
@@ -97,11 +99,13 @@ async def test_generated_index_is_consumable_by_replay_benchmark(tmp_path: Path)
     )
 
     assert result.judge_record_index_sha256 is not None
+    assert result.judge_run_id is not None
+    assert all(report.judge_record_sha256 is not None for group in result.groups for report in group.reports)
     assert result.overall.ranking_eligible_report_count == 3
 
 
 async def test_resume_reuses_verified_records_without_api_calls(tmp_path: Path) -> None:
-    await generate_dataset_judge_records(
+    original = await generate_dataset_judge_records(
         _public_manifest(),
         tmp_path,
         judge_client=FakeBatchJudgeClient(),
@@ -120,6 +124,8 @@ async def test_resume_reuses_verified_records_without_api_calls(tmp_path: Path) 
 
     assert resumed.complete is True
     assert resumed.record_count == 3
+    assert resumed.run_id == original.run_id
+    assert resumed.started_at_utc == original.started_at_utc
 
 
 async def test_interrupted_run_retains_partial_index_and_can_resume(tmp_path: Path) -> None:
@@ -134,6 +140,7 @@ async def test_interrupted_run_retains_partial_index_and_can_resume(tmp_path: Pa
     partial = JudgeRecordIndex.model_validate_json((tmp_path / JUDGE_RECORD_INDEX_NAME).read_bytes())
     assert partial.complete is False
     assert partial.record_count == 1
+    assert partial.run_id is not None
 
     client = FakeBatchJudgeClient()
     completed = await generate_dataset_judge_records(
@@ -147,6 +154,7 @@ async def test_interrupted_run_retains_partial_index_and_can_resume(tmp_path: Pa
 
     assert completed.complete is True
     assert completed.record_count == 3
+    assert completed.run_id == partial.run_id
     assert client.call_count == 2
 
 

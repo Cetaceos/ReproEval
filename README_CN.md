@@ -12,10 +12,10 @@ Hy3 ReproEval 是一个面向开放式科研报告的 Hy3 多工具应用与可�
 
 - 10 个 stdio MCP Tool，覆盖论文复现、方案迁移、证据图、报告和只读仓库审计；
 - 本地统计重算、Schema 校验、来源哈希、工件血缘和证据不足拒答；
-- 合成示例、离线评测集、在线验证门禁和 370 余项自动化测试；
+- 合成示例、离线评测集、在线验证门禁和 380 余项自动化测试；
 - 对原有 `hy3_reproscope_mcp` 模块和 `hy3-reproscope-mcp` 命令的兼容。
 
-版本化七维 Rubric、确定性校验器、受限 Hy3 语义 Judge、盲化重复比较、可复现数据协议、可恢复批量 Judge、组内 Benchmark、去标识化标注校验、一致性分析和裁决共识聚合已经实现。仓库同时提供可确定性生成的 12 组 P0 合成数据集候选，用于协议实验。模型判断不能覆盖本地引用、数值、工件或硬性分数上限结论。真实专家标签和冻结测试集结果仍属于后续验证工作，详见[项目方案](docs/PROJECT_PROPOSAL_CN.md)。
+版本化七维 Rubric、确定性校验器、受限 Hy3 语义 Judge、盲化重复比较、可复现数据协议、可恢复批量 Judge、组内 Benchmark、重复运行稳定性分析、去标识化标注校验、一致性分析和裁决共识聚合已经实现。仓库同时提供可确定性生成的 12 组 P0 合成数据集候选，用于协议实验。模型判断不能覆盖本地引用、数值、工件或硬性分数上限结论。真实专家标签和冻结测试集结果仍属于后续验证工作，详见[项目方案](docs/PROJECT_PROPOSAL_CN.md)。
 
 ## 架构
 
@@ -225,6 +225,20 @@ hy3-reproeval benchmark-dataset \
 
 需先创建输出目录；中断后应先检查已有文件，再使用 `--resume`。受控实验应在 Judge、Benchmark、标注、一致性分析和共识命令中复用同一个 `--dataset-freeze`；各输出将记录同一已验证指纹，混用工件会直接失败。详见 [JUDGE_BATCH.md](docs/JUDGE_BATCH.md) 和 [DATASET_FREEZE.md](docs/DATASET_FREEZE.md)。
 
+### 重复 Benchmark 稳定性
+
+使用三个相互独立的 Judge 输出目录生成三份 replay Benchmark 后，无需再次调用 API 即可汇总总分和逐维波动：
+
+```bash
+hy3-reproeval analyze-benchmark-stability \
+  --benchmark .reproeval/benchmark-run-1.json \
+  --benchmark .reproeval/benchmark-run-2.json \
+  --benchmark .reproeval/benchmark-run-3.json \
+  --output .reproeval/benchmark-stability.json
+```
+
+分析器要求不同 Judge `run_id` 和 Index 绑定同一个 Dataset Freeze，并输出覆盖率、标准差、极差和质量等级翻转。详见 [STABILITY_PROTOCOL.md](docs/STABILITY_PROTOCOL.md)。
+
 ### Annotation Bundle 校验
 
 以下命令无需 API Key，可校验公开的合成协议样例：
@@ -310,6 +324,7 @@ docs/P0_DATASET.md          规范化 P0 合成数据集清单与结论边界
 docs/BENCHMARK_PROTOCOL.md  组内批量指标和结论边界
 docs/ADVERSARIAL_PROTOCOL.md 对抗攻击登记与检测指标协议
 docs/JUDGE_BATCH.md         可恢复在线 Judge Record 生成协议
+docs/STABILITY_PROTOCOL.md  冻结重复 Benchmark 稳定性分析协议
 docs/ANNOTATION_PROTOCOL.md 去标识化标注和就绪条件
 docs/reproscope/             ReproScope 验证证据与历史材料
 ```

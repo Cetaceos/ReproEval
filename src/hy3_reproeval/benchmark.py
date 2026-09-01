@@ -9,7 +9,7 @@ from enum import StrEnum
 from itertools import combinations
 from pathlib import Path
 
-from pydantic import Field
+from pydantic import Field, model_validator
 
 from . import __version__
 from .dataset import (
@@ -27,6 +27,7 @@ from .freeze import optional_dataset_freeze_sha256
 from .judge_batch import validate_judge_record_index
 from .models import (
     DimensionId,
+    DimensionStatus,
     ErrorCode,
     EvaluationMode,
     EvaluationResult,
@@ -49,6 +50,12 @@ class BenchmarkMode(StrEnum):
     REPLAY = "replay"
 
 
+class BenchmarkDimensionResult(StrictModel):
+    dimension: DimensionId
+    status: DimensionStatus
+    score: float | None = Field(default=None, ge=0, le=4)
+
+
 class BenchmarkReportResult(StrictModel):
     report_id: str
     quality_tier: QualityTier
@@ -63,12 +70,22 @@ class BenchmarkReportResult(StrictModel):
     quality_band: QualityBand
     applied_hard_cap: float | None = Field(default=None, ge=0, le=100)
     judge_record_sha256: str | None = Field(default=None, pattern=r"^[A-F0-9]{64}$")
+    dimensions: list[BenchmarkDimensionResult] = Field(default_factory=list)
     expected_error_codes: list[ErrorCode]
     observed_error_codes: list[ErrorCode]
     detected_expected_error_codes: list[ErrorCode]
     missing_expected_error_codes: list[ErrorCode]
     unexpected_error_codes: list[ErrorCode]
     attacks: list[BenchmarkAttackResult] = Field(default_factory=list)
+
+    @model_validator(mode="after")
+    def validate_dimension_inventory(self) -> BenchmarkReportResult:
+        dimensions = [item.dimension for item in self.dimensions]
+        if len(dimensions) != len(set(dimensions)):
+            raise ValueError("Benchmark report dimensions must be unique")
+        if dimensions and set(dimensions) != set(DimensionId):
+            raise ValueError("Benchmark report dimension snapshots must cover the complete public Rubric")
+        return self
 
 
 class BenchmarkAttackResult(StrictModel):
@@ -170,6 +187,7 @@ class DatasetBenchmarkResult(StrictModel):
     rubric_version: str
     rubric_sha256: str = Field(pattern=r"^[A-F0-9]{64}$")
     judge_record_index_sha256: str | None = Field(default=None, pattern=r"^[A-F0-9]{64}$")
+    judge_run_id: str | None = Field(default=None, pattern=r"^[a-f0-9]{32}$")
     groups: list[BenchmarkGroupResult] = Field(min_length=1)
     overall: AggregateBenchmarkMetrics
     splits: dict[DatasetSplit, AggregateBenchmarkMetrics]
@@ -210,6 +228,11 @@ async def run_dataset_benchmark(
     ):
         raise EvaluationInputError("Freeze-bound Judge Record index requires --dataset-freeze")
     group_results: list[BenchmarkGroupResult] = []
+    index_record_hashes = (
+        {entry.report_id: entry.record_file_sha256 for entry in loaded_index.index.records}
+        if loaded_index is not None
+        else {}
+    )
     rubric_versions: set[str] = set()
     rubric_hashes: set[str] = set()
 
@@ -231,7 +254,13 @@ async def run_dataset_benchmark(
                 evaluation = evaluate_case_file(case_path)
             rubric_versions.add(evaluation.rubric_version)
             rubric_hashes.add(evaluation.rubric_sha256)
-            reports.append(_summarize_report(entry, evaluation))
+            reports.append(
+                _summarize_report(
+                    entry,
+                    evaluation,
+                    judge_record_sha256=index_record_hashes.get(entry.report_id, entry.judge_record_sha256),
+                )
+            )
         group_results.append(
             BenchmarkGroupResult(
                 group_id=group.group_id,
@@ -274,6 +303,7 @@ async def run_dataset_benchmark(
         rubric_version=next(iter(rubric_versions)),
         rubric_sha256=next(iter(rubric_hashes)),
         judge_record_index_sha256=(loaded_index.index_sha256 if loaded_index is not None else None),
+        judge_run_id=(loaded_index.index.run_id if loaded_index is not None else None),
         groups=group_results,
         overall=overall,
         splits={
@@ -285,7 +315,12 @@ async def run_dataset_benchmark(
     )
 
 
-def _summarize_report(entry: DatasetReportEntry, evaluation: EvaluationResult) -> BenchmarkReportResult:
+def _summarize_report(
+    entry: DatasetReportEntry,
+    evaluation: EvaluationResult,
+    *,
+    judge_record_sha256: str | None,
+) -> BenchmarkReportResult:
     observed = {
         finding.error_code
         for finding in evaluation.findings
@@ -309,7 +344,15 @@ def _summarize_report(entry: DatasetReportEntry, evaluation: EvaluationResult) -
         overall_score=evaluation.overall_score,
         quality_band=evaluation.quality_band,
         applied_hard_cap=evaluation.applied_hard_cap,
-        judge_record_sha256=entry.judge_record_sha256,
+        judge_record_sha256=judge_record_sha256,
+        dimensions=[
+            BenchmarkDimensionResult(
+                dimension=dimension.dimension,
+                status=dimension.status,
+                score=dimension.score,
+            )
+            for dimension in evaluation.dimensions
+        ],
         expected_error_codes=sorted(expected, key=str),
         observed_error_codes=sorted(observed, key=str),
         detected_expected_error_codes=sorted(expected & observed, key=str),

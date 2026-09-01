@@ -36,6 +36,7 @@ REQUIRED_SDIST_DOCS = {
     "docs/DATASET_FREEZE.md",
     "docs/JUDGE_BATCH.md",
     "docs/P0_DATASET.md",
+    "docs/STABILITY_PROTOCOL.md",
     "docs/PROJECT_PROPOSAL_CN.md",
     "docs/reproscope/RELEASE_EVIDENCE_0.15_CN.md",
 }

@@ -12,10 +12,10 @@ The first migration milestone is implemented. The repository now contains the va
 
 - 10 stdio MCP tools for reproducibility review, transfer assessment, evidence graphs, reports, and read-only repository audits;
 - deterministic statistics, schema validation, source hashes, artifact lineage, and fail-closed evidence checks;
-- synthetic examples, offline evaluation suites, live-validation gates, and more than 370 automated tests;
+- synthetic examples, offline evaluation suites, live-validation gates, and more than 380 automated tests;
 - compatibility with existing `hy3_reproscope_mcp` module and `hy3-reproscope-mcp` command names.
 
-The versioned seven-dimension rubric, deterministic validators, constrained Hy3 semantic Judge, blinded repeated comparison, reproducible dataset protocol, resumable batch Judge runs, group-isolated benchmark runner, de-identified annotation validation, agreement analysis, and adjudicated consensus aggregation are implemented. A deterministic 12-group P0 synthetic Dataset candidate is included for protocol experiments. Model judgments cannot replace local citation, numerical, artifact, or hard-cap decisions. Real expert labels and frozen held-out results remain future validation work described in [the project proposal](docs/PROJECT_PROPOSAL_CN.md).
+The versioned seven-dimension rubric, deterministic validators, constrained Hy3 semantic Judge, blinded repeated comparison, reproducible dataset protocol, resumable batch Judge runs, group-isolated benchmark runner, repeated-run stability analysis, de-identified annotation validation, agreement analysis, and adjudicated consensus aggregation are implemented. A deterministic 12-group P0 synthetic Dataset candidate is included for protocol experiments. Model judgments cannot replace local citation, numerical, artifact, or hard-cap decisions. Real expert labels and frozen held-out results remain future validation work described in [the project proposal](docs/PROJECT_PROPOSAL_CN.md).
 
 ## Architecture
 
@@ -226,6 +226,22 @@ hy3-reproeval benchmark-dataset \
 
 Create the output directory first and use `--resume` only after reviewing an interrupted run. For controlled experiments, reuse the same `--dataset-freeze` on Judge, Benchmark, annotation, agreement, and consensus commands; each output then carries one verified lineage fingerprint and mismatches fail closed. See [JUDGE_BATCH.md](docs/JUDGE_BATCH.md) and [DATASET_FREEZE.md](docs/DATASET_FREEZE.md).
 
+### Repeated Benchmark stability
+
+After producing three replay Benchmark results from separate Judge output directories, aggregate total-score and
+dimension-level dispersion without another API call:
+
+```bash
+hy3-reproeval analyze-benchmark-stability \
+  --benchmark .reproeval/benchmark-run-1.json \
+  --benchmark .reproeval/benchmark-run-2.json \
+  --benchmark .reproeval/benchmark-run-3.json \
+  --output .reproeval/benchmark-stability.json
+```
+
+The analyzer requires distinct Judge run IDs and indexes bound to one Dataset Freeze and reports coverage,
+standard deviation, score range, and quality-band flips. See [STABILITY_PROTOCOL.md](docs/STABILITY_PROTOCOL.md).
+
 ### Annotation Bundle validation
 
 Validate the public synthetic protocol fixture without an API key:
@@ -313,6 +329,7 @@ docs/P0_DATASET.md          canonical synthetic P0 Dataset inventory and boundar
 docs/BENCHMARK_PROTOCOL.md  group-isolated batch metrics and claim boundaries
 docs/ADVERSARIAL_PROTOCOL.md adversarial attack registration and detection metrics
 docs/JUDGE_BATCH.md         resumable online Judge Record generation
+docs/STABILITY_PROTOCOL.md  frozen repeated-Benchmark stability analysis
 docs/ANNOTATION_PROTOCOL.md de-identified annotation and readiness contract
 docs/reproscope/             selected ReproScope validation evidence and history
 ```

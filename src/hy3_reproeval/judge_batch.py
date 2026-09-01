@@ -4,8 +4,10 @@ from __future__ import annotations
 
 import hashlib
 from dataclasses import dataclass
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import TYPE_CHECKING, Literal
+from uuid import uuid4
 
 from pydantic import Field, model_validator
 
@@ -46,6 +48,8 @@ class JudgeRecordIndex(StrictModel):
     dataset_version: str
     dataset_manifest_sha256: str = Field(pattern=r"^[A-F0-9]{64}$")
     dataset_freeze_sha256: str | None = Field(default=None, pattern=r"^[A-F0-9]{64}$")
+    run_id: str | None = Field(default=None, pattern=r"^[a-f0-9]{32}$")
+    started_at_utc: str | None = Field(default=None, pattern=r"^[0-9]{4}-[0-9]{2}-[0-9]{2}T.+Z$")
     rubric_version: str
     rubric_sha256: str = Field(pattern=r"^[A-F0-9]{64}$")
     model: str = Field(min_length=1)
@@ -57,6 +61,8 @@ class JudgeRecordIndex(StrictModel):
 
     @model_validator(mode="after")
     def validate_inventory(self) -> JudgeRecordIndex:
+        if (self.run_id is None) != (self.started_at_utc is None):
+            raise ValueError("Judge Record index run ID and UTC start time must be declared together")
         if self.record_count != len(self.records):
             raise ValueError("Judge Record index record_count does not match records")
         if self.record_count > self.expected_record_count:
@@ -114,6 +120,7 @@ async def generate_dataset_judge_records(
     }
     if not resume and (index_path.exists() or any(path.exists() for path in target_paths.values())):
         raise EvaluationInputError("Judge Record output already exists; use resume only after reviewing the prior run")
+    previous: LoadedJudgeRecordIndex | None = None
     if resume and index_path.exists():
         previous = validate_judge_record_index(
             index_path,
@@ -127,6 +134,11 @@ async def generate_dataset_judge_records(
             raise EvaluationInputError("resumed Judge Record index uses a different model or provider")
 
     entries: list[JudgeRecordIndexEntry] = []
+    run_id = uuid4().hex
+    started_at_utc = datetime.now(UTC).isoformat().replace("+00:00", "Z")
+    if previous is not None:
+        run_id = previous.index.run_id or run_id
+        started_at_utc = previous.index.started_at_utc or started_at_utc
     _write_index(
         index_path,
         _build_index(
@@ -138,6 +150,8 @@ async def generate_dataset_judge_records(
             inventory,
             entries,
             dataset_freeze_sha256=dataset_freeze_sha256,
+            run_id=run_id,
+            started_at_utc=started_at_utc,
             complete=False,
         ),
     )
@@ -182,6 +196,8 @@ async def generate_dataset_judge_records(
                     inventory,
                     entries,
                     dataset_freeze_sha256=dataset_freeze_sha256,
+                    run_id=run_id,
+                    started_at_utc=started_at_utc,
                     complete=False,
                 ),
             )
@@ -198,6 +214,8 @@ async def generate_dataset_judge_records(
         inventory,
         entries,
         dataset_freeze_sha256=dataset_freeze_sha256,
+        run_id=run_id,
+        started_at_utc=started_at_utc,
         complete=True,
     )
     _write_index(index_path, completed)
@@ -317,6 +335,8 @@ def _build_index(
     entries: list[JudgeRecordIndexEntry],
     *,
     dataset_freeze_sha256: str | None,
+    run_id: str,
+    started_at_utc: str,
     complete: bool,
 ) -> JudgeRecordIndex:
     return JudgeRecordIndex(
@@ -325,6 +345,8 @@ def _build_index(
         dataset_version=dataset.manifest.dataset_version,
         dataset_manifest_sha256=dataset.manifest_sha256,
         dataset_freeze_sha256=dataset_freeze_sha256,
+        run_id=run_id,
+        started_at_utc=started_at_utc,
         rubric_version=rubric.rubric_version,
         rubric_sha256=rubric_sha256,
         model=model,
