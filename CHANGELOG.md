@@ -2,6 +2,20 @@
 
 All notable ReproEval changes are documented in this file.
 
+## 0.30.0 - 2026-09-01
+
+### Added
+
+- A deterministic five-group P1 transfer-generalization Dataset with 15 high/medium/low reports, 10 replayable
+  Mutation Manifests, and isolated development/validation/test source groups.
+- Transfer cases covering edge inference, UAV federated learning, antenna-array migration, ISAC bandwidth, and
+  embedded semantic communication constraints.
+- CLI, CI, byte-verification, Dataset validation, Freeze, and test coverage for the canonical P1 inventory.
+
+### Fixed
+
+- Reproduction-specific P0 scale and adversarial warnings no longer appear on transfer-only Datasets.
+
 ## 0.29.0 - 2026-09-01
 
 ### Added

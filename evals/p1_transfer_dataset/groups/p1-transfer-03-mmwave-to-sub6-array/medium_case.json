@@ -1,0 +1,70 @@
+{
+  "schema_version": "1.0",
+  "case_id": "p1-transfer-03-mmwave-to-sub6-array-medium-case",
+  "scenario": "transfer",
+  "report_path": "medium_report.md",
+  "sources": [
+    {
+      "source_id": "solution",
+      "locators": [
+        "L2-L8"
+      ]
+    },
+    {
+      "source_id": "target",
+      "locators": [
+        "L9-L14"
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "mmwave-to-sub6-array-conditional-decision",
+      "marker": "transfer decision is conditional",
+      "required_source_ids": [
+        "solution",
+        "target"
+      ]
+    }
+  ],
+  "numeric_expectations": [
+    {
+      "fact_id": "mmwave-to-sub6-array-target-constraint",
+      "label": "antenna count of",
+      "expected": "8",
+      "absolute_tolerance": "0",
+      "critical": true
+    }
+  ],
+  "required_sections": [
+    {
+      "section_id": "decision",
+      "heading": "Decision summary"
+    },
+    {
+      "section_id": "compatibility",
+      "heading": "Compatibility evidence"
+    },
+    {
+      "section_id": "risks",
+      "heading": "Risks and limitations"
+    },
+    {
+      "section_id": "validation",
+      "heading": "Validation plan"
+    }
+  ],
+  "uncertainty": {
+    "required": true,
+    "accepted_phrases": [
+      "insufficient evidence"
+    ]
+  },
+  "artifacts": [
+    {
+      "artifact_id": "mmwave-to-sub6-array-packet",
+      "path": "source_material.md",
+      "sha256": "CD4939F4851B5BAD43514F418A055D2C060D84A8B20B0298C9133664D37BDE85"
+    }
+  ]
+}

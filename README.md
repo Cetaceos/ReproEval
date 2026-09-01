@@ -176,6 +176,20 @@ hy3-reproeval validate-dataset --manifest evals/p0_dataset/dataset.json
 Its generated labels validate the protocol and P0 structural gates; they are not expert ground truth or a
 held-out performance result. See [P0_DATASET.md](docs/P0_DATASET.md).
 
+### P1 transfer-generalization Dataset
+
+The tracked P1 Dataset adds five isolated transfer scenarios and 15 high/medium/low reports across edge
+inference, UAV federated learning, antenna arrays, ISAC, and semantic communication. It verifies whether the
+same seven-dimension evaluator can audit conditional transfer reports without changing Rubric weights:
+
+```bash
+hy3-reproeval build-p1-transfer-dataset --output evals/p1_transfer_dataset --check
+hy3-reproeval validate-dataset --manifest evals/p1_transfer_dataset/dataset.json
+```
+
+The Dataset evaluates report quality, evidence use, target constraints, limitations, and validation plans. It
+does not establish that any synthetic solution is deployable. See [P1_TRANSFER_DATASET.md](docs/P1_TRANSFER_DATASET.md).
+
 ### Dataset freeze
 
 Before generating Judge Records or collecting blinded annotations, freeze every registered input:
@@ -340,6 +354,7 @@ docs/EVALUATION_CORE.md     deterministic evaluator contract and limitations
 docs/DATASET_PROTOCOL.md    dataset, split, provenance, and mutation contract
 docs/DATASET_FREEZE.md      experiment-input freeze, verification, and P0 gate
 docs/P0_DATASET.md          canonical synthetic P0 Dataset inventory and boundaries
+docs/P1_TRANSFER_DATASET.md canonical P1 transfer-generalization inventory and boundaries
 docs/BENCHMARK_PROTOCOL.md  group-isolated batch metrics and claim boundaries
 docs/ADVERSARIAL_PROTOCOL.md adversarial attack registration and detection metrics
 docs/JUDGE_BATCH.md         resumable online Judge Record generation

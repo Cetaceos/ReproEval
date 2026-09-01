@@ -1,0 +1,253 @@
+{
+  "schema_version": "1.0",
+  "dataset_id": "reproeval-p1-synthetic-transfer",
+  "dataset_version": "0.1.0",
+  "description": "Deterministically generated five-group synthetic P1 Dataset for testing transfer-report quality generalization; not a measured deployment-feasibility benchmark or human ground truth.",
+  "groups": [
+    {
+      "group_id": "p1-transfer-01-gpu-to-cpu-edge",
+      "split": "development",
+      "scenario": "transfer",
+      "provenance": {
+        "kind": "synthetic",
+        "license": "Apache-2.0",
+        "source_group_sha256": "B57BF7D16AB28D2160340693EFACB459A2790ACC0B498F69E6C3B3E5149B10EC",
+        "acquisition_date": "2026-09-01",
+        "description": "Repository-authored synthetic solution and target packet for GPU inference pipeline to CPU edge deployment; contains no patent text, third-party code, or personal data."
+      },
+      "reports": [
+        {
+          "report_id": "p1-transfer-01-gpu-to-cpu-edge-high",
+          "quality_tier": "high",
+          "case_path": "groups/p1-transfer-01-gpu-to-cpu-edge/high_case.json",
+          "report_sha256": "FC4027E767603BEC24F44205A63879D5B6C33A75E7A6CA5C106AACE6B1AAC0DF",
+          "label_source": "reference_revision",
+          "expected_error_codes": []
+        },
+        {
+          "report_id": "p1-transfer-01-gpu-to-cpu-edge-medium",
+          "quality_tier": "medium",
+          "case_path": "groups/p1-transfer-01-gpu-to-cpu-edge/medium_case.json",
+          "report_sha256": "179D1903C4443248BF13A5261B7A0ADA9C8426536FCCEFC6E9B10F3EA5A6A03F",
+          "label_source": "synthetic_mutation",
+          "expected_error_codes": [
+            "reasoning_gap",
+            "actionability_gap"
+          ],
+          "mutation_manifest_path": "groups/p1-transfer-01-gpu-to-cpu-edge/medium_mutation.json"
+        },
+        {
+          "report_id": "p1-transfer-01-gpu-to-cpu-edge-low",
+          "quality_tier": "low",
+          "case_path": "groups/p1-transfer-01-gpu-to-cpu-edge/low_case.json",
+          "report_sha256": "1B6E2F80973AA79BF35D5D2942C0F6A8D8D2079CF6EAD95FC97C62B15B6B010B",
+          "label_source": "synthetic_mutation",
+          "expected_error_codes": [
+            "reasoning_gap",
+            "actionability_gap",
+            "fabricated_citation",
+            "unsupported_claim",
+            "numeric_error"
+          ],
+          "mutation_manifest_path": "groups/p1-transfer-01-gpu-to-cpu-edge/low_mutation.json"
+        }
+      ]
+    },
+    {
+      "group_id": "p1-transfer-02-federated-uav-link",
+      "split": "validation",
+      "scenario": "transfer",
+      "provenance": {
+        "kind": "synthetic",
+        "license": "Apache-2.0",
+        "source_group_sha256": "4F86EE55B39523837792C2A7CDCB1C21A053CD561A3D0DF685C19B7D2BF22A24",
+        "acquisition_date": "2026-09-01",
+        "description": "Repository-authored synthetic solution and target packet for Centralized federated coordinator to intermittent UAV links; contains no patent text, third-party code, or personal data."
+      },
+      "reports": [
+        {
+          "report_id": "p1-transfer-02-federated-uav-link-high",
+          "quality_tier": "high",
+          "case_path": "groups/p1-transfer-02-federated-uav-link/high_case.json",
+          "report_sha256": "CE5ACE84C6223098055F57E002B66F75E38A525F3D319B47AE8DCBB09FEDBD92",
+          "label_source": "reference_revision",
+          "expected_error_codes": []
+        },
+        {
+          "report_id": "p1-transfer-02-federated-uav-link-medium",
+          "quality_tier": "medium",
+          "case_path": "groups/p1-transfer-02-federated-uav-link/medium_case.json",
+          "report_sha256": "7E04131AE7C4E03D60D63554F4869E4087E441FBC2C2E56BC967A29F119D94FC",
+          "label_source": "synthetic_mutation",
+          "expected_error_codes": [
+            "reasoning_gap",
+            "actionability_gap"
+          ],
+          "mutation_manifest_path": "groups/p1-transfer-02-federated-uav-link/medium_mutation.json"
+        },
+        {
+          "report_id": "p1-transfer-02-federated-uav-link-low",
+          "quality_tier": "low",
+          "case_path": "groups/p1-transfer-02-federated-uav-link/low_case.json",
+          "report_sha256": "CFE2F9A38650FDF7708520E182B3CB68798E95C910C194D1AC58469C00D55430",
+          "label_source": "synthetic_mutation",
+          "expected_error_codes": [
+            "reasoning_gap",
+            "actionability_gap",
+            "fabricated_citation",
+            "unsupported_claim",
+            "numeric_error"
+          ],
+          "mutation_manifest_path": "groups/p1-transfer-02-federated-uav-link/low_mutation.json"
+        }
+      ]
+    },
+    {
+      "group_id": "p1-transfer-03-mmwave-to-sub6-array",
+      "split": "validation",
+      "scenario": "transfer",
+      "provenance": {
+        "kind": "synthetic",
+        "license": "Apache-2.0",
+        "source_group_sha256": "CD4939F4851B5BAD43514F418A055D2C060D84A8B20B0298C9133664D37BDE85",
+        "acquisition_date": "2026-09-01",
+        "description": "Repository-authored synthetic solution and target packet for Millimeter-wave beam selector to a sub-6 GHz array; contains no patent text, third-party code, or personal data."
+      },
+      "reports": [
+        {
+          "report_id": "p1-transfer-03-mmwave-to-sub6-array-high",
+          "quality_tier": "high",
+          "case_path": "groups/p1-transfer-03-mmwave-to-sub6-array/high_case.json",
+          "report_sha256": "4DD719A2E86FF1EB1CA23D63896D316A7CC2A6A71FBDCA70043E25D99B6A517D",
+          "label_source": "reference_revision",
+          "expected_error_codes": []
+        },
+        {
+          "report_id": "p1-transfer-03-mmwave-to-sub6-array-medium",
+          "quality_tier": "medium",
+          "case_path": "groups/p1-transfer-03-mmwave-to-sub6-array/medium_case.json",
+          "report_sha256": "C49FAC301FA117906B28F80F7F21E7075E3EE14C40C5E413FCF690446E153300",
+          "label_source": "synthetic_mutation",
+          "expected_error_codes": [
+            "reasoning_gap",
+            "actionability_gap"
+          ],
+          "mutation_manifest_path": "groups/p1-transfer-03-mmwave-to-sub6-array/medium_mutation.json"
+        },
+        {
+          "report_id": "p1-transfer-03-mmwave-to-sub6-array-low",
+          "quality_tier": "low",
+          "case_path": "groups/p1-transfer-03-mmwave-to-sub6-array/low_case.json",
+          "report_sha256": "A04ABA3CA174312F358E642B52F9CB545E81125CD78635D13919235FA95A7845",
+          "label_source": "synthetic_mutation",
+          "expected_error_codes": [
+            "reasoning_gap",
+            "actionability_gap",
+            "fabricated_citation",
+            "unsupported_claim",
+            "numeric_error"
+          ],
+          "mutation_manifest_path": "groups/p1-transfer-03-mmwave-to-sub6-array/low_mutation.json"
+        }
+      ]
+    },
+    {
+      "group_id": "p1-transfer-04-isac-bandwidth-transfer",
+      "split": "test",
+      "scenario": "transfer",
+      "provenance": {
+        "kind": "synthetic",
+        "license": "Apache-2.0",
+        "source_group_sha256": "00D16C7C16FB8688DE4D0707BC041241B2E1E0EC90D7E13A371E4BFD1A094415",
+        "acquisition_date": "2026-09-01",
+        "description": "Repository-authored synthetic solution and target packet for Wideband ISAC detector to a narrowband sensing modem; contains no patent text, third-party code, or personal data."
+      },
+      "reports": [
+        {
+          "report_id": "p1-transfer-04-isac-bandwidth-transfer-high",
+          "quality_tier": "high",
+          "case_path": "groups/p1-transfer-04-isac-bandwidth-transfer/high_case.json",
+          "report_sha256": "0AFDC26ED490BFA3512D5E77D276A7E059F2184019D0E95392AE2567C603CB7A",
+          "label_source": "reference_revision",
+          "expected_error_codes": []
+        },
+        {
+          "report_id": "p1-transfer-04-isac-bandwidth-transfer-medium",
+          "quality_tier": "medium",
+          "case_path": "groups/p1-transfer-04-isac-bandwidth-transfer/medium_case.json",
+          "report_sha256": "3D60D9EDF58B4FFE2B24C645824D8A881312511D4F0247DAFFDE1080FA9B34AE",
+          "label_source": "synthetic_mutation",
+          "expected_error_codes": [
+            "reasoning_gap",
+            "actionability_gap"
+          ],
+          "mutation_manifest_path": "groups/p1-transfer-04-isac-bandwidth-transfer/medium_mutation.json"
+        },
+        {
+          "report_id": "p1-transfer-04-isac-bandwidth-transfer-low",
+          "quality_tier": "low",
+          "case_path": "groups/p1-transfer-04-isac-bandwidth-transfer/low_case.json",
+          "report_sha256": "6DF81EA5633BB31B84DFF20C130FD8C13BC1ECBF33514D2B6ACC8FB0F8768684",
+          "label_source": "synthetic_mutation",
+          "expected_error_codes": [
+            "reasoning_gap",
+            "actionability_gap",
+            "fabricated_citation",
+            "unsupported_claim",
+            "numeric_error"
+          ],
+          "mutation_manifest_path": "groups/p1-transfer-04-isac-bandwidth-transfer/low_mutation.json"
+        }
+      ]
+    },
+    {
+      "group_id": "p1-transfer-05-semantic-codec-embedded",
+      "split": "test",
+      "scenario": "transfer",
+      "provenance": {
+        "kind": "synthetic",
+        "license": "Apache-2.0",
+        "source_group_sha256": "1897D3E512B5581D7CF40EE816790CA29035361C128F61AEA31300498B384EBD",
+        "acquisition_date": "2026-09-01",
+        "description": "Repository-authored synthetic solution and target packet for Cloud semantic codec to an embedded terminal; contains no patent text, third-party code, or personal data."
+      },
+      "reports": [
+        {
+          "report_id": "p1-transfer-05-semantic-codec-embedded-high",
+          "quality_tier": "high",
+          "case_path": "groups/p1-transfer-05-semantic-codec-embedded/high_case.json",
+          "report_sha256": "DF50741EFB2E34806F1160C4149E1896B4AF43F2038E6250AB1E352419DC2831",
+          "label_source": "reference_revision",
+          "expected_error_codes": []
+        },
+        {
+          "report_id": "p1-transfer-05-semantic-codec-embedded-medium",
+          "quality_tier": "medium",
+          "case_path": "groups/p1-transfer-05-semantic-codec-embedded/medium_case.json",
+          "report_sha256": "538214DC8FAD832B83E8BBB4825A6F114742D774A0E9D2C0BC170548D018D489",
+          "label_source": "synthetic_mutation",
+          "expected_error_codes": [
+            "reasoning_gap",
+            "actionability_gap"
+          ],
+          "mutation_manifest_path": "groups/p1-transfer-05-semantic-codec-embedded/medium_mutation.json"
+        },
+        {
+          "report_id": "p1-transfer-05-semantic-codec-embedded-low",
+          "quality_tier": "low",
+          "case_path": "groups/p1-transfer-05-semantic-codec-embedded/low_case.json",
+          "report_sha256": "B03387FDB4DE2CC4B39F96CFC412AADC6789DF58496A567394642224CD9E2BC2",
+          "label_source": "synthetic_mutation",
+          "expected_error_codes": [
+            "reasoning_gap",
+            "actionability_gap",
+            "fabricated_citation",
+            "unsupported_claim",
+            "numeric_error"
+          ],
+          "mutation_manifest_path": "groups/p1-transfer-05-semantic-codec-embedded/low_mutation.json"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0",
+  "mutation_id": "p1-transfer-03-mmwave-to-sub6-array-low-mutation",
+  "parent_report_id": "p1-transfer-03-mmwave-to-sub6-array-high",
+  "output_report_id": "p1-transfer-03-mmwave-to-sub6-array-low",
+  "parent_path": "groups/p1-transfer-03-mmwave-to-sub6-array/high_report.md",
+  "output_path": "groups/p1-transfer-03-mmwave-to-sub6-array/low_report.md",
+  "parent_sha256": "4DD719A2E86FF1EB1CA23D63896D316A7CC2A6A71FBDCA70043E25D99B6A517D",
+  "output_sha256": "A04ABA3CA174312F358E642B52F9CB545E81125CD78635D13919235FA95A7845",
+  "operations": [
+    {
+      "operation_id": "weaken-transfer-reasoning",
+      "kind": "replace_once",
+      "target": "There is insufficient evidence for a target performance point estimate; compatibility and deployment readiness require target-side measurements.",
+      "replacement": "The environments differ, and there is insufficient evidence.",
+      "expected_dimensions": [
+        "reasoning_consistency"
+      ],
+      "expected_error_codes": [
+        "reasoning_gap"
+      ]
+    },
+    {
+      "operation_id": "weaken-validation-plan",
+      "kind": "replace_once",
+      "target": "First run an eight-antenna coverage and handover sweep; reject deployment if the registered constraint or acceptance metric fails.",
+      "replacement": "Run more target tests.",
+      "expected_dimensions": [
+        "clarity_actionability"
+      ],
+      "expected_error_codes": [
+        "actionability_gap"
+      ]
+    },
+    {
+      "operation_id": "corrupt-target-constraint",
+      "kind": "replace_once",
+      "target": "The transfer decision is conditional because the proposed adaptation must fit the target antenna count of 8 [solution@L2-L8] [target@L9-L14].",
+      "replacement": "The transfer decision is conditional because the proposed adaptation fits the target antenna count of 64 [solution@L2-L8] [invented-target@L1].",
+      "expected_dimensions": [
+        "factual_accuracy",
+        "evidence_traceability",
+        "numerical_consistency"
+      ],
+      "expected_error_codes": [
+        "fabricated_citation",
+        "unsupported_claim",
+        "numeric_error"
+      ]
+    }
+  ]
+}

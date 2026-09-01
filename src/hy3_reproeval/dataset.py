@@ -516,10 +516,11 @@ def _dataset_warnings(
     missing_splits = [split.value for split in DatasetSplit if split_counts[split] == 0]
     if missing_splits:
         warnings.append("Dataset does not yet cover splits: " + ", ".join(missing_splits) + ".")
-    if len(manifest.groups) < 12:
-        warnings.append("Dataset is below the P0 target of 12 source groups.")
-    if tier_counts[QualityTier.ADVERSARIAL] < 8:
-        warnings.append("Dataset is below the planned target of 8 adversarial reports.")
+    contains_reproduction = any(group.scenario is Scenario.REPRODUCTION for group in manifest.groups)
+    if contains_reproduction and len(manifest.groups) < 12:
+        warnings.append("Dataset is below the reproduction P0 target of 12 source groups.")
+    if contains_reproduction and tier_counts[QualityTier.ADVERSARIAL] < 8:
+        warnings.append("Dataset is below the reproduction P0 target of 8 adversarial reports.")
     if human_reviewed == 0:
         warnings.append("Dataset contains no human-reviewed report labels.")
     return warnings

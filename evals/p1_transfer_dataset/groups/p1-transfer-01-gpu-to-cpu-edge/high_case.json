@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0",
+  "case_id": "p1-transfer-01-gpu-to-cpu-edge-high-case",
+  "scenario": "transfer",
+  "report_path": "high_report.md",
+  "sources": [
+    {
+      "source_id": "solution",
+      "locators": [
+        "L2-L8"
+      ]
+    },
+    {
+      "source_id": "target",
+      "locators": [
+        "L9-L14"
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "gpu-to-cpu-edge-conditional-decision",
+      "marker": "transfer decision is conditional",
+      "required_source_ids": [
+        "solution",
+        "target"
+      ]
+    }
+  ],
+  "numeric_expectations": [
+    {
+      "fact_id": "gpu-to-cpu-edge-target-constraint",
+      "label": "memory budget of",
+      "expected": "8",
+      "absolute_tolerance": "0",
+      "critical": true,
+      "unit": "GB"
+    }
+  ],
+  "required_sections": [
+    {
+      "section_id": "decision",
+      "heading": "Decision summary"
+    },
+    {
+      "section_id": "compatibility",
+      "heading": "Compatibility evidence"
+    },
+    {
+      "section_id": "risks",
+      "heading": "Risks and limitations"
+    },
+    {
+      "section_id": "validation",
+      "heading": "Validation plan"
+    }
+  ],
+  "uncertainty": {
+    "required": true,
+    "accepted_phrases": [
+      "insufficient evidence"
+    ]
+  },
+  "artifacts": [
+    {
+      "artifact_id": "gpu-to-cpu-edge-packet",
+      "path": "source_material.md",
+      "sha256": "B57BF7D16AB28D2160340693EFACB459A2790ACC0B498F69E6C3B3E5149B10EC"
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "mutation_id": "p1-transfer-03-mmwave-to-sub6-array-medium-mutation",
+  "parent_report_id": "p1-transfer-03-mmwave-to-sub6-array-high",
+  "output_report_id": "p1-transfer-03-mmwave-to-sub6-array-medium",
+  "parent_path": "groups/p1-transfer-03-mmwave-to-sub6-array/high_report.md",
+  "output_path": "groups/p1-transfer-03-mmwave-to-sub6-array/medium_report.md",
+  "parent_sha256": "4DD719A2E86FF1EB1CA23D63896D316A7CC2A6A71FBDCA70043E25D99B6A517D",
+  "output_sha256": "C49FAC301FA117906B28F80F7F21E7075E3EE14C40C5E413FCF690446E153300",
+  "operations": [
+    {
+      "operation_id": "weaken-transfer-reasoning",
+      "kind": "replace_once",
+      "target": "There is insufficient evidence for a target performance point estimate; compatibility and deployment readiness require target-side measurements.",
+      "replacement": "The environments differ, and there is insufficient evidence.",
+      "expected_dimensions": [
+        "reasoning_consistency"
+      ],
+      "expected_error_codes": [
+        "reasoning_gap"
+      ]
+    },
+    {
+      "operation_id": "weaken-validation-plan",
+      "kind": "replace_once",
+      "target": "First run an eight-antenna coverage and handover sweep; reject deployment if the registered constraint or acceptance metric fails.",
+      "replacement": "Run more target tests.",
+      "expected_dimensions": [
+        "clarity_actionability"
+      ],
+      "expected_error_codes": [
+        "actionability_gap"
+      ]
+    }
+  ]
+}

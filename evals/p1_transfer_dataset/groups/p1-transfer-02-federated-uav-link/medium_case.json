@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0",
+  "case_id": "p1-transfer-02-federated-uav-link-medium-case",
+  "scenario": "transfer",
+  "report_path": "medium_report.md",
+  "sources": [
+    {
+      "source_id": "solution",
+      "locators": [
+        "L2-L8"
+      ]
+    },
+    {
+      "source_id": "target",
+      "locators": [
+        "L9-L14"
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "federated-uav-link-conditional-decision",
+      "marker": "transfer decision is conditional",
+      "required_source_ids": [
+        "solution",
+        "target"
+      ]
+    }
+  ],
+  "numeric_expectations": [
+    {
+      "fact_id": "federated-uav-link-target-constraint",
+      "label": "uplink budget of",
+      "expected": "20",
+      "absolute_tolerance": "0",
+      "critical": true,
+      "unit": "Mbps"
+    }
+  ],
+  "required_sections": [
+    {
+      "section_id": "decision",
+      "heading": "Decision summary"
+    },
+    {
+      "section_id": "compatibility",
+      "heading": "Compatibility evidence"
+    },
+    {
+      "section_id": "risks",
+      "heading": "Risks and limitations"
+    },
+    {
+      "section_id": "validation",
+      "heading": "Validation plan"
+    }
+  ],
+  "uncertainty": {
+    "required": true,
+    "accepted_phrases": [
+      "insufficient evidence"
+    ]
+  },
+  "artifacts": [
+    {
+      "artifact_id": "federated-uav-link-packet",
+      "path": "source_material.md",
+      "sha256": "4F86EE55B39523837792C2A7CDCB1C21A053CD561A3D0DF685C19B7D2BF22A24"
+    }
+  ]
+}

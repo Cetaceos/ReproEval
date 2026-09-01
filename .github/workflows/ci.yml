@@ -72,6 +72,11 @@ jobs:
           python -m hy3_reproeval build-p0-dataset --output evals/p0_dataset --check
           python -m hy3_reproeval validate-dataset --manifest evals/p0_dataset/dataset.json
 
+      - name: Verify canonical P1 transfer Dataset
+        run: |
+          python -m hy3_reproeval build-p1-transfer-dataset --output evals/p1_transfer_dataset --check
+          python -m hy3_reproeval validate-dataset --manifest evals/p1_transfer_dataset/dataset.json
+
       - name: Run deterministic offline evaluations
         run: |
           python scripts/run_offline_eval.py

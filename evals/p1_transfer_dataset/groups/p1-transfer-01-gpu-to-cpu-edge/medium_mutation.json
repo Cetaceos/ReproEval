@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "mutation_id": "p1-transfer-01-gpu-to-cpu-edge-medium-mutation",
+  "parent_report_id": "p1-transfer-01-gpu-to-cpu-edge-high",
+  "output_report_id": "p1-transfer-01-gpu-to-cpu-edge-medium",
+  "parent_path": "groups/p1-transfer-01-gpu-to-cpu-edge/high_report.md",
+  "output_path": "groups/p1-transfer-01-gpu-to-cpu-edge/medium_report.md",
+  "parent_sha256": "FC4027E767603BEC24F44205A63879D5B6C33A75E7A6CA5C106AACE6B1AAC0DF",
+  "output_sha256": "179D1903C4443248BF13A5261B7A0ADA9C8426536FCCEFC6E9B10F3EA5A6A03F",
+  "operations": [
+    {
+      "operation_id": "weaken-transfer-reasoning",
+      "kind": "replace_once",
+      "target": "There is insufficient evidence for a target performance point estimate; compatibility and deployment readiness require target-side measurements.",
+      "replacement": "The environments differ, and there is insufficient evidence.",
+      "expected_dimensions": [
+        "reasoning_consistency"
+      ],
+      "expected_error_codes": [
+        "reasoning_gap"
+      ]
+    },
+    {
+      "operation_id": "weaken-validation-plan",
+      "kind": "replace_once",
+      "target": "First measure peak memory and p95 latency on the target node; reject deployment if the registered constraint or acceptance metric fails.",
+      "replacement": "Run more target tests.",
+      "expected_dimensions": [
+        "clarity_actionability"
+      ],
+      "expected_error_codes": [
+        "actionability_gap"
+      ]
+    }
+  ]
+}

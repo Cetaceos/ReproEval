@@ -175,6 +175,20 @@ hy3-reproeval validate-dataset --manifest evals/p0_dataset/dataset.json
 其中的生成标签用于验证协议和 P0 结构门槛，不是专家真值或 held-out 性能结果。详见
 [P0_DATASET.md](docs/P0_DATASET.md)。
 
+### P1 技术迁移泛化数据集
+
+仓库内的 P1 数据集增加 5 个相互隔离的技术迁移场景，以及覆盖边缘推理、UAV 联邦学习、天线阵列、
+ISAC 和语义通信的 15 份高/中/低报告，用于验证同一七维评估器能否在不修改 Rubric 权重的情况下审查
+条件化迁移报告：
+
+```bash
+hy3-reproeval build-p1-transfer-dataset --output evals/p1_transfer_dataset --check
+hy3-reproeval validate-dataset --manifest evals/p1_transfer_dataset/dataset.json
+```
+
+该数据集评估报告质量、证据使用、目标约束、限制说明和验证计划，不证明任何合成方案能够真实部署。
+详见 [P1_TRANSFER_DATASET.md](docs/P1_TRANSFER_DATASET.md)。
+
 ### 数据集冻结
 
 在正式生成 Judge Record 或组织人工盲评前，冻结所有登记输入：
@@ -335,6 +349,7 @@ docs/EVALUATION_CORE.md     确定性评估器契约和能力边界
 docs/DATASET_PROTOCOL.md    数据集、划分、来源与变异协议
 docs/DATASET_FREEZE.md      实验输入冻结、复核与 P0 门槛
 docs/P0_DATASET.md          规范化 P0 合成数据集清单与结论边界
+docs/P1_TRANSFER_DATASET.md 规范化 P1 技术迁移泛化集清单与结论边界
 docs/BENCHMARK_PROTOCOL.md  组内批量指标和结论边界
 docs/ADVERSARIAL_PROTOCOL.md 对抗攻击登记与检测指标协议
 docs/JUDGE_BATCH.md         可恢复在线 Judge Record 生成协议

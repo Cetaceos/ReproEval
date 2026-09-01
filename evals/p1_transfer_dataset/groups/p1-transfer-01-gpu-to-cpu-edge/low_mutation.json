@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0",
+  "mutation_id": "p1-transfer-01-gpu-to-cpu-edge-low-mutation",
+  "parent_report_id": "p1-transfer-01-gpu-to-cpu-edge-high",
+  "output_report_id": "p1-transfer-01-gpu-to-cpu-edge-low",
+  "parent_path": "groups/p1-transfer-01-gpu-to-cpu-edge/high_report.md",
+  "output_path": "groups/p1-transfer-01-gpu-to-cpu-edge/low_report.md",
+  "parent_sha256": "FC4027E767603BEC24F44205A63879D5B6C33A75E7A6CA5C106AACE6B1AAC0DF",
+  "output_sha256": "1B6E2F80973AA79BF35D5D2942C0F6A8D8D2079CF6EAD95FC97C62B15B6B010B",
+  "operations": [
+    {
+      "operation_id": "weaken-transfer-reasoning",
+      "kind": "replace_once",
+      "target": "There is insufficient evidence for a target performance point estimate; compatibility and deployment readiness require target-side measurements.",
+      "replacement": "The environments differ, and there is insufficient evidence.",
+      "expected_dimensions": [
+        "reasoning_consistency"
+      ],
+      "expected_error_codes": [
+        "reasoning_gap"
+      ]
+    },
+    {
+      "operation_id": "weaken-validation-plan",
+      "kind": "replace_once",
+      "target": "First measure peak memory and p95 latency on the target node; reject deployment if the registered constraint or acceptance metric fails.",
+      "replacement": "Run more target tests.",
+      "expected_dimensions": [
+        "clarity_actionability"
+      ],
+      "expected_error_codes": [
+        "actionability_gap"
+      ]
+    },
+    {
+      "operation_id": "corrupt-target-constraint",
+      "kind": "replace_once",
+      "target": "The transfer decision is conditional because the proposed adaptation must fit the target memory budget of 8 GB [solution@L2-L8] [target@L9-L14].",
+      "replacement": "The transfer decision is conditional because the proposed adaptation fits the target memory budget of 16 GB [solution@L2-L8] [invented-target@L1].",
+      "expected_dimensions": [
+        "factual_accuracy",
+        "evidence_traceability",
+        "numerical_consistency"
+      ],
+      "expected_error_codes": [
+        "fabricated_citation",
+        "unsupported_claim",
+        "numeric_error"
+      ]
+    }
+  ]
+}

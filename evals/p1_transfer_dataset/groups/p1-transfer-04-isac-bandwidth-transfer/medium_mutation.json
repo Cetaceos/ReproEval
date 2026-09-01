@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "mutation_id": "p1-transfer-04-isac-bandwidth-transfer-medium-mutation",
+  "parent_report_id": "p1-transfer-04-isac-bandwidth-transfer-high",
+  "output_report_id": "p1-transfer-04-isac-bandwidth-transfer-medium",
+  "parent_path": "groups/p1-transfer-04-isac-bandwidth-transfer/high_report.md",
+  "output_path": "groups/p1-transfer-04-isac-bandwidth-transfer/medium_report.md",
+  "parent_sha256": "0AFDC26ED490BFA3512D5E77D276A7E059F2184019D0E95392AE2567C603CB7A",
+  "output_sha256": "3D60D9EDF58B4FFE2B24C645824D8A881312511D4F0247DAFFDE1080FA9B34AE",
+  "operations": [
+    {
+      "operation_id": "weaken-transfer-reasoning",
+      "kind": "replace_once",
+      "target": "There is insufficient evidence for a target performance point estimate; compatibility and deployment readiness require target-side measurements.",
+      "replacement": "The environments differ, and there is insufficient evidence.",
+      "expected_dimensions": [
+        "reasoning_consistency"
+      ],
+      "expected_error_codes": [
+        "reasoning_gap"
+      ]
+    },
+    {
+      "operation_id": "weaken-validation-plan",
+      "kind": "replace_once",
+      "target": "First measure detection probability and link error rate across the target band; reject deployment if the registered constraint or acceptance metric fails.",
+      "replacement": "Run more target tests.",
+      "expected_dimensions": [
+        "clarity_actionability"
+      ],
+      "expected_error_codes": [
+        "actionability_gap"
+      ]
+    }
+  ]
+}

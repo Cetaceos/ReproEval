@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "mutation_id": "p1-transfer-02-federated-uav-link-medium-mutation",
+  "parent_report_id": "p1-transfer-02-federated-uav-link-high",
+  "output_report_id": "p1-transfer-02-federated-uav-link-medium",
+  "parent_path": "groups/p1-transfer-02-federated-uav-link/high_report.md",
+  "output_path": "groups/p1-transfer-02-federated-uav-link/medium_report.md",
+  "parent_sha256": "CE5ACE84C6223098055F57E002B66F75E38A525F3D319B47AE8DCBB09FEDBD92",
+  "output_sha256": "7E04131AE7C4E03D60D63554F4869E4087E441FBC2C2E56BC967A29F119D94FC",
+  "operations": [
+    {
+      "operation_id": "weaken-transfer-reasoning",
+      "kind": "replace_once",
+      "target": "There is insufficient evidence for a target performance point estimate; compatibility and deployment readiness require target-side measurements.",
+      "replacement": "The environments differ, and there is insufficient evidence.",
+      "expected_dimensions": [
+        "reasoning_consistency"
+      ],
+      "expected_error_codes": [
+        "reasoning_gap"
+      ]
+    },
+    {
+      "operation_id": "weaken-validation-plan",
+      "kind": "replace_once",
+      "target": "First replay the registered outage trace and measure convergence delay; reject deployment if the registered constraint or acceptance metric fails.",
+      "replacement": "Run more target tests.",
+      "expected_dimensions": [
+        "clarity_actionability"
+      ],
+      "expected_error_codes": [
+        "actionability_gap"
+      ]
+    }
+  ]
+}

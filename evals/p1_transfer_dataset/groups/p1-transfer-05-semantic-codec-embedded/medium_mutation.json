@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "mutation_id": "p1-transfer-05-semantic-codec-embedded-medium-mutation",
+  "parent_report_id": "p1-transfer-05-semantic-codec-embedded-high",
+  "output_report_id": "p1-transfer-05-semantic-codec-embedded-medium",
+  "parent_path": "groups/p1-transfer-05-semantic-codec-embedded/high_report.md",
+  "output_path": "groups/p1-transfer-05-semantic-codec-embedded/medium_report.md",
+  "parent_sha256": "DF50741EFB2E34806F1160C4149E1896B4AF43F2038E6250AB1E352419DC2831",
+  "output_sha256": "538214DC8FAD832B83E8BBB4825A6F114742D774A0E9D2C0BC170548D018D489",
+  "operations": [
+    {
+      "operation_id": "weaken-transfer-reasoning",
+      "kind": "replace_once",
+      "target": "There is insufficient evidence for a target performance point estimate; compatibility and deployment readiness require target-side measurements.",
+      "replacement": "The environments differ, and there is insufficient evidence.",
+      "expected_dimensions": [
+        "reasoning_consistency"
+      ],
+      "expected_error_codes": [
+        "reasoning_gap"
+      ]
+    },
+    {
+      "operation_id": "weaken-validation-plan",
+      "kind": "replace_once",
+      "target": "First measure end-to-end latency, task accuracy, and energy on target hardware; reject deployment if the registered constraint or acceptance metric fails.",
+      "replacement": "Run more target tests.",
+      "expected_dimensions": [
+        "clarity_actionability"
+      ],
+      "expected_error_codes": [
+        "actionability_gap"
+      ]
+    }
+  ]
+}
