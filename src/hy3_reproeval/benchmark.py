@@ -23,6 +23,7 @@ from .dataset import (
 )
 from .errors import EvaluationInputError
 from .evaluator import evaluate_case_file, evaluate_case_file_hybrid
+from .freeze import optional_dataset_freeze_sha256
 from .judge_batch import validate_judge_record_index
 from .models import (
     DimensionId,
@@ -164,6 +165,7 @@ class DatasetBenchmarkResult(StrictModel):
     dataset_id: str
     dataset_version: str
     dataset_manifest_sha256: str = Field(pattern=r"^[A-F0-9]{64}$")
+    dataset_freeze_sha256: str | None = Field(default=None, pattern=r"^[A-F0-9]{64}$")
     benchmark_mode: BenchmarkMode
     rubric_version: str
     rubric_sha256: str = Field(pattern=r"^[A-F0-9]{64}$")
@@ -179,6 +181,7 @@ async def run_dataset_benchmark(
     *,
     mode: BenchmarkMode | str = BenchmarkMode.DETERMINISTIC,
     judge_index_path: str | Path | None = None,
+    dataset_freeze_path: str | Path | None = None,
 ) -> DatasetBenchmarkResult:
     """Evaluate every registered report and aggregate only within source groups."""
 
@@ -190,7 +193,22 @@ async def run_dataset_benchmark(
         raise EvaluationInputError("Judge Record index requires replay benchmark mode")
     validation = validate_dataset_manifest(path)
     loaded_dataset = load_dataset_manifest(path)
-    loaded_index = validate_judge_record_index(judge_index_path, path) if judge_index_path is not None else None
+    dataset_freeze_sha256 = optional_dataset_freeze_sha256(dataset_freeze_path, path)
+    loaded_index = (
+        validate_judge_record_index(
+            judge_index_path,
+            path,
+            dataset_freeze_path=dataset_freeze_path,
+        )
+        if judge_index_path is not None
+        else None
+    )
+    if (
+        loaded_index is not None
+        and dataset_freeze_sha256 is None
+        and loaded_index.index.dataset_freeze_sha256 is not None
+    ):
+        raise EvaluationInputError("Freeze-bound Judge Record index requires --dataset-freeze")
     group_results: list[BenchmarkGroupResult] = []
     rubric_versions: set[str] = set()
     rubric_hashes: set[str] = set()
@@ -251,6 +269,7 @@ async def run_dataset_benchmark(
         dataset_id=loaded_dataset.manifest.dataset_id,
         dataset_version=loaded_dataset.manifest.dataset_version,
         dataset_manifest_sha256=loaded_dataset.manifest_sha256,
+        dataset_freeze_sha256=dataset_freeze_sha256,
         benchmark_mode=active_mode,
         rubric_version=next(iter(rubric_versions)),
         rubric_sha256=next(iter(rubric_hashes)),

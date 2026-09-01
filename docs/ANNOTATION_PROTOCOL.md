@@ -4,7 +4,7 @@ ReproEval 0.21.0 and later define a strict, de-identified format for collecting 
 
 ## Annotation Unit
 
-One Bundle records one annotator's work and binds it to exact Dataset Manifest and Rubric SHA-256 fingerprints. Each report annotation must:
+One Bundle records one annotator's work and binds it to exact Dataset Manifest and Rubric SHA-256 fingerprints. Controlled validation/test experiments also include the reviewed Dataset Freeze fingerprint in `dataset_freeze_sha256`. Each report annotation must:
 
 - match a registered group, report ID, and report hash;
 - contain every Rubric dimension exactly once;
@@ -31,6 +31,7 @@ The repeatable `--bundle` option validates several annotators together:
 ```bash
 hy3-reproeval validate-annotations \
   --manifest path/to/frozen_dataset.json \
+  --dataset-freeze .reproeval/dataset-freeze.json \
   --bundle private_annotations/annotator-01.json \
   --bundle private_annotations/annotator-02.json \
   --output .reproeval/annotation-validation.json
@@ -45,6 +46,7 @@ Use the same independently collected Bundles to compute human-human agreement:
 ```bash
 hy3-reproeval analyze-annotations \
   --manifest path/to/frozen_dataset.json \
+  --dataset-freeze .reproeval/dataset-freeze.json \
   --bundle private_annotations/annotator-01.json \
   --bundle private_annotations/annotator-02.json \
   --output .reproeval/annotation-agreement.json
@@ -74,6 +76,7 @@ An `adjudication` Bundle must reference at least two independent human parent Bu
 ```bash
 hy3-reproeval finalize-annotations \
   --manifest path/to/frozen_dataset.json \
+  --dataset-freeze .reproeval/dataset-freeze.json \
   --bundle private_annotations/annotator-01.json \
   --bundle private_annotations/annotator-02.json \
   --bundle private_annotations/adjudication-01.json \
@@ -97,13 +100,14 @@ Pass a previously generated Dataset Benchmark result to compare each non-provisi
 ```bash
 hy3-reproeval analyze-annotations \
   --manifest path/to/frozen_dataset.json \
+  --dataset-freeze .reproeval/dataset-freeze.json \
   --bundle private_annotations/annotator-01.json \
   --bundle private_annotations/annotator-02.json \
   --benchmark-result .reproeval/dataset-benchmark.json \
   --output .reproeval/annotation-agreement.json
 ```
 
-Human report scores use the public Rubric weights, minimum assessed-weight rule, and declared hard caps. The comparison reports coverage, Spearman correlation, MAE, and per-report values. Before analysis, ReproEval verifies the Dataset and Rubric fingerprints plus the complete group, split, report, and report-hash inventory. Correlation remains `null` for fewer than two matched reports or constant ranks.
+Human report scores use the public Rubric weights, minimum assessed-weight rule, and declared hard caps. The comparison reports coverage, Spearman correlation, MAE, and per-report values. Before analysis, ReproEval verifies the Dataset, Rubric, and optional Dataset Freeze fingerprints plus the complete group, split, report, and report-hash inventory. A Freeze-bound annotation lineage cannot be compared with an unbound or differently bound Benchmark. Correlation remains `null` for fewer than two matched reports or constant ranks.
 
 ## Public Fixture Boundary
 

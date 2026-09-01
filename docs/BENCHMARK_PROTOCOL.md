@@ -36,7 +36,7 @@ hy3-reproeval benchmark-dataset \
 
 ReproEval reconstructs the versioned prompt and verifies the Dataset, Case, scenario, report, Rubric, model, provider, request, structured response, evidence lines, and file hashes before using a record. Partial indexes and missing or mismatched records fail closed. See [JUDGE_BATCH.md](JUDGE_BATCH.md) for online generation and resume semantics.
 
-For validation/test experiments, create and verify a [Dataset Freeze](DATASET_FREEZE.md) before generating Judge Records. The Freeze fingerprint identifies the exact Dataset inputs used by later Benchmark and annotation artifacts.
+For validation/test experiments, create and verify a [Dataset Freeze](DATASET_FREEZE.md) before generating Judge Records, then pass the same `--dataset-freeze` path to Judge generation and benchmarking. The Benchmark records the verified fingerprint and rejects an external Judge index that is unbound or bound to another Freeze.
 
 ## Ranking Eligibility
 

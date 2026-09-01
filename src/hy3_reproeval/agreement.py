@@ -113,6 +113,7 @@ class AnnotationAgreementResult(StrictModel):
     dataset_id: str
     dataset_version: str
     dataset_manifest_sha256: str = Field(pattern=r"^[A-F0-9]{64}$")
+    dataset_freeze_sha256: str | None = Field(default=None, pattern=r"^[A-F0-9]{64}$")
     rubric_version: str
     rubric_sha256: str = Field(pattern=r"^[A-F0-9]{64}$")
     annotation_validation: AnnotationValidationResult
@@ -146,10 +147,15 @@ def analyze_annotation_agreement(
     bundle_paths: list[str | Path],
     *,
     benchmark_result_path: str | Path | None = None,
+    dataset_freeze_path: str | Path | None = None,
 ) -> AnnotationAgreementResult:
     """Analyze eligible independent human annotations without inventing missing evidence."""
 
-    validation = validate_annotation_bundles(dataset_path, bundle_paths)
+    validation = validate_annotation_bundles(
+        dataset_path,
+        bundle_paths,
+        dataset_freeze_path=dataset_freeze_path,
+    )
     dataset = load_dataset_manifest(dataset_path)
     rubric = load_public_rubric()
     bundles = load_validated_annotation_bundles(bundle_paths, validation)
@@ -210,6 +216,7 @@ def analyze_annotation_agreement(
             dataset,
             rubric,
             validation.rubric_sha256,
+            validation.dataset_freeze_sha256,
             inventory,
             by_report,
         )
@@ -238,6 +245,7 @@ def analyze_annotation_agreement(
         dataset_id=validation.dataset_id,
         dataset_version=validation.dataset_version,
         dataset_manifest_sha256=validation.dataset_manifest_sha256,
+        dataset_freeze_sha256=validation.dataset_freeze_sha256,
         rubric_version=validation.rubric_version,
         rubric_sha256=validation.rubric_sha256,
         annotation_validation=validation,
@@ -395,6 +403,7 @@ def _system_human_agreement(
     dataset: LoadedDatasetManifest,
     rubric: RubricDefinition,
     rubric_sha256: str,
+    dataset_freeze_sha256: str | None,
     inventory: dict[str, tuple[str, DatasetSplit, str, str]],
     by_report: dict[str, dict[str, ReportAnnotation]],
 ) -> SystemHumanAgreement:
@@ -414,6 +423,8 @@ def _system_human_agreement(
         raise EvaluationInputError("benchmark result does not match the current Dataset Manifest")
     if benchmark.rubric_version != rubric.rubric_version or benchmark.rubric_sha256 != rubric_sha256:
         raise EvaluationInputError("benchmark result uses a different Rubric")
+    if benchmark.dataset_freeze_sha256 != dataset_freeze_sha256:
+        raise EvaluationInputError("benchmark result uses a different Dataset Freeze fingerprint")
     _validate_benchmark_inventory(benchmark, dataset, inventory)
     system_reports = {report.report_id: report for group in benchmark.groups for report in group.reports}
     target_reports = {

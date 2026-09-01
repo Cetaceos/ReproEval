@@ -12,6 +12,7 @@ Windows PowerShell:
 New-Item -ItemType Directory -Force .reproeval/judge-run
 hy3-reproeval generate-judge-records `
   --manifest examples/dataset/sample_dataset.json `
+  --dataset-freeze .reproeval/dataset-freeze.json `
   --output-dir .reproeval/judge-run
 ```
 
@@ -21,10 +22,11 @@ Linux / macOS:
 mkdir -p .reproeval/judge-run
 hy3-reproeval generate-judge-records \
   --manifest examples/dataset/sample_dataset.json \
+  --dataset-freeze .reproeval/dataset-freeze.json \
   --output-dir .reproeval/judge-run
 ```
 
-The command never creates the output directory, never writes an API key, and never edits the Dataset Manifest. It writes one UTF-8 LF JSON record per report and a `judge_record_index.json` bound to the current Dataset, public Rubric, model, and provider.
+The command never creates the output directory, never writes an API key, and never edits the Dataset Manifest. It writes one UTF-8 LF JSON record per report and a `judge_record_index.json` bound to the current Dataset, public Rubric, model, provider, and optional verified Dataset Freeze.
 
 ## Resume Safely
 
@@ -33,6 +35,7 @@ If a request fails, the index remains `complete=false` and lists only records al
 ```bash
 hy3-reproeval generate-judge-records \
   --manifest examples/dataset/sample_dataset.json \
+  --dataset-freeze .reproeval/dataset-freeze.json \
   --output-dir .reproeval/judge-run \
   --resume
 ```
@@ -46,6 +49,7 @@ Only a complete index can enter replay benchmarking:
 ```bash
 hy3-reproeval benchmark-dataset \
   --manifest examples/dataset/sample_dataset.json \
+  --dataset-freeze .reproeval/dataset-freeze.json \
   --mode replay \
   --judge-index .reproeval/judge-run/judge_record_index.json \
   --output .reproeval/dataset-benchmark.json

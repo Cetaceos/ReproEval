@@ -169,12 +169,12 @@ Before generating Judge Records or collecting blinded annotations, freeze every 
 ```bash
 mkdir .reproeval
 hy3-reproeval freeze-dataset \
-  --manifest examples/dataset/sample_adversarial_dataset.json \
+  --manifest examples/dataset/sample_dataset.json \
   --output .reproeval/dataset-freeze.json
 
 hy3-reproeval verify-dataset-freeze \
   --freeze .reproeval/dataset-freeze.json \
-  --manifest examples/dataset/sample_adversarial_dataset.json
+  --manifest examples/dataset/sample_dataset.json
 ```
 
 The Freeze binds the Rubric version and hash and records relative paths, roles, byte sizes, and SHA-256 fingerprints for the Dataset, Cases, reports, evidence attachments, Mutations, and registered Judge Records. `--require-p0-ready` rejects a Dataset below 12 source groups, validation/test coverage, or 8 adversarial reports. The public development fixture freezes successfully with `meets_p0_dataset_targets=false`; freezing does not establish annotation, Judge, or held-out result readiness. See [DATASET_FREEZE.md](docs/DATASET_FREEZE.md).
@@ -199,16 +199,18 @@ Generate one verified Hy3 record per dataset report in an existing private direc
 ```bash
 hy3-reproeval generate-judge-records \
   --manifest examples/dataset/sample_dataset.json \
+  --dataset-freeze .reproeval/dataset-freeze.json \
   --output-dir .reproeval/judge-run
 
 hy3-reproeval benchmark-dataset \
   --manifest examples/dataset/sample_dataset.json \
+  --dataset-freeze .reproeval/dataset-freeze.json \
   --mode replay \
   --judge-index .reproeval/judge-run/judge_record_index.json \
   --output .reproeval/dataset-benchmark.json
 ```
 
-Create the output directory first and use `--resume` only after reviewing an interrupted run. See [JUDGE_BATCH.md](docs/JUDGE_BATCH.md).
+Create the output directory first and use `--resume` only after reviewing an interrupted run. For controlled experiments, reuse the same `--dataset-freeze` on Judge, Benchmark, annotation, agreement, and consensus commands; each output then carries one verified lineage fingerprint and mismatches fail closed. See [JUDGE_BATCH.md](docs/JUDGE_BATCH.md) and [DATASET_FREEZE.md](docs/DATASET_FREEZE.md).
 
 ### Annotation Bundle validation
 
@@ -227,6 +229,7 @@ Analyze human-human agreement and optionally compare aggregated human scores wit
 ```bash
 hy3-reproeval analyze-annotations \
   --manifest path/to/frozen_dataset.json \
+  --dataset-freeze .reproeval/dataset-freeze.json \
   --bundle private_annotations/annotator-01.json \
   --bundle private_annotations/annotator-02.json \
   --benchmark-result .reproeval/dataset-benchmark.json \
@@ -240,6 +243,7 @@ Repeat and adjudication Bundles declare `parent_annotation_bundle_ids`. A repeat
 ```bash
 hy3-reproeval finalize-annotations \
   --manifest path/to/frozen_dataset.json \
+  --dataset-freeze .reproeval/dataset-freeze.json \
   --bundle private_annotations/annotator-01.json \
   --bundle private_annotations/annotator-02.json \
   --bundle private_annotations/adjudication-01.json \

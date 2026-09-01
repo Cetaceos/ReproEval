@@ -191,6 +191,17 @@ def verify_dataset_freeze(
     )
 
 
+def optional_dataset_freeze_sha256(
+    freeze_path: str | Path | None,
+    manifest_path: str | Path,
+) -> str | None:
+    """Return a verified Freeze fingerprint when an experiment binds one."""
+
+    if freeze_path is None:
+        return None
+    return verify_dataset_freeze(freeze_path, manifest_path).freeze_sha256
+
+
 def _collect_registered_files(dataset: LoadedDatasetManifest) -> list[FrozenFile]:
     root = dataset.root
     inventory: dict[str, tuple[Path, set[FrozenFileRole]]] = {}

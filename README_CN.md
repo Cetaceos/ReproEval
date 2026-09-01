@@ -169,12 +169,12 @@ hy3-reproeval benchmark-dataset \
 ```bash
 mkdir .reproeval
 hy3-reproeval freeze-dataset \
-  --manifest examples/dataset/sample_adversarial_dataset.json \
+  --manifest examples/dataset/sample_dataset.json \
   --output .reproeval/dataset-freeze.json
 
 hy3-reproeval verify-dataset-freeze \
   --freeze .reproeval/dataset-freeze.json \
-  --manifest examples/dataset/sample_adversarial_dataset.json
+  --manifest examples/dataset/sample_dataset.json
 ```
 
 Freeze 绑定 Rubric 版本与哈希，并记录 Dataset、Case、报告、证据附件、Mutation 和已登记 Judge Record 的相对路径、角色、字节数与 SHA-256。`--require-p0-ready` 可拒绝未达到 12 个来源组、validation/test 划分和 8 份对抗报告的 Dataset。公开开发样例会正常冻结，但 `meets_p0_dataset_targets=false`；冻结不代表人工标注、Judge 或 held-out 结果已经就绪。详见 [DATASET_FREEZE.md](docs/DATASET_FREEZE.md)。
@@ -199,16 +199,18 @@ hy3-reproeval benchmark-dataset \
 ```bash
 hy3-reproeval generate-judge-records \
   --manifest examples/dataset/sample_dataset.json \
+  --dataset-freeze .reproeval/dataset-freeze.json \
   --output-dir .reproeval/judge-run
 
 hy3-reproeval benchmark-dataset \
   --manifest examples/dataset/sample_dataset.json \
+  --dataset-freeze .reproeval/dataset-freeze.json \
   --mode replay \
   --judge-index .reproeval/judge-run/judge_record_index.json \
   --output .reproeval/dataset-benchmark.json
 ```
 
-需先创建输出目录；中断后应先检查已有文件，再使用 `--resume`。详见 [JUDGE_BATCH.md](docs/JUDGE_BATCH.md)。
+需先创建输出目录；中断后应先检查已有文件，再使用 `--resume`。受控实验应在 Judge、Benchmark、标注、一致性分析和共识命令中复用同一个 `--dataset-freeze`；各输出将记录同一已验证指纹，混用工件会直接失败。详见 [JUDGE_BATCH.md](docs/JUDGE_BATCH.md) 和 [DATASET_FREEZE.md](docs/DATASET_FREEZE.md)。
 
 ### Annotation Bundle 校验
 
@@ -227,6 +229,7 @@ hy3-reproeval validate-annotations \
 ```bash
 hy3-reproeval analyze-annotations \
   --manifest path/to/frozen_dataset.json \
+  --dataset-freeze .reproeval/dataset-freeze.json \
   --bundle private_annotations/annotator-01.json \
   --bundle private_annotations/annotator-02.json \
   --benchmark-result .reproeval/dataset-benchmark.json \
@@ -240,6 +243,7 @@ hy3-reproeval analyze-annotations \
 ```bash
 hy3-reproeval finalize-annotations \
   --manifest path/to/frozen_dataset.json \
+  --dataset-freeze .reproeval/dataset-freeze.json \
   --bundle private_annotations/annotator-01.json \
   --bundle private_annotations/annotator-02.json \
   --bundle private_annotations/adjudication-01.json \

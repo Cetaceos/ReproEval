@@ -1,6 +1,6 @@
 # ReproEval Dataset Freeze Protocol
 
-ReproEval 0.25.0 defines a tamper-evident Dataset Freeze for locking experiment inputs before online Judge generation, blinded annotation, or held-out evaluation. A Freeze is a reproducibility artifact, not a performance result.
+ReproEval 0.25.0 defines a tamper-evident Dataset Freeze for locking experiment inputs before online Judge generation, blinded annotation, or held-out evaluation. ReproEval 0.26.0 carries its fingerprint through downstream machine and human evaluation artifacts. A Freeze is a reproducibility artifact, not a performance result.
 
 ## Bound Inputs
 
@@ -40,6 +40,28 @@ hy3-reproeval verify-dataset-freeze \
 ```
 
 Verification rejects an invalid self-digest, changed Dataset or Rubric identity, altered files, changed inventory, or changed readiness state. It reruns Dataset validation, so a registered report, Mutation, artifact, or Judge Record that no longer satisfies its own contract fails before comparison.
+
+## Bind Downstream Outputs
+
+For controlled experiments, pass the same reviewed Freeze to every downstream command:
+
+```bash
+hy3-reproeval generate-judge-records \
+  --manifest path/to/dataset.json \
+  --dataset-freeze .reproeval/dataset-freeze.json \
+  --output-dir .reproeval/judge-run
+
+hy3-reproeval benchmark-dataset \
+  --manifest path/to/dataset.json \
+  --dataset-freeze .reproeval/dataset-freeze.json \
+  --mode replay \
+  --judge-index .reproeval/judge-run/judge_record_index.json \
+  --output .reproeval/dataset-benchmark.json
+```
+
+Annotation Bundles collected for the same run must include the resulting uppercase `dataset_freeze_sha256`. Pass `--dataset-freeze` to `validate-annotations`, `analyze-annotations`, and `finalize-annotations`. ReproEval then rejects missing, mixed, or mismatched fingerprints, including a system-human comparison whose Benchmark result belongs to another Freeze lineage. A Freeze-bound Judge index or Annotation Bundle cannot be consumed without explicitly supplying and re-verifying its Freeze.
+
+Omitting `--dataset-freeze` keeps old development fixtures readable. This compatibility mode verifies Dataset and Rubric identity but is not the recommended contract for reviewed validation/test experiments.
 
 ## P0 Dataset Gate
 

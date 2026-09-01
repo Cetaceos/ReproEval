@@ -2,6 +2,21 @@
 
 All notable ReproEval changes are documented in this file.
 
+## 0.26.0 - 2026-09-01
+
+### Added
+
+- Optional `dataset_freeze_sha256` lineage on Judge Record indexes, Dataset Benchmark results, Annotation Bundles, annotation validation, agreement analysis, and consensus outputs.
+- A shared `--dataset-freeze` option for Judge generation, benchmarking, annotation validation, agreement analysis, and consensus finalization.
+- Cross-artifact tests proving one verified Freeze fingerprint flows through machine and human evaluation outputs.
+
+### Safety
+
+- Supplying a Dataset Freeze requires Judge indexes and Annotation Bundles to carry its exact verified fingerprint; unbound and mismatched artifacts fail closed.
+- Freeze-bound Judge indexes and Annotation Bundles cannot be consumed or resumed without explicitly verifying their Freeze again.
+- System-human comparison rejects Benchmark and annotation lineages that do not use the same Dataset Freeze fingerprint.
+- Existing development fixtures remain readable without strict Freeze binding, while controlled experiments can opt into the stronger contract.
+
 ## 0.25.0 - 2026-08-31
 
 ### Added

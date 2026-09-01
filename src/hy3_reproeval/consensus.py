@@ -83,6 +83,7 @@ class AnnotationConsensusResult(StrictModel):
     dataset_id: str
     dataset_version: str
     dataset_manifest_sha256: str = Field(pattern=r"^[A-F0-9]{64}$")
+    dataset_freeze_sha256: str | None = Field(default=None, pattern=r"^[A-F0-9]{64}$")
     rubric_version: str
     rubric_sha256: str = Field(pattern=r"^[A-F0-9]{64}$")
     agreement: AnnotationAgreementResult
@@ -101,10 +102,16 @@ class AnnotationConsensusResult(StrictModel):
 def finalize_annotation_consensus(
     dataset_path: str | Path,
     bundle_paths: list[str | Path],
+    *,
+    dataset_freeze_path: str | Path | None = None,
 ) -> AnnotationConsensusResult:
     """Resolve queued disagreements only through explicitly parent-bound adjudication Bundles."""
 
-    agreement = analyze_annotation_agreement(dataset_path, bundle_paths)
+    agreement = analyze_annotation_agreement(
+        dataset_path,
+        bundle_paths,
+        dataset_freeze_path=dataset_freeze_path,
+    )
     bundles = load_validated_annotation_bundles(bundle_paths, agreement.annotation_validation)
     dataset = load_dataset_manifest(dataset_path)
     rubric = load_public_rubric()
@@ -220,6 +227,7 @@ def finalize_annotation_consensus(
         dataset_id=agreement.dataset_id,
         dataset_version=agreement.dataset_version,
         dataset_manifest_sha256=agreement.dataset_manifest_sha256,
+        dataset_freeze_sha256=agreement.dataset_freeze_sha256,
         rubric_version=agreement.rubric_version,
         rubric_sha256=agreement.rubric_sha256,
         agreement=agreement,

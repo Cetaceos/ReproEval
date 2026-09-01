@@ -13,6 +13,7 @@ from . import __version__
 from .dataset import DatasetReportEntry, LoadedDatasetManifest, load_dataset_manifest, validate_dataset_manifest
 from .errors import EvaluationInputError
 from .evaluator import _rubric_sha256
+from .freeze import optional_dataset_freeze_sha256
 from .judge import MAX_JUDGE_RECORD_BYTES, StructuredJudgeClient, load_judge_record, request_judge_record
 from .models import JudgeRecord, Scenario, StrictModel
 from .rubric import RubricDefinition, load_public_rubric
@@ -44,6 +45,7 @@ class JudgeRecordIndex(StrictModel):
     dataset_id: str
     dataset_version: str
     dataset_manifest_sha256: str = Field(pattern=r"^[A-F0-9]{64}$")
+    dataset_freeze_sha256: str | None = Field(default=None, pattern=r"^[A-F0-9]{64}$")
     rubric_version: str
     rubric_sha256: str = Field(pattern=r"^[A-F0-9]{64}$")
     model: str = Field(min_length=1)
@@ -87,11 +89,13 @@ async def generate_dataset_judge_records(
     model: str | None = None,
     provider: str | None = None,
     resume: bool = False,
+    dataset_freeze_path: str | Path | None = None,
 ) -> JudgeRecordIndex:
     """Generate one verified semantic Judge Record per report and update a durable index."""
 
     validate_dataset_manifest(dataset_path)
     dataset = load_dataset_manifest(dataset_path)
+    dataset_freeze_sha256 = optional_dataset_freeze_sha256(dataset_freeze_path, dataset_path)
     output_root = Path(output_dir).expanduser().resolve()
     if not output_root.is_dir():
         raise EvaluationInputError(f"Judge Record output directory does not exist: {output_root.as_posix()}")
@@ -111,14 +115,31 @@ async def generate_dataset_judge_records(
     if not resume and (index_path.exists() or any(path.exists() for path in target_paths.values())):
         raise EvaluationInputError("Judge Record output already exists; use resume only after reviewing the prior run")
     if resume and index_path.exists():
-        previous = validate_judge_record_index(index_path, dataset_path, require_complete=False)
+        previous = validate_judge_record_index(
+            index_path,
+            dataset_path,
+            require_complete=False,
+            dataset_freeze_path=dataset_freeze_path,
+        )
+        if previous.index.dataset_freeze_sha256 != dataset_freeze_sha256:
+            raise EvaluationInputError("resumed Judge Record index uses a different Dataset Freeze binding")
         if previous.index.model != active_model or previous.index.provider != active_provider:
             raise EvaluationInputError("resumed Judge Record index uses a different model or provider")
 
     entries: list[JudgeRecordIndexEntry] = []
     _write_index(
         index_path,
-        _build_index(dataset, rubric, rubric_sha256, active_model, active_provider, inventory, entries, complete=False),
+        _build_index(
+            dataset,
+            rubric,
+            rubric_sha256,
+            active_model,
+            active_provider,
+            inventory,
+            entries,
+            dataset_freeze_sha256=dataset_freeze_sha256,
+            complete=False,
+        ),
     )
     owned_client = None
     if active_client is None:
@@ -160,6 +181,7 @@ async def generate_dataset_judge_records(
                     active_provider,
                     inventory,
                     entries,
+                    dataset_freeze_sha256=dataset_freeze_sha256,
                     complete=False,
                 ),
             )
@@ -175,6 +197,7 @@ async def generate_dataset_judge_records(
         active_provider,
         inventory,
         entries,
+        dataset_freeze_sha256=dataset_freeze_sha256,
         complete=True,
     )
     _write_index(index_path, completed)
@@ -186,6 +209,7 @@ def validate_judge_record_index(
     dataset_path: str | Path,
     *,
     require_complete: bool = True,
+    dataset_freeze_path: str | Path | None = None,
 ) -> LoadedJudgeRecordIndex:
     dataset = load_dataset_manifest(dataset_path)
     resolved_index = Path(index_path).expanduser().resolve()
@@ -203,6 +227,9 @@ def validate_judge_record_index(
     )
     if (index.dataset_id, index.dataset_version, index.dataset_manifest_sha256) != expected_identity:
         raise EvaluationInputError("Judge Record index does not match the current Dataset Manifest")
+    expected_freeze_sha256 = optional_dataset_freeze_sha256(dataset_freeze_path, dataset_path)
+    if expected_freeze_sha256 is not None and index.dataset_freeze_sha256 != expected_freeze_sha256:
+        raise EvaluationInputError("Judge Record index does not match the verified Dataset Freeze")
     rubric = load_public_rubric()
     rubric_sha256 = _rubric_sha256(rubric)
     if index.rubric_version != rubric.rubric_version or index.rubric_sha256 != rubric_sha256:
@@ -289,6 +316,7 @@ def _build_index(
     inventory: dict[str, tuple[str, DatasetReportEntry, LoadedEvaluationCase]],
     entries: list[JudgeRecordIndexEntry],
     *,
+    dataset_freeze_sha256: str | None,
     complete: bool,
 ) -> JudgeRecordIndex:
     return JudgeRecordIndex(
@@ -296,6 +324,7 @@ def _build_index(
         dataset_id=dataset.manifest.dataset_id,
         dataset_version=dataset.manifest.dataset_version,
         dataset_manifest_sha256=dataset.manifest_sha256,
+        dataset_freeze_sha256=dataset_freeze_sha256,
         rubric_version=rubric.rubric_version,
         rubric_sha256=rubric_sha256,
         model=model,

@@ -14,6 +14,7 @@ from . import __version__
 from .dataset import DatasetSplit, LoadedDatasetManifest, load_dataset_manifest, validate_dataset_manifest
 from .errors import EvaluationInputError
 from .evaluator import _rubric_sha256
+from .freeze import optional_dataset_freeze_sha256
 from .models import DimensionId, DimensionStatus, ErrorCode, StrictModel
 from .rubric import load_public_rubric
 from .validators import load_evaluation_case
@@ -120,6 +121,7 @@ class AnnotationBundle(StrictModel):
     dataset_id: str
     dataset_version: str
     dataset_manifest_sha256: str = Field(pattern=r"^[A-F0-9]{64}$")
+    dataset_freeze_sha256: str | None = Field(default=None, pattern=r"^[A-F0-9]{64}$")
     rubric_version: str
     rubric_sha256: str = Field(pattern=r"^[A-F0-9]{64}$")
     annotator: AnnotatorProfile
@@ -163,6 +165,7 @@ class AnnotationValidationResult(StrictModel):
     dataset_id: str
     dataset_version: str
     dataset_manifest_sha256: str = Field(pattern=r"^[A-F0-9]{64}$")
+    dataset_freeze_sha256: str | None = Field(default=None, pattern=r"^[A-F0-9]{64}$")
     rubric_version: str
     rubric_sha256: str = Field(pattern=r"^[A-F0-9]{64}$")
     bundle_count: int = Field(ge=1)
@@ -183,6 +186,8 @@ class AnnotationValidationResult(StrictModel):
 def validate_annotation_bundles(
     dataset_path: str | Path,
     bundle_paths: list[str | Path],
+    *,
+    dataset_freeze_path: str | Path | None = None,
 ) -> AnnotationValidationResult:
     if not bundle_paths:
         raise EvaluationInputError("at least one annotation bundle is required")
@@ -190,6 +195,7 @@ def validate_annotation_bundles(
         raise EvaluationInputError(f"annotation bundle count exceeds {MAX_ANNOTATION_BUNDLES}")
     validate_dataset_manifest(dataset_path)
     dataset = load_dataset_manifest(dataset_path)
+    expected_freeze_sha256 = optional_dataset_freeze_sha256(dataset_freeze_path, dataset_path)
     rubric = load_public_rubric()
     rubric_sha256 = _rubric_sha256(rubric)
     inventory = _report_inventory(dataset)
@@ -201,8 +207,21 @@ def validate_annotation_bundles(
             bundle = AnnotationBundle.model_validate_json(payload)
         except ValueError as exc:
             raise EvaluationInputError(f"invalid annotation bundle: {exc}") from exc
-        _validate_bundle_identity(bundle, dataset, rubric.rubric_version, rubric_sha256)
+        _validate_bundle_identity(
+            bundle,
+            dataset,
+            rubric.rubric_version,
+            rubric_sha256,
+            expected_freeze_sha256,
+        )
         bundles.append((bundle, _sha256(payload)))
+
+    bundle_freezes = {bundle.dataset_freeze_sha256 for bundle, _ in bundles}
+    if len(bundle_freezes) != 1:
+        raise EvaluationInputError("annotation bundles use inconsistent Dataset Freeze fingerprints")
+    if expected_freeze_sha256 is None and next(iter(bundle_freezes)) is not None:
+        raise EvaluationInputError("Freeze-bound annotation bundles require --dataset-freeze")
+    dataset_freeze_sha256 = expected_freeze_sha256 or next(iter(bundle_freezes))
 
     bundle_ids = [bundle.annotation_bundle_id for bundle, _ in bundles]
     if len(bundle_ids) != len(set(bundle_ids)):
@@ -271,6 +290,7 @@ def validate_annotation_bundles(
         dataset_id=dataset.manifest.dataset_id,
         dataset_version=dataset.manifest.dataset_version,
         dataset_manifest_sha256=dataset.manifest_sha256,
+        dataset_freeze_sha256=dataset_freeze_sha256,
         rubric_version=rubric.rubric_version,
         rubric_sha256=rubric_sha256,
         bundle_count=len(bundles),
@@ -361,6 +381,7 @@ def _validate_bundle_identity(
     dataset: LoadedDatasetManifest,
     rubric_version: str,
     rubric_sha256: str,
+    expected_freeze_sha256: str | None,
 ) -> None:
     expected = (
         dataset.manifest.dataset_id,
@@ -378,6 +399,10 @@ def _validate_bundle_identity(
     )
     if actual != expected:
         raise EvaluationInputError(f"annotation bundle '{bundle.annotation_bundle_id}' identity does not match")
+    if expected_freeze_sha256 is not None and bundle.dataset_freeze_sha256 != expected_freeze_sha256:
+        raise EvaluationInputError(
+            f"annotation bundle '{bundle.annotation_bundle_id}' does not match the verified Dataset Freeze"
+        )
 
 
 def _report_inventory(dataset: LoadedDatasetManifest) -> dict[str, tuple[str, DatasetSplit, str, int]]:
