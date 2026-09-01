@@ -148,9 +148,7 @@ def test_cli_creates_and_verifies_public_dataset_freeze(tmp_path: Path) -> None:
         )
         == 0
     )
-    verification = DatasetFreezeVerification.model_validate_json(
-        verification_path.read_text(encoding="utf-8")
-    )
+    verification = DatasetFreezeVerification.model_validate_json(verification_path.read_text(encoding="utf-8"))
     assert verification.valid is True
     assert verification.freeze_sha256 == freeze.freeze_sha256
 

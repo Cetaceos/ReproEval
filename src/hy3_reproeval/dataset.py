@@ -178,9 +178,7 @@ class DatasetReportEntry(StrictModel):
                 raise ValueError("adversarial report requires adversarial_spec")
             if self.label_source == "reference_revision":
                 raise ValueError("adversarial report cannot use reference_revision as its label source")
-            attack_errors = {
-                error for attack in self.adversarial_spec.attacks for error in attack.expected_error_codes
-            }
+            attack_errors = {error for attack in self.adversarial_spec.attacks for error in attack.expected_error_codes}
             if not attack_errors.issubset(set(self.expected_error_codes)):
                 raise ValueError("adversarial attack errors must be declared by the report")
         elif self.adversarial_spec is not None:
@@ -327,9 +325,7 @@ def validate_dataset_manifest(path: str | Path) -> DatasetValidationResult:
         by_id = {item.entry.report_id: item for item in loaded_reports}
         for item in loaded_reports:
             if item.entry.adversarial_spec is not None:
-                attack_type_counts.update(
-                    attack.attack_type for attack in item.entry.adversarial_spec.attacks
-                )
+                attack_type_counts.update(attack.attack_type for attack in item.entry.adversarial_spec.attacks)
             if item.entry.label_source == "human_reviewed":
                 human_reviewed += 1
             actual_errors = _validate_expected_errors(item)
@@ -491,14 +487,10 @@ def _validate_mutation_links(
             dimension for operation in mutation.operations for dimension in operation.expected_dimensions
         }
         attack_dimensions = {
-            dimension
-            for attack in output.entry.adversarial_spec.attacks
-            for dimension in attack.target_dimensions
+            dimension for attack in output.entry.adversarial_spec.attacks for dimension in attack.target_dimensions
         }
         if not attack_dimensions.issubset(operation_dimensions):
-            raise EvaluationInputError(
-                "adversarial attack dimensions must be covered by mutation operations"
-            )
+            raise EvaluationInputError("adversarial attack dimensions must be covered by mutation operations")
 
 
 def _apply_operation(text: str, operation: MutationOperation) -> str:

@@ -175,9 +175,7 @@ def verify_dataset_freeze(
         raise EvaluationInputError("Dataset Freeze readiness no longer matches the current Dataset")
     warnings = list(freeze.warnings)
     if freeze.engine_version != __version__:
-        warnings.append(
-            f"Freeze was created by engine {freeze.engine_version} and verified by {__version__}."
-        )
+        warnings.append(f"Freeze was created by engine {freeze.engine_version} and verified by {__version__}.")
     return DatasetFreezeVerification(
         engine_version=__version__,
         freeze_engine_version=freeze.engine_version,
@@ -226,9 +224,7 @@ def _collect_registered_files(dataset: LoadedDatasetManifest) -> list[FrozenFile
             for artifact in loaded.case.artifacts:
                 artifact_path = (loaded.root / artifact.path).resolve()
                 if not artifact_path.is_relative_to(loaded.root):
-                    raise EvaluationInputError(
-                        f"evidence artifact path escapes its Case root: {artifact.path}"
-                    )
+                    raise EvaluationInputError(f"evidence artifact path escapes its Case root: {artifact.path}")
                 register(artifact_path, FrozenFileRole.EVIDENCE_ARTIFACT)
             if entry.mutation_manifest_path is not None:
                 register(

@@ -420,9 +420,7 @@ def _aggregate_metrics(groups: Iterable[BenchmarkGroupResult]) -> AggregateBench
         detected_expected_error_count=detected_errors,
         unexpected_error_count=sum(group.metrics.unexpected_error_count for group in materialized),
         error_label_recall=_ratio(detected_errors, expected_errors),
-        adversarial=_adversarial_metrics(
-            report for group in materialized for report in group.reports
-        ),
+        adversarial=_adversarial_metrics(report for group in materialized for report in group.reports),
     )
 
 
@@ -430,8 +428,7 @@ def _adversarial_metrics(reports: Iterable[BenchmarkReportResult]) -> Adversaria
     adversarial_reports = [report for report in reports if report.quality_tier is QualityTier.ADVERSARIAL]
     attacks = [attack for report in adversarial_reports for attack in report.attacks]
     fully_detected_reports = sum(
-        bool(report.attacks) and all(attack.detected for attack in report.attacks)
-        for report in adversarial_reports
+        bool(report.attacks) and all(attack.detected for attack in report.attacks) for report in adversarial_reports
     )
     detected_attacks = sum(attack.detected for attack in attacks)
     expected_errors = sum(len(attack.expected_error_codes) for attack in attacks)

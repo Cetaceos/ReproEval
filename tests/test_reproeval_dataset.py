@@ -330,9 +330,9 @@ def test_dataset_rejects_adversarial_report_without_attack_spec(tmp_path: Path) 
 def test_dataset_rejects_attack_error_absent_from_report_labels(tmp_path: Path) -> None:
     manifest_path = _write_dataset(tmp_path, include_adversarial=True)
     payload = json.loads(manifest_path.read_text(encoding="utf-8"))
-    payload["groups"][0]["reports"][3]["adversarial_spec"]["attacks"][0][
-        "expected_error_codes"
-    ].append("overconfidence")
+    payload["groups"][0]["reports"][3]["adversarial_spec"]["attacks"][0]["expected_error_codes"].append(
+        "overconfidence"
+    )
     manifest_path.write_text(json.dumps(payload), encoding="utf-8")
 
     with pytest.raises(EvaluationInputError, match="attack errors must be declared"):
@@ -342,9 +342,9 @@ def test_dataset_rejects_attack_error_absent_from_report_labels(tmp_path: Path) 
 def test_dataset_rejects_attack_dimension_absent_from_mutation(tmp_path: Path) -> None:
     manifest_path = _write_dataset(tmp_path, include_adversarial=True)
     payload = json.loads(manifest_path.read_text(encoding="utf-8"))
-    payload["groups"][0]["reports"][3]["adversarial_spec"]["attacks"][0][
-        "target_dimensions"
-    ].append("content_completeness")
+    payload["groups"][0]["reports"][3]["adversarial_spec"]["attacks"][0]["target_dimensions"].append(
+        "content_completeness"
+    )
     manifest_path.write_text(json.dumps(payload), encoding="utf-8")
 
     with pytest.raises(EvaluationInputError, match="dimensions must be covered"):

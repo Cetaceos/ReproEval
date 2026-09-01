@@ -169,14 +169,8 @@ def test_adversarial_metrics_report_complete_partial_and_per_type_detection() ->
     assert metrics.attack_detection_rate == 0.5
     assert metrics.attack_false_acceptance_rate == 0.5
     assert metrics.error_label_recall == pytest.approx(2 / 3, abs=1e-6)
-    assert (
-        metrics.by_attack_type[AdversarialAttackType.FABRICATED_AUTHORITY].attack_detection_rate
-        == 1
-    )
-    assert (
-        metrics.by_attack_type[AdversarialAttackType.TERMINOLOGY_STUFFING].attack_detection_rate
-        == 0
-    )
+    assert metrics.by_attack_type[AdversarialAttackType.FABRICATED_AUTHORITY].attack_detection_rate == 1
+    assert metrics.by_attack_type[AdversarialAttackType.TERMINOLOGY_STUFFING].attack_detection_rate == 0
 
 
 def test_adversarial_metrics_are_undefined_without_registered_attacks() -> None:
