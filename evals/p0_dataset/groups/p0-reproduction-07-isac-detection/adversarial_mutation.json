@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0",
+  "mutation_id": "p0-reproduction-07-isac-detection-adversarial-mutation",
+  "parent_report_id": "p0-reproduction-07-isac-detection-high",
+  "output_report_id": "p0-reproduction-07-isac-detection-adversarial",
+  "parent_path": "groups/p0-reproduction-07-isac-detection/high_report.md",
+  "output_path": "groups/p0-reproduction-07-isac-detection/adversarial_report.md",
+  "parent_sha256": "F96AB1A0270B66DA828C8BD61AD12801380D37203086E21F8DF33294DAE07516",
+  "output_sha256": "5D1AEACDE77761AC56273909BC36934789E504DAD86BE789BDBC8FB87F2B7E7E",
+  "operations": [
+    {
+      "operation_id": "corrupt-calculation",
+      "kind": "replace_once",
+      "target": "The reproduced Detection probability is 0.921",
+      "replacement": "The reproduced Detection probability is 0.700",
+      "expected_dimensions": [
+        "numerical_consistency"
+      ],
+      "expected_error_codes": [
+        "numeric_error"
+      ]
+    }
+  ]
+}

@@ -67,6 +67,11 @@ jobs:
       - name: Run tests with fail-closed evidence policy
         run: python -m pytest -q
 
+      - name: Verify canonical P0 Dataset
+        run: |
+          python -m hy3_reproeval build-p0-dataset --output evals/p0_dataset --check
+          python -m hy3_reproeval validate-dataset --manifest evals/p0_dataset/dataset.json
+
       - name: Run deterministic offline evaluations
         run: |
           python scripts/run_offline_eval.py

@@ -1,0 +1,72 @@
+{
+  "schema_version": "1.0",
+  "case_id": "p0-reproduction-08-radio-localization-high-case",
+  "scenario": "reproduction",
+  "report_path": "high_report.md",
+  "sources": [
+    {
+      "source_id": "paper",
+      "locators": [
+        "L3-L9",
+        "L10-L14"
+      ]
+    },
+    {
+      "source_id": "results",
+      "locators": [
+        "rows:1-5"
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "radio-localization-primary-claim",
+      "marker": "reproduced Position RMSE",
+      "required_source_ids": [
+        "paper",
+        "results"
+      ]
+    }
+  ],
+  "numeric_expectations": [
+    {
+      "fact_id": "radio-localization-primary-metric",
+      "label": "Position RMSE is",
+      "expected": "0.47",
+      "absolute_tolerance": "0.0001",
+      "critical": true,
+      "unit": "m"
+    }
+  ],
+  "required_sections": [
+    {
+      "section_id": "summary",
+      "heading": "Executive summary"
+    },
+    {
+      "section_id": "evidence",
+      "heading": "Experimental evidence"
+    },
+    {
+      "section_id": "limitations",
+      "heading": "Evidence and limitations"
+    },
+    {
+      "section_id": "next",
+      "heading": "Next steps"
+    }
+  ],
+  "uncertainty": {
+    "required": true,
+    "accepted_phrases": [
+      "insufficient evidence"
+    ]
+  },
+  "artifacts": [
+    {
+      "artifact_id": "radio-localization-source",
+      "path": "source_material.md",
+      "sha256": "DD72EE8A2D9417C0046EAB8A1958ED731916A58C4DCAFE2B9BAABE418D79D2D6"
+    }
+  ]
+}

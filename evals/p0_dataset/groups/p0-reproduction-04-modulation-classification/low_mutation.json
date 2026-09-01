@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0",
+  "mutation_id": "p0-reproduction-04-modulation-classification-low-mutation",
+  "parent_report_id": "p0-reproduction-04-modulation-classification-high",
+  "output_report_id": "p0-reproduction-04-modulation-classification-low",
+  "parent_path": "groups/p0-reproduction-04-modulation-classification/high_report.md",
+  "output_path": "groups/p0-reproduction-04-modulation-classification/low_report.md",
+  "parent_sha256": "1520A87267E0FF9B0160ACA192E2B917A8E1CF6E36F6F0656A0CDD3743317C5D",
+  "output_sha256": "3B626E97902D1F7DB61D77905214EAFDD48D44F8AE65D539B4C7DEC11EAD9371",
+  "operations": [
+    {
+      "operation_id": "weaken-reasoning",
+      "kind": "replace_once",
+      "target": "Five registered runs support the observed value, but there is insufficient evidence for a universal causal attribution in automatic modulation classification.",
+      "replacement": "The aggregate differs, and there is insufficient evidence.",
+      "expected_dimensions": [
+        "reasoning_consistency"
+      ],
+      "expected_error_codes": [
+        "reasoning_gap"
+      ]
+    },
+    {
+      "operation_id": "weaken-next-step",
+      "kind": "replace_once",
+      "target": "Repeat the registered modulation classification test with fixed preprocessing, published seeds, and confidence intervals.",
+      "replacement": "Run more experiments.",
+      "expected_dimensions": [
+        "clarity_actionability"
+      ],
+      "expected_error_codes": [
+        "actionability_gap"
+      ]
+    },
+    {
+      "operation_id": "corrupt-primary-claim",
+      "kind": "replace_once",
+      "target": "The reproduced Macro F1 is 0.913 [paper@L10-L14] [results@rows:1-5].",
+      "replacement": "The reproduced Macro F1 is 0.800 [invented-authority@L1] [results@rows:1-5].",
+      "expected_dimensions": [
+        "factual_accuracy",
+        "evidence_traceability",
+        "numerical_consistency"
+      ],
+      "expected_error_codes": [
+        "fabricated_citation",
+        "unsupported_claim",
+        "numeric_error"
+      ]
+    }
+  ]
+}

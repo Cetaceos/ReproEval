@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0",
+  "case_id": "p0-reproduction-01-channel-prediction-medium-case",
+  "scenario": "reproduction",
+  "report_path": "medium_report.md",
+  "sources": [
+    {
+      "source_id": "paper",
+      "locators": [
+        "L3-L9",
+        "L10-L14"
+      ]
+    },
+    {
+      "source_id": "results",
+      "locators": [
+        "rows:1-5"
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "channel-prediction-primary-claim",
+      "marker": "reproduced Prediction accuracy",
+      "required_source_ids": [
+        "paper",
+        "results"
+      ]
+    }
+  ],
+  "numeric_expectations": [
+    {
+      "fact_id": "channel-prediction-primary-metric",
+      "label": "Prediction accuracy is",
+      "expected": "0.876",
+      "absolute_tolerance": "0.0001",
+      "critical": true
+    }
+  ],
+  "required_sections": [
+    {
+      "section_id": "summary",
+      "heading": "Executive summary"
+    },
+    {
+      "section_id": "evidence",
+      "heading": "Experimental evidence"
+    },
+    {
+      "section_id": "limitations",
+      "heading": "Evidence and limitations"
+    },
+    {
+      "section_id": "next",
+      "heading": "Next steps"
+    }
+  ],
+  "uncertainty": {
+    "required": true,
+    "accepted_phrases": [
+      "insufficient evidence"
+    ]
+  },
+  "artifacts": [
+    {
+      "artifact_id": "channel-prediction-source",
+      "path": "source_material.md",
+      "sha256": "099F7E9ED99CDB2BCB39442ED6B406C57ECAF787B22D8BD6F82E29167EFB84E2"
+    }
+  ]
+}

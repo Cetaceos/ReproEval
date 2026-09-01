@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0",
+  "mutation_id": "p0-reproduction-04-modulation-classification-adversarial-mutation",
+  "parent_report_id": "p0-reproduction-04-modulation-classification-high",
+  "output_report_id": "p0-reproduction-04-modulation-classification-adversarial",
+  "parent_path": "groups/p0-reproduction-04-modulation-classification/high_report.md",
+  "output_path": "groups/p0-reproduction-04-modulation-classification/adversarial_report.md",
+  "parent_sha256": "1520A87267E0FF9B0160ACA192E2B917A8E1CF6E36F6F0656A0CDD3743317C5D",
+  "output_sha256": "B7EFA927FE4DCE537676A220E514D7D4EE0FA3B097982A1EE72D0071C0D908CF",
+  "operations": [
+    {
+      "operation_id": "conclusion-repetition",
+      "kind": "append_text",
+      "target": null,
+      "replacement": "\n## Unsupported additional commentary\n\nThe result is decisive. The result is decisive. The result is decisive.\n",
+      "expected_dimensions": [
+        "clarity_actionability"
+      ],
+      "expected_error_codes": [
+        "verbosity_without_evidence"
+      ]
+    }
+  ]
+}

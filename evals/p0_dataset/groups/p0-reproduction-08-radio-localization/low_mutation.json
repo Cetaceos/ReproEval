@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0",
+  "mutation_id": "p0-reproduction-08-radio-localization-low-mutation",
+  "parent_report_id": "p0-reproduction-08-radio-localization-high",
+  "output_report_id": "p0-reproduction-08-radio-localization-low",
+  "parent_path": "groups/p0-reproduction-08-radio-localization/high_report.md",
+  "output_path": "groups/p0-reproduction-08-radio-localization/low_report.md",
+  "parent_sha256": "CD7DFD5A806FBDB18D7A386C287A52854496725D5E3D260BB40893459B5B51F8",
+  "output_sha256": "91E919FBF7A98DA8366DD40B91163AD7B96E00F82064017BD87458E8AC286A41",
+  "operations": [
+    {
+      "operation_id": "weaken-reasoning",
+      "kind": "replace_once",
+      "target": "Five registered runs support the observed value, but there is insufficient evidence for a universal causal attribution in radio localization.",
+      "replacement": "The aggregate differs, and there is insufficient evidence.",
+      "expected_dimensions": [
+        "reasoning_consistency"
+      ],
+      "expected_error_codes": [
+        "reasoning_gap"
+      ]
+    },
+    {
+      "operation_id": "weaken-next-step",
+      "kind": "replace_once",
+      "target": "Repeat the registered localization geometry test with fixed preprocessing, published seeds, and confidence intervals.",
+      "replacement": "Run more experiments.",
+      "expected_dimensions": [
+        "clarity_actionability"
+      ],
+      "expected_error_codes": [
+        "actionability_gap"
+      ]
+    },
+    {
+      "operation_id": "corrupt-primary-claim",
+      "kind": "replace_once",
+      "target": "The reproduced Position RMSE is 0.47 m [paper@L10-L14] [results@rows:1-5].",
+      "replacement": "The reproduced Position RMSE is 1.20 m [invented-authority@L1] [results@rows:1-5].",
+      "expected_dimensions": [
+        "factual_accuracy",
+        "evidence_traceability",
+        "numerical_consistency"
+      ],
+      "expected_error_codes": [
+        "fabricated_citation",
+        "unsupported_claim",
+        "numeric_error"
+      ]
+    }
+  ]
+}

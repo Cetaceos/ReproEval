@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0",
+  "mutation_id": "p0-reproduction-01-channel-prediction-low-mutation",
+  "parent_report_id": "p0-reproduction-01-channel-prediction-high",
+  "output_report_id": "p0-reproduction-01-channel-prediction-low",
+  "parent_path": "groups/p0-reproduction-01-channel-prediction/high_report.md",
+  "output_path": "groups/p0-reproduction-01-channel-prediction/low_report.md",
+  "parent_sha256": "BA6A4939EBD0BFC80EE7F3DB5F82CB87EC8441F87BD9D6F0F66604023E3B4B65",
+  "output_sha256": "49A6A6F3A5817E13211A3568D0D341525D5A3EDE91CCD55003D8816038CC4270",
+  "operations": [
+    {
+      "operation_id": "weaken-reasoning",
+      "kind": "replace_once",
+      "target": "Five registered runs support the observed value, but there is insufficient evidence for a universal causal attribution in wireless channel prediction.",
+      "replacement": "The aggregate differs, and there is insufficient evidence.",
+      "expected_dimensions": [
+        "reasoning_consistency"
+      ],
+      "expected_error_codes": [
+        "reasoning_gap"
+      ]
+    },
+    {
+      "operation_id": "weaken-next-step",
+      "kind": "replace_once",
+      "target": "Repeat the registered channel prediction evaluation with fixed preprocessing, published seeds, and confidence intervals.",
+      "replacement": "Run more experiments.",
+      "expected_dimensions": [
+        "clarity_actionability"
+      ],
+      "expected_error_codes": [
+        "actionability_gap"
+      ]
+    },
+    {
+      "operation_id": "corrupt-primary-claim",
+      "kind": "replace_once",
+      "target": "The reproduced Prediction accuracy is 0.876 [paper@L10-L14] [results@rows:1-5].",
+      "replacement": "The reproduced Prediction accuracy is 0.500 [invented-authority@L1] [results@rows:1-5].",
+      "expected_dimensions": [
+        "factual_accuracy",
+        "evidence_traceability",
+        "numerical_consistency"
+      ],
+      "expected_error_codes": [
+        "fabricated_citation",
+        "unsupported_claim",
+        "numeric_error"
+      ]
+    }
+  ]
+}

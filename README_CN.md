@@ -12,10 +12,10 @@ Hy3 ReproEval 是一个面向开放式科研报告的 Hy3 多工具应用与可�
 
 - 10 个 stdio MCP Tool，覆盖论文复现、方案迁移、证据图、报告和只读仓库审计；
 - 本地统计重算、Schema 校验、来源哈希、工件血缘和证据不足拒答；
-- 合成示例、离线评测集、在线验证门禁和 269 个迁移测试；
+- 合成示例、离线评测集、在线验证门禁和 370 余项自动化测试；
 - 对原有 `hy3_reproscope_mcp` 模块和 `hy3-reproscope-mcp` 命令的兼容。
 
-版本化七维 Rubric、确定性校验器、受限 Hy3 语义 Judge、盲化重复比较、可复现数据协议、可恢复批量 Judge、组内 Benchmark、去标识化标注校验、一致性分析和裁决共识聚合已经实现。模型判断不能覆盖本地引用、数值、工件或硬性分数上限结论。真实专家标签和冻结测试集结果仍属于后续验证工作，详见[项目方案](docs/PROJECT_PROPOSAL_CN.md)。
+版本化七维 Rubric、确定性校验器、受限 Hy3 语义 Judge、盲化重复比较、可复现数据协议、可恢复批量 Judge、组内 Benchmark、去标识化标注校验、一致性分析和裁决共识聚合已经实现。仓库同时提供可确定性生成的 12 组 P0 合成数据集候选，用于协议实验。模型判断不能覆盖本地引用、数值、工件或硬性分数上限结论。真实专家标签和冻结测试集结果仍属于后续验证工作，详见[项目方案](docs/PROJECT_PROPOSAL_CN.md)。
 
 ## 架构
 
@@ -162,6 +162,19 @@ hy3-reproeval benchmark-dataset \
 
 验证器要求同一来源组使用同一评测契约，阻止登记的同一来源指纹跨数据集划分复用，限制路径范围，并要求本地可检查错误与声明标签严格闭合。对抗报告还必须逐项登记攻击类型、目标维度和预期错误，并与 Mutation 操作闭合。语义类标签仍需后续 Hy3 Judge 或人工实验验证。两个公开样例均为合成开发组，只用于验证协议，不是 held-out Benchmark。详见 [DATASET_PROTOCOL.md](docs/DATASET_PROTOCOL.md) 和 [ADVERSARIAL_PROTOCOL.md](docs/ADVERSARIAL_PROTOCOL.md)。
 
+### P0 合成数据集候选
+
+仓库内的 P0 候选集包含 12 个相互隔离的合成来源组，development、validation、test 各 4 组，
+共 44 份报告和 8 份对抗报告，并覆盖已登记的全部 7 类攻击。无需 API Key 即可按规范字节复验并校验：
+
+```bash
+hy3-reproeval build-p0-dataset --output evals/p0_dataset --check
+hy3-reproeval validate-dataset --manifest evals/p0_dataset/dataset.json
+```
+
+其中的生成标签用于验证协议和 P0 结构门槛，不是专家真值或 held-out 性能结果。详见
+[P0_DATASET.md](docs/P0_DATASET.md)。
+
 ### 数据集冻结
 
 在正式生成 Judge Record 或组织人工盲评前，冻结所有登记输入：
@@ -293,6 +306,7 @@ docs/PROJECT_PROPOSAL_CN.md 实战阶段设计和交付计划
 docs/EVALUATION_CORE.md     确定性评估器契约和能力边界
 docs/DATASET_PROTOCOL.md    数据集、划分、来源与变异协议
 docs/DATASET_FREEZE.md      实验输入冻结、复核与 P0 门槛
+docs/P0_DATASET.md          规范化 P0 合成数据集清单与结论边界
 docs/BENCHMARK_PROTOCOL.md  组内批量指标和结论边界
 docs/ADVERSARIAL_PROTOCOL.md 对抗攻击登记与检测指标协议
 docs/JUDGE_BATCH.md         可恢复在线 Judge Record 生成协议

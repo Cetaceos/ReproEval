@@ -1,0 +1,72 @@
+{
+  "schema_version": "1.0",
+  "case_id": "p0-reproduction-02-ofdm-estimation-low-case",
+  "scenario": "reproduction",
+  "report_path": "low_report.md",
+  "sources": [
+    {
+      "source_id": "paper",
+      "locators": [
+        "L3-L9",
+        "L10-L14"
+      ]
+    },
+    {
+      "source_id": "results",
+      "locators": [
+        "rows:1-5"
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "ofdm-estimation-primary-claim",
+      "marker": "reproduced NMSE",
+      "required_source_ids": [
+        "paper",
+        "results"
+      ]
+    }
+  ],
+  "numeric_expectations": [
+    {
+      "fact_id": "ofdm-estimation-primary-metric",
+      "label": "NMSE is",
+      "expected": "-18.4",
+      "absolute_tolerance": "0.0001",
+      "critical": true,
+      "unit": "dB"
+    }
+  ],
+  "required_sections": [
+    {
+      "section_id": "summary",
+      "heading": "Executive summary"
+    },
+    {
+      "section_id": "evidence",
+      "heading": "Experimental evidence"
+    },
+    {
+      "section_id": "limitations",
+      "heading": "Evidence and limitations"
+    },
+    {
+      "section_id": "next",
+      "heading": "Next steps"
+    }
+  ],
+  "uncertainty": {
+    "required": true,
+    "accepted_phrases": [
+      "insufficient evidence"
+    ]
+  },
+  "artifacts": [
+    {
+      "artifact_id": "ofdm-estimation-source",
+      "path": "source_material.md",
+      "sha256": "765B8B4B04E7B861B1A8CEF79F9CF268A10AFE34B81D8BB56B6B57A85B4DCFAB"
+    }
+  ]
+}

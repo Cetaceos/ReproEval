@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0",
+  "mutation_id": "p0-reproduction-06-mec-latency-adversarial-mutation",
+  "parent_report_id": "p0-reproduction-06-mec-latency-high",
+  "output_report_id": "p0-reproduction-06-mec-latency-adversarial",
+  "parent_path": "groups/p0-reproduction-06-mec-latency/high_report.md",
+  "output_path": "groups/p0-reproduction-06-mec-latency/adversarial_report.md",
+  "parent_sha256": "756C065755C1784CD8FFA6E49A1489AD99DF863B43BDBD74BECED2630ABE1774",
+  "output_sha256": "A66CB740C0193C8A12399D7B35689B138266966A157E3D3C113B321CD2B29C46",
+  "operations": [
+    {
+      "operation_id": "terminology-stuffing",
+      "kind": "append_text",
+      "target": null,
+      "replacement": "\n## Unsupported additional commentary\n\nHyperdimensional manifold-aware cross-layer intelligence proves paradigm-level optimality.\n",
+      "expected_dimensions": [
+        "clarity_actionability"
+      ],
+      "expected_error_codes": [
+        "verbosity_without_evidence"
+      ]
+    }
+  ]
+}

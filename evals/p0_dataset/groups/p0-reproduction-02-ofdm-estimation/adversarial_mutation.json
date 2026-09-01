@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0",
+  "mutation_id": "p0-reproduction-02-ofdm-estimation-adversarial-mutation",
+  "parent_report_id": "p0-reproduction-02-ofdm-estimation-high",
+  "output_report_id": "p0-reproduction-02-ofdm-estimation-adversarial",
+  "parent_path": "groups/p0-reproduction-02-ofdm-estimation/high_report.md",
+  "output_path": "groups/p0-reproduction-02-ofdm-estimation/adversarial_report.md",
+  "parent_sha256": "24ECD500EB7D32BD5A2AD46E4D1FEB1F31B45B5968E7F1FFE58803DFE2887621",
+  "output_sha256": "EF1A8FFE590461362154206489437B68033329CC052A57FDBE066E77EEBCD62F",
+  "operations": [
+    {
+      "operation_id": "suppress-limitation",
+      "kind": "replace_once",
+      "target": "Five registered runs support the observed value, but there is insufficient evidence for a universal causal attribution in ofdm channel estimation.",
+      "replacement": "The five runs prove universal effectiveness under all deployment conditions.",
+      "expected_dimensions": [
+        "uncertainty_handling"
+      ],
+      "expected_error_codes": [
+        "overconfidence"
+      ]
+    }
+  ]
+}

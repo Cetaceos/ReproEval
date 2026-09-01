@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0",
+  "mutation_id": "p0-reproduction-02-ofdm-estimation-low-mutation",
+  "parent_report_id": "p0-reproduction-02-ofdm-estimation-high",
+  "output_report_id": "p0-reproduction-02-ofdm-estimation-low",
+  "parent_path": "groups/p0-reproduction-02-ofdm-estimation/high_report.md",
+  "output_path": "groups/p0-reproduction-02-ofdm-estimation/low_report.md",
+  "parent_sha256": "24ECD500EB7D32BD5A2AD46E4D1FEB1F31B45B5968E7F1FFE58803DFE2887621",
+  "output_sha256": "AA36752F9BFC22515ABF0F0BF475FFD23E1DE85BA325D41F1CB16A7CFDD5F692",
+  "operations": [
+    {
+      "operation_id": "weaken-reasoning",
+      "kind": "replace_once",
+      "target": "Five registered runs support the observed value, but there is insufficient evidence for a universal causal attribution in ofdm channel estimation.",
+      "replacement": "The aggregate differs, and there is insufficient evidence.",
+      "expected_dimensions": [
+        "reasoning_consistency"
+      ],
+      "expected_error_codes": [
+        "reasoning_gap"
+      ]
+    },
+    {
+      "operation_id": "weaken-next-step",
+      "kind": "replace_once",
+      "target": "Repeat the registered channel estimation benchmark with fixed preprocessing, published seeds, and confidence intervals.",
+      "replacement": "Run more experiments.",
+      "expected_dimensions": [
+        "clarity_actionability"
+      ],
+      "expected_error_codes": [
+        "actionability_gap"
+      ]
+    },
+    {
+      "operation_id": "corrupt-primary-claim",
+      "kind": "replace_once",
+      "target": "The reproduced NMSE is -18.4 dB [paper@L10-L14] [results@rows:1-5].",
+      "replacement": "The reproduced NMSE is -12.0 dB [invented-authority@L1] [results@rows:1-5].",
+      "expected_dimensions": [
+        "factual_accuracy",
+        "evidence_traceability",
+        "numerical_consistency"
+      ],
+      "expected_error_codes": [
+        "fabricated_citation",
+        "unsupported_claim",
+        "numeric_error"
+      ]
+    }
+  ]
+}

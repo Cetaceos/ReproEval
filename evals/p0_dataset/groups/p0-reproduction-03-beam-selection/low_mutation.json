@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0",
+  "mutation_id": "p0-reproduction-03-beam-selection-low-mutation",
+  "parent_report_id": "p0-reproduction-03-beam-selection-high",
+  "output_report_id": "p0-reproduction-03-beam-selection-low",
+  "parent_path": "groups/p0-reproduction-03-beam-selection/high_report.md",
+  "output_path": "groups/p0-reproduction-03-beam-selection/low_report.md",
+  "parent_sha256": "16D82B068E92A8737B0A361813688A85E34384A8B8786C4A3802C7B5315A74F0",
+  "output_sha256": "23B91386B294C8AD9AF86C4141232A8FDBF083DA9C71792847DFD43A7FA6716C",
+  "operations": [
+    {
+      "operation_id": "weaken-reasoning",
+      "kind": "replace_once",
+      "target": "Five registered runs support the observed value, but there is insufficient evidence for a universal causal attribution in millimeter-wave beam selection.",
+      "replacement": "The aggregate differs, and there is insufficient evidence.",
+      "expected_dimensions": [
+        "reasoning_consistency"
+      ],
+      "expected_error_codes": [
+        "reasoning_gap"
+      ]
+    },
+    {
+      "operation_id": "weaken-next-step",
+      "kind": "replace_once",
+      "target": "Repeat the registered beam selection sweep with fixed preprocessing, published seeds, and confidence intervals.",
+      "replacement": "Run more experiments.",
+      "expected_dimensions": [
+        "clarity_actionability"
+      ],
+      "expected_error_codes": [
+        "actionability_gap"
+      ]
+    },
+    {
+      "operation_id": "corrupt-primary-claim",
+      "kind": "replace_once",
+      "target": "The reproduced Top-1 accuracy is 0.842 [paper@L10-L14] [results@rows:1-5].",
+      "replacement": "The reproduced Top-1 accuracy is 0.700 [invented-authority@L1] [results@rows:1-5].",
+      "expected_dimensions": [
+        "factual_accuracy",
+        "evidence_traceability",
+        "numerical_consistency"
+      ],
+      "expected_error_codes": [
+        "fabricated_citation",
+        "unsupported_claim",
+        "numeric_error"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "mutation_id": "p0-reproduction-08-radio-localization-medium-mutation",
+  "parent_report_id": "p0-reproduction-08-radio-localization-high",
+  "output_report_id": "p0-reproduction-08-radio-localization-medium",
+  "parent_path": "groups/p0-reproduction-08-radio-localization/high_report.md",
+  "output_path": "groups/p0-reproduction-08-radio-localization/medium_report.md",
+  "parent_sha256": "CD7DFD5A806FBDB18D7A386C287A52854496725D5E3D260BB40893459B5B51F8",
+  "output_sha256": "C6C3D2F1419A7CB95E0CAAE75D80989B0B118E209FFB9B6F980832E61739D2EF",
+  "operations": [
+    {
+      "operation_id": "weaken-reasoning",
+      "kind": "replace_once",
+      "target": "Five registered runs support the observed value, but there is insufficient evidence for a universal causal attribution in radio localization.",
+      "replacement": "The aggregate differs, and there is insufficient evidence.",
+      "expected_dimensions": [
+        "reasoning_consistency"
+      ],
+      "expected_error_codes": [
+        "reasoning_gap"
+      ]
+    },
+    {
+      "operation_id": "weaken-next-step",
+      "kind": "replace_once",
+      "target": "Repeat the registered localization geometry test with fixed preprocessing, published seeds, and confidence intervals.",
+      "replacement": "Run more experiments.",
+      "expected_dimensions": [
+        "clarity_actionability"
+      ],
+      "expected_error_codes": [
+        "actionability_gap"
+      ]
+    }
+  ]
+}

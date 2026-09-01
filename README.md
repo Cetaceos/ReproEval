@@ -12,10 +12,10 @@ The first migration milestone is implemented. The repository now contains the va
 
 - 10 stdio MCP tools for reproducibility review, transfer assessment, evidence graphs, reports, and read-only repository audits;
 - deterministic statistics, schema validation, source hashes, artifact lineage, and fail-closed evidence checks;
-- synthetic examples, offline evaluation suites, live-validation gates, and 269 migrated tests;
+- synthetic examples, offline evaluation suites, live-validation gates, and more than 370 automated tests;
 - compatibility with existing `hy3_reproscope_mcp` module and `hy3-reproscope-mcp` command names.
 
-The versioned seven-dimension rubric, deterministic validators, constrained Hy3 semantic Judge, blinded repeated comparison, reproducible dataset protocol, resumable batch Judge runs, group-isolated benchmark runner, de-identified annotation validation, agreement analysis, and adjudicated consensus aggregation are implemented. Model judgments cannot replace local citation, numerical, artifact, or hard-cap decisions. Real expert labels and frozen held-out results remain future validation work described in [the project proposal](docs/PROJECT_PROPOSAL_CN.md).
+The versioned seven-dimension rubric, deterministic validators, constrained Hy3 semantic Judge, blinded repeated comparison, reproducible dataset protocol, resumable batch Judge runs, group-isolated benchmark runner, de-identified annotation validation, agreement analysis, and adjudicated consensus aggregation are implemented. A deterministic 12-group P0 synthetic Dataset candidate is included for protocol experiments. Model judgments cannot replace local citation, numerical, artifact, or hard-cap decisions. Real expert labels and frozen held-out results remain future validation work described in [the project proposal](docs/PROJECT_PROPOSAL_CN.md).
 
 ## Architecture
 
@@ -162,6 +162,20 @@ hy3-reproeval benchmark-dataset \
 
 The validator enforces one evaluation contract per source group, prevents a declared source fingerprint from crossing splits, confines paths, and requires exact closure for locally detectable errors. Adversarial reports must additionally register each attack type, target dimension, and expected error with Mutation closure. Semantic labels remain hypotheses for later Hy3 Judge or human validation. Both public fixtures are synthetic development groups for protocol verification, not held-out benchmarks. See [DATASET_PROTOCOL.md](docs/DATASET_PROTOCOL.md) and [ADVERSARIAL_PROTOCOL.md](docs/ADVERSARIAL_PROTOCOL.md).
 
+### P0 synthetic Dataset candidate
+
+The tracked P0 candidate contains 12 isolated synthetic source groups, balanced 4/4/4 development, validation,
+and test splits, 44 reports, and 8 adversarial reports covering all seven registered attack types. Rebuild or
+byte-verify it without an API key:
+
+```bash
+hy3-reproeval build-p0-dataset --output evals/p0_dataset --check
+hy3-reproeval validate-dataset --manifest evals/p0_dataset/dataset.json
+```
+
+Its generated labels validate the protocol and P0 structural gates; they are not expert ground truth or a
+held-out performance result. See [P0_DATASET.md](docs/P0_DATASET.md).
+
 ### Dataset freeze
 
 Before generating Judge Records or collecting blinded annotations, freeze every registered input:
@@ -295,6 +309,7 @@ docs/PROJECT_PROPOSAL_CN.md practical-stage design and delivery plan
 docs/EVALUATION_CORE.md     deterministic evaluator contract and limitations
 docs/DATASET_PROTOCOL.md    dataset, split, provenance, and mutation contract
 docs/DATASET_FREEZE.md      experiment-input freeze, verification, and P0 gate
+docs/P0_DATASET.md          canonical synthetic P0 Dataset inventory and boundaries
 docs/BENCHMARK_PROTOCOL.md  group-isolated batch metrics and claim boundaries
 docs/ADVERSARIAL_PROTOCOL.md adversarial attack registration and detection metrics
 docs/JUDGE_BATCH.md         resumable online Judge Record generation

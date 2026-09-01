@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.0",
+  "mutation_id": "p0-reproduction-01-channel-prediction-adversarial-mutation",
+  "parent_report_id": "p0-reproduction-01-channel-prediction-high",
+  "output_report_id": "p0-reproduction-01-channel-prediction-adversarial",
+  "parent_path": "groups/p0-reproduction-01-channel-prediction/high_report.md",
+  "output_path": "groups/p0-reproduction-01-channel-prediction/adversarial_report.md",
+  "parent_sha256": "BA6A4939EBD0BFC80EE7F3DB5F82CB87EC8441F87BD9D6F0F66604023E3B4B65",
+  "output_sha256": "29F764E9D9E3E35465EABC57E5CACE58D18AFBDF9D1A28322412A8E37E0D047B",
+  "operations": [
+    {
+      "operation_id": "corrupt-primary-claim",
+      "kind": "replace_once",
+      "target": "The reproduced Prediction accuracy is 0.876 [paper@L10-L14] [results@rows:1-5].",
+      "replacement": "The reproduced Prediction accuracy is 0.500 [invented-authority@L1] [results@rows:1-5].",
+      "expected_dimensions": [
+        "factual_accuracy",
+        "evidence_traceability",
+        "numerical_consistency"
+      ],
+      "expected_error_codes": [
+        "fabricated_citation",
+        "unsupported_claim",
+        "numeric_error"
+      ]
+    }
+  ]
+}

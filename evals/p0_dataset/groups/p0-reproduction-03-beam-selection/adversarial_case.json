@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0",
+  "case_id": "p0-reproduction-03-beam-selection-adversarial-case",
+  "scenario": "reproduction",
+  "report_path": "adversarial_report.md",
+  "sources": [
+    {
+      "source_id": "paper",
+      "locators": [
+        "L3-L9",
+        "L10-L14"
+      ]
+    },
+    {
+      "source_id": "results",
+      "locators": [
+        "rows:1-5"
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "beam-selection-primary-claim",
+      "marker": "reproduced Top-1 accuracy",
+      "required_source_ids": [
+        "paper",
+        "results"
+      ]
+    }
+  ],
+  "numeric_expectations": [
+    {
+      "fact_id": "beam-selection-primary-metric",
+      "label": "Top-1 accuracy is",
+      "expected": "0.842",
+      "absolute_tolerance": "0.0001",
+      "critical": true
+    }
+  ],
+  "required_sections": [
+    {
+      "section_id": "summary",
+      "heading": "Executive summary"
+    },
+    {
+      "section_id": "evidence",
+      "heading": "Experimental evidence"
+    },
+    {
+      "section_id": "limitations",
+      "heading": "Evidence and limitations"
+    },
+    {
+      "section_id": "next",
+      "heading": "Next steps"
+    }
+  ],
+  "uncertainty": {
+    "required": true,
+    "accepted_phrases": [
+      "insufficient evidence"
+    ]
+  },
+  "artifacts": [
+    {
+      "artifact_id": "beam-selection-source",
+      "path": "source_material.md",
+      "sha256": "593A0173593F04CB263D35444FB66A344F3476CAE07A534B2D0552C6530AE2DE"
+    }
+  ]
+}

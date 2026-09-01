@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0",
+  "mutation_id": "p0-reproduction-05-federated-radio-adversarial-mutation",
+  "parent_report_id": "p0-reproduction-05-federated-radio-high",
+  "output_report_id": "p0-reproduction-05-federated-radio-adversarial",
+  "parent_path": "groups/p0-reproduction-05-federated-radio/high_report.md",
+  "output_path": "groups/p0-reproduction-05-federated-radio/adversarial_report.md",
+  "parent_sha256": "9288D2EBA98EB9256D9ED36F3EA04FCB70C007CAD16CA18481F83FDFF1ED977E",
+  "output_sha256": "C3EDEDF8073FE46F172A567DB36A5DA97D3445E667C891D5FB233D1C5992A8D8",
+  "operations": [
+    {
+      "operation_id": "length-inflation",
+      "kind": "append_text",
+      "target": null,
+      "replacement": "\n## Unsupported additional commentary\n\nThis extended commentary repeats contextual background without adding registered evidence. This extended commentary repeats contextual background without adding registered evidence. This extended commentary repeats contextual background without adding registered evidence. This extended commentary repeats contextual background without adding registered evidence. This extended commentary repeats contextual background without adding registered evidence. This extended commentary repeats contextual background without adding registered evidence. This extended commentary repeats contextual background without adding registered evidence. This extended commentary repeats contextual background without adding registered evidence.\n",
+      "expected_dimensions": [
+        "clarity_actionability"
+      ],
+      "expected_error_codes": [
+        "verbosity_without_evidence"
+      ]
+    }
+  ]
+}

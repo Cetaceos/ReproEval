@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0",
+  "case_id": "p0-reproduction-09-semantic-communication-low-case",
+  "scenario": "reproduction",
+  "report_path": "low_report.md",
+  "sources": [
+    {
+      "source_id": "paper",
+      "locators": [
+        "L3-L9",
+        "L10-L14"
+      ]
+    },
+    {
+      "source_id": "results",
+      "locators": [
+        "rows:1-5"
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "semantic-communication-primary-claim",
+      "marker": "reproduced BLEU",
+      "required_source_ids": [
+        "paper",
+        "results"
+      ]
+    }
+  ],
+  "numeric_expectations": [
+    {
+      "fact_id": "semantic-communication-primary-metric",
+      "label": "BLEU is",
+      "expected": "0.312",
+      "absolute_tolerance": "0.0001",
+      "critical": true
+    }
+  ],
+  "required_sections": [
+    {
+      "section_id": "summary",
+      "heading": "Executive summary"
+    },
+    {
+      "section_id": "evidence",
+      "heading": "Experimental evidence"
+    },
+    {
+      "section_id": "limitations",
+      "heading": "Evidence and limitations"
+    },
+    {
+      "section_id": "next",
+      "heading": "Next steps"
+    }
+  ],
+  "uncertainty": {
+    "required": true,
+    "accepted_phrases": [
+      "insufficient evidence"
+    ]
+  },
+  "artifacts": [
+    {
+      "artifact_id": "semantic-communication-source",
+      "path": "source_material.md",
+      "sha256": "39E6067B7CD9D84586BCFDB72ED1E23E794EFD56041738545BEA3070B00344BA"
+    }
+  ]
+}

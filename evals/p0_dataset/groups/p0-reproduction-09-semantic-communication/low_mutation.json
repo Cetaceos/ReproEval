@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0",
+  "mutation_id": "p0-reproduction-09-semantic-communication-low-mutation",
+  "parent_report_id": "p0-reproduction-09-semantic-communication-high",
+  "output_report_id": "p0-reproduction-09-semantic-communication-low",
+  "parent_path": "groups/p0-reproduction-09-semantic-communication/high_report.md",
+  "output_path": "groups/p0-reproduction-09-semantic-communication/low_report.md",
+  "parent_sha256": "942AE4DB77DD9F32486C24416751CFADCE1312E7E2C9981BDABBBE02296C7431",
+  "output_sha256": "9D0528EBE32372905594C236B205602EF90EA8CE135229D9972F4931595635E3",
+  "operations": [
+    {
+      "operation_id": "weaken-reasoning",
+      "kind": "replace_once",
+      "target": "Five registered runs support the observed value, but there is insufficient evidence for a universal causal attribution in semantic communication.",
+      "replacement": "The aggregate differs, and there is insufficient evidence.",
+      "expected_dimensions": [
+        "reasoning_consistency"
+      ],
+      "expected_error_codes": [
+        "reasoning_gap"
+      ]
+    },
+    {
+      "operation_id": "weaken-next-step",
+      "kind": "replace_once",
+      "target": "Repeat the registered semantic channel ablation with fixed preprocessing, published seeds, and confidence intervals.",
+      "replacement": "Run more experiments.",
+      "expected_dimensions": [
+        "clarity_actionability"
+      ],
+      "expected_error_codes": [
+        "actionability_gap"
+      ]
+    },
+    {
+      "operation_id": "corrupt-primary-claim",
+      "kind": "replace_once",
+      "target": "The reproduced BLEU is 0.312 [paper@L10-L14] [results@rows:1-5].",
+      "replacement": "The reproduced BLEU is 0.200 [invented-authority@L1] [results@rows:1-5].",
+      "expected_dimensions": [
+        "factual_accuracy",
+        "evidence_traceability",
+        "numerical_consistency"
+      ],
+      "expected_error_codes": [
+        "fabricated_citation",
+        "unsupported_claim",
+        "numeric_error"
+      ]
+    }
+  ]
+}

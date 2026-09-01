@@ -2,6 +2,20 @@
 
 All notable ReproEval changes are documented in this file.
 
+## 0.27.0 - 2026-09-01
+
+### Added
+
+- A deterministic P0 Dataset builder with byte-exact write and verification modes.
+- A tracked synthetic benchmark candidate containing 12 isolated source groups, 44 reports, balanced
+  development/validation/test splits, and 8 adversarial reports spanning all seven registered attack types.
+- CLI, CI, Freeze-readiness, tamper-detection, packaging, and documentation coverage for the P0 Dataset.
+
+### Boundaries
+
+- P0 structural readiness does not establish expert-label quality, Hy3 performance, model-human agreement,
+  or held-out generalization; those claims require the planned blinded annotation and online Judge experiments.
+
 ## 0.26.0 - 2026-09-01
 
 ### Added

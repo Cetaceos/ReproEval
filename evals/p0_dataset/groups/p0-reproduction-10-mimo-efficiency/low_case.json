@@ -1,0 +1,72 @@
+{
+  "schema_version": "1.0",
+  "case_id": "p0-reproduction-10-mimo-efficiency-low-case",
+  "scenario": "reproduction",
+  "report_path": "low_report.md",
+  "sources": [
+    {
+      "source_id": "paper",
+      "locators": [
+        "L3-L9",
+        "L10-L14"
+      ]
+    },
+    {
+      "source_id": "results",
+      "locators": [
+        "rows:1-5"
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "mimo-efficiency-primary-claim",
+      "marker": "reproduced Spectral efficiency",
+      "required_source_ids": [
+        "paper",
+        "results"
+      ]
+    }
+  ],
+  "numeric_expectations": [
+    {
+      "fact_id": "mimo-efficiency-primary-metric",
+      "label": "Spectral efficiency is",
+      "expected": "12.8",
+      "absolute_tolerance": "0.0001",
+      "critical": true,
+      "unit": "bit/s/Hz"
+    }
+  ],
+  "required_sections": [
+    {
+      "section_id": "summary",
+      "heading": "Executive summary"
+    },
+    {
+      "section_id": "evidence",
+      "heading": "Experimental evidence"
+    },
+    {
+      "section_id": "limitations",
+      "heading": "Evidence and limitations"
+    },
+    {
+      "section_id": "next",
+      "heading": "Next steps"
+    }
+  ],
+  "uncertainty": {
+    "required": true,
+    "accepted_phrases": [
+      "insufficient evidence"
+    ]
+  },
+  "artifacts": [
+    {
+      "artifact_id": "mimo-efficiency-source",
+      "path": "source_material.md",
+      "sha256": "0A69FA8CBAD2A75EB6579076813F7B6D9015E724B620A444C2C354BA4CC1D8D0"
+    }
+  ]
+}

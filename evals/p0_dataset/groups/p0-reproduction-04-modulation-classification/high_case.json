@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0",
+  "case_id": "p0-reproduction-04-modulation-classification-high-case",
+  "scenario": "reproduction",
+  "report_path": "high_report.md",
+  "sources": [
+    {
+      "source_id": "paper",
+      "locators": [
+        "L3-L9",
+        "L10-L14"
+      ]
+    },
+    {
+      "source_id": "results",
+      "locators": [
+        "rows:1-5"
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "modulation-classification-primary-claim",
+      "marker": "reproduced Macro F1",
+      "required_source_ids": [
+        "paper",
+        "results"
+      ]
+    }
+  ],
+  "numeric_expectations": [
+    {
+      "fact_id": "modulation-classification-primary-metric",
+      "label": "Macro F1 is",
+      "expected": "0.913",
+      "absolute_tolerance": "0.0001",
+      "critical": true
+    }
+  ],
+  "required_sections": [
+    {
+      "section_id": "summary",
+      "heading": "Executive summary"
+    },
+    {
+      "section_id": "evidence",
+      "heading": "Experimental evidence"
+    },
+    {
+      "section_id": "limitations",
+      "heading": "Evidence and limitations"
+    },
+    {
+      "section_id": "next",
+      "heading": "Next steps"
+    }
+  ],
+  "uncertainty": {
+    "required": true,
+    "accepted_phrases": [
+      "insufficient evidence"
+    ]
+  },
+  "artifacts": [
+    {
+      "artifact_id": "modulation-classification-source",
+      "path": "source_material.md",
+      "sha256": "FE602A7A875E0638170843E82FA7B88A6D1B7E5EE2362504CAE56C1770B6FFD1"
+    }
+  ]
+}

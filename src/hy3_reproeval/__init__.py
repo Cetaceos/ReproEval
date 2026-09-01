@@ -5,7 +5,7 @@ from importlib.metadata import PackageNotFoundError, version
 try:
     __version__ = version("hy3-reproeval")
 except PackageNotFoundError:  # pragma: no cover - source tree without installation
-    __version__ = "0.26.0"
+    __version__ = "0.27.0"
 
 from .agreement import analyze_annotation_agreement
 from .annotations import validate_annotation_bundles
@@ -15,6 +15,7 @@ from .dataset import replay_mutation_manifest, validate_dataset_manifest
 from .evaluator import evaluate_case_file, evaluate_case_file_hybrid
 from .freeze import create_dataset_freeze, verify_dataset_freeze
 from .judge_batch import generate_dataset_judge_records
+from .p0_dataset import materialize_p0_dataset
 from .pairwise import compare_case_files
 
 __all__ = [
@@ -26,6 +27,7 @@ __all__ = [
     "evaluate_case_file_hybrid",
     "finalize_annotation_consensus",
     "generate_dataset_judge_records",
+    "materialize_p0_dataset",
     "replay_mutation_manifest",
     "run_dataset_benchmark",
     "validate_annotation_bundles",

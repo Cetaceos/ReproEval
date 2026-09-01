@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0",
+  "mutation_id": "p0-reproduction-11-energy-efficiency-low-mutation",
+  "parent_report_id": "p0-reproduction-11-energy-efficiency-high",
+  "output_report_id": "p0-reproduction-11-energy-efficiency-low",
+  "parent_path": "groups/p0-reproduction-11-energy-efficiency/high_report.md",
+  "output_path": "groups/p0-reproduction-11-energy-efficiency/low_report.md",
+  "parent_sha256": "79187DF61804C9C2F2753729D21317813E3765E41F705F5049A19AB13846D4C7",
+  "output_sha256": "930E9E50970B2E73C63A5AA51313E9E40D346A5039F956D79C90F4341236160F",
+  "operations": [
+    {
+      "operation_id": "weaken-reasoning",
+      "kind": "replace_once",
+      "target": "Five registered runs support the observed value, but there is insufficient evidence for a universal causal attribution in energy-efficient radio control.",
+      "replacement": "The aggregate differs, and there is insufficient evidence.",
+      "expected_dimensions": [
+        "reasoning_consistency"
+      ],
+      "expected_error_codes": [
+        "reasoning_gap"
+      ]
+    },
+    {
+      "operation_id": "weaken-next-step",
+      "kind": "replace_once",
+      "target": "Repeat the registered energy budget sweep with fixed preprocessing, published seeds, and confidence intervals.",
+      "replacement": "Run more experiments.",
+      "expected_dimensions": [
+        "clarity_actionability"
+      ],
+      "expected_error_codes": [
+        "actionability_gap"
+      ]
+    },
+    {
+      "operation_id": "corrupt-primary-claim",
+      "kind": "replace_once",
+      "target": "The reproduced Energy efficiency is 4.75 Mbit/J [paper@L10-L14] [results@rows:1-5].",
+      "replacement": "The reproduced Energy efficiency is 2.50 Mbit/J [invented-authority@L1] [results@rows:1-5].",
+      "expected_dimensions": [
+        "factual_accuracy",
+        "evidence_traceability",
+        "numerical_consistency"
+      ],
+      "expected_error_codes": [
+        "fabricated_citation",
+        "unsupported_claim",
+        "numeric_error"
+      ]
+    }
+  ]
+}

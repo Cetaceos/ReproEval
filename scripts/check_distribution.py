@@ -35,6 +35,7 @@ REQUIRED_SDIST_DOCS = {
     "docs/ANNOTATION_PROTOCOL.md",
     "docs/DATASET_FREEZE.md",
     "docs/JUDGE_BATCH.md",
+    "docs/P0_DATASET.md",
     "docs/PROJECT_PROPOSAL_CN.md",
     "docs/reproscope/RELEASE_EVIDENCE_0.15_CN.md",
 }
@@ -45,6 +46,7 @@ REQUIRED_SDIST_FILES = {
     "examples/dataset/adversarial_mutation.json",
     "examples/dataset/adversarial_report.md",
     "examples/dataset/sample_adversarial_dataset.json",
+    "evals/p0_dataset/dataset.json",
     "requirements.lock",
 }
 FORBIDDEN_SDIST_PATHS = {

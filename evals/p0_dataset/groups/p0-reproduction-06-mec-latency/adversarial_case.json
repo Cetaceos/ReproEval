@@ -1,0 +1,72 @@
+{
+  "schema_version": "1.0",
+  "case_id": "p0-reproduction-06-mec-latency-adversarial-case",
+  "scenario": "reproduction",
+  "report_path": "adversarial_report.md",
+  "sources": [
+    {
+      "source_id": "paper",
+      "locators": [
+        "L3-L9",
+        "L10-L14"
+      ]
+    },
+    {
+      "source_id": "results",
+      "locators": [
+        "rows:1-5"
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "mec-latency-primary-claim",
+      "marker": "reproduced End-to-end latency",
+      "required_source_ids": [
+        "paper",
+        "results"
+      ]
+    }
+  ],
+  "numeric_expectations": [
+    {
+      "fact_id": "mec-latency-primary-metric",
+      "label": "End-to-end latency is",
+      "expected": "23.6",
+      "absolute_tolerance": "0.0001",
+      "critical": true,
+      "unit": "ms"
+    }
+  ],
+  "required_sections": [
+    {
+      "section_id": "summary",
+      "heading": "Executive summary"
+    },
+    {
+      "section_id": "evidence",
+      "heading": "Experimental evidence"
+    },
+    {
+      "section_id": "limitations",
+      "heading": "Evidence and limitations"
+    },
+    {
+      "section_id": "next",
+      "heading": "Next steps"
+    }
+  ],
+  "uncertainty": {
+    "required": true,
+    "accepted_phrases": [
+      "insufficient evidence"
+    ]
+  },
+  "artifacts": [
+    {
+      "artifact_id": "mec-latency-source",
+      "path": "source_material.md",
+      "sha256": "F5EF49C560E209B1B18BBD846B7B021ADFC7E6EC494388E0E1805FAFA6F0C440"
+    }
+  ]
+}

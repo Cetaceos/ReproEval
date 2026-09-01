@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "mutation_id": "p0-reproduction-12-packet-reliability-medium-mutation",
+  "parent_report_id": "p0-reproduction-12-packet-reliability-high",
+  "output_report_id": "p0-reproduction-12-packet-reliability-medium",
+  "parent_path": "groups/p0-reproduction-12-packet-reliability/high_report.md",
+  "output_path": "groups/p0-reproduction-12-packet-reliability/medium_report.md",
+  "parent_sha256": "BF6AAF1B1A232A85567E82227BD30AAD0211F553F268FD43288436EE24ABA69E",
+  "output_sha256": "061EC74441AF0941B7C370E2936AE04A61414E8DD718C4C85D0E899AE28BF1B1",
+  "operations": [
+    {
+      "operation_id": "weaken-reasoning",
+      "kind": "replace_once",
+      "target": "Five registered runs support the observed value, but there is insufficient evidence for a universal causal attribution in low-latency packet delivery.",
+      "replacement": "The aggregate differs, and there is insufficient evidence.",
+      "expected_dimensions": [
+        "reasoning_consistency"
+      ],
+      "expected_error_codes": [
+        "reasoning_gap"
+      ]
+    },
+    {
+      "operation_id": "weaken-next-step",
+      "kind": "replace_once",
+      "target": "Repeat the registered packet reliability stress test with fixed preprocessing, published seeds, and confidence intervals.",
+      "replacement": "Run more experiments.",
+      "expected_dimensions": [
+        "clarity_actionability"
+      ],
+      "expected_error_codes": [
+        "actionability_gap"
+      ]
+    }
+  ]
+}

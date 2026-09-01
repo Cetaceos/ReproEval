@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "mutation_id": "p0-reproduction-01-channel-prediction-medium-mutation",
+  "parent_report_id": "p0-reproduction-01-channel-prediction-high",
+  "output_report_id": "p0-reproduction-01-channel-prediction-medium",
+  "parent_path": "groups/p0-reproduction-01-channel-prediction/high_report.md",
+  "output_path": "groups/p0-reproduction-01-channel-prediction/medium_report.md",
+  "parent_sha256": "BA6A4939EBD0BFC80EE7F3DB5F82CB87EC8441F87BD9D6F0F66604023E3B4B65",
+  "output_sha256": "960C8F4ACF7F30420BAA8121F3BAE5DBCD4D34A3AF711142420535A78C0C5087",
+  "operations": [
+    {
+      "operation_id": "weaken-reasoning",
+      "kind": "replace_once",
+      "target": "Five registered runs support the observed value, but there is insufficient evidence for a universal causal attribution in wireless channel prediction.",
+      "replacement": "The aggregate differs, and there is insufficient evidence.",
+      "expected_dimensions": [
+        "reasoning_consistency"
+      ],
+      "expected_error_codes": [
+        "reasoning_gap"
+      ]
+    },
+    {
+      "operation_id": "weaken-next-step",
+      "kind": "replace_once",
+      "target": "Repeat the registered channel prediction evaluation with fixed preprocessing, published seeds, and confidence intervals.",
+      "replacement": "Run more experiments.",
+      "expected_dimensions": [
+        "clarity_actionability"
+      ],
+      "expected_error_codes": [
+        "actionability_gap"
+      ]
+    }
+  ]
+}

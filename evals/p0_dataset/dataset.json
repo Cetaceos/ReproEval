@@ -1,0 +1,836 @@
+{
+  "schema_version": "1.0",
+  "dataset_id": "reproeval-p0-synthetic-reproduction",
+  "dataset_version": "0.1.0",
+  "description": "Deterministically generated 12-group synthetic P0 benchmark candidate for protocol, ranking, annotation, and adversarial experiments; not human ground truth.",
+  "groups": [
+    {
+      "group_id": "p0-reproduction-01-channel-prediction",
+      "split": "development",
+      "scenario": "reproduction",
+      "provenance": {
+        "kind": "synthetic",
+        "license": "Apache-2.0",
+        "source_group_sha256": "099F7E9ED99CDB2BCB39442ED6B406C57ECAF787B22D8BD6F82E29167EFB84E2",
+        "acquisition_date": "2026-09-01",
+        "description": "Repository-authored synthetic evidence packet for Wireless channel prediction; contains no external paper text or personal data."
+      },
+      "reports": [
+        {
+          "report_id": "p0-reproduction-01-channel-prediction-high",
+          "quality_tier": "high",
+          "case_path": "groups/p0-reproduction-01-channel-prediction/high_case.json",
+          "report_sha256": "BA6A4939EBD0BFC80EE7F3DB5F82CB87EC8441F87BD9D6F0F66604023E3B4B65",
+          "label_source": "reference_revision",
+          "expected_error_codes": []
+        },
+        {
+          "report_id": "p0-reproduction-01-channel-prediction-medium",
+          "quality_tier": "medium",
+          "case_path": "groups/p0-reproduction-01-channel-prediction/medium_case.json",
+          "report_sha256": "960C8F4ACF7F30420BAA8121F3BAE5DBCD4D34A3AF711142420535A78C0C5087",
+          "label_source": "synthetic_mutation",
+          "expected_error_codes": [
+            "reasoning_gap",
+            "actionability_gap"
+          ],
+          "mutation_manifest_path": "groups/p0-reproduction-01-channel-prediction/medium_mutation.json"
+        },
+        {
+          "report_id": "p0-reproduction-01-channel-prediction-low",
+          "quality_tier": "low",
+          "case_path": "groups/p0-reproduction-01-channel-prediction/low_case.json",
+          "report_sha256": "49A6A6F3A5817E13211A3568D0D341525D5A3EDE91CCD55003D8816038CC4270",
+          "label_source": "synthetic_mutation",
+          "expected_error_codes": [
+            "reasoning_gap",
+            "actionability_gap",
+            "fabricated_citation",
+            "unsupported_claim",
+            "numeric_error"
+          ],
+          "mutation_manifest_path": "groups/p0-reproduction-01-channel-prediction/low_mutation.json"
+        },
+        {
+          "report_id": "p0-reproduction-01-channel-prediction-adversarial",
+          "quality_tier": "adversarial",
+          "case_path": "groups/p0-reproduction-01-channel-prediction/adversarial_case.json",
+          "report_sha256": "29F764E9D9E3E35465EABC57E5CACE58D18AFBDF9D1A28322412A8E37E0D047B",
+          "label_source": "synthetic_mutation",
+          "mutation_manifest_path": "groups/p0-reproduction-01-channel-prediction/adversarial_mutation.json",
+          "expected_error_codes": [
+            "fabricated_citation",
+            "numeric_error",
+            "unsupported_claim"
+          ],
+          "adversarial_spec": {
+            "schema_version": "1.0",
+            "attacks": [
+              {
+                "attack_id": "p0-01-fabricated-authority",
+                "attack_type": "fabricated_authority",
+                "target_dimensions": [
+                  "factual_accuracy",
+                  "evidence_traceability"
+                ],
+                "expected_error_codes": [
+                  "fabricated_citation",
+                  "unsupported_claim"
+                ],
+                "description": "Deterministic synthetic fabricated authority protocol case."
+              },
+              {
+                "attack_id": "p0-01-calculation-corruption",
+                "attack_type": "calculation_corruption",
+                "target_dimensions": [
+                  "numerical_consistency"
+                ],
+                "expected_error_codes": [
+                  "numeric_error"
+                ],
+                "description": "Deterministic synthetic calculation corruption protocol case."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "group_id": "p0-reproduction-02-ofdm-estimation",
+      "split": "development",
+      "scenario": "reproduction",
+      "provenance": {
+        "kind": "synthetic",
+        "license": "Apache-2.0",
+        "source_group_sha256": "765B8B4B04E7B861B1A8CEF79F9CF268A10AFE34B81D8BB56B6B57A85B4DCFAB",
+        "acquisition_date": "2026-09-01",
+        "description": "Repository-authored synthetic evidence packet for OFDM channel estimation; contains no external paper text or personal data."
+      },
+      "reports": [
+        {
+          "report_id": "p0-reproduction-02-ofdm-estimation-high",
+          "quality_tier": "high",
+          "case_path": "groups/p0-reproduction-02-ofdm-estimation/high_case.json",
+          "report_sha256": "24ECD500EB7D32BD5A2AD46E4D1FEB1F31B45B5968E7F1FFE58803DFE2887621",
+          "label_source": "reference_revision",
+          "expected_error_codes": []
+        },
+        {
+          "report_id": "p0-reproduction-02-ofdm-estimation-medium",
+          "quality_tier": "medium",
+          "case_path": "groups/p0-reproduction-02-ofdm-estimation/medium_case.json",
+          "report_sha256": "AB99651E8B83044788DAFCDF9ED1AD159041CF8AD7162FBC82D173D8C26C4632",
+          "label_source": "synthetic_mutation",
+          "expected_error_codes": [
+            "reasoning_gap",
+            "actionability_gap"
+          ],
+          "mutation_manifest_path": "groups/p0-reproduction-02-ofdm-estimation/medium_mutation.json"
+        },
+        {
+          "report_id": "p0-reproduction-02-ofdm-estimation-low",
+          "quality_tier": "low",
+          "case_path": "groups/p0-reproduction-02-ofdm-estimation/low_case.json",
+          "report_sha256": "AA36752F9BFC22515ABF0F0BF475FFD23E1DE85BA325D41F1CB16A7CFDD5F692",
+          "label_source": "synthetic_mutation",
+          "expected_error_codes": [
+            "reasoning_gap",
+            "actionability_gap",
+            "fabricated_citation",
+            "unsupported_claim",
+            "numeric_error"
+          ],
+          "mutation_manifest_path": "groups/p0-reproduction-02-ofdm-estimation/low_mutation.json"
+        },
+        {
+          "report_id": "p0-reproduction-02-ofdm-estimation-adversarial",
+          "quality_tier": "adversarial",
+          "case_path": "groups/p0-reproduction-02-ofdm-estimation/adversarial_case.json",
+          "report_sha256": "EF1A8FFE590461362154206489437B68033329CC052A57FDBE066E77EEBCD62F",
+          "label_source": "synthetic_mutation",
+          "mutation_manifest_path": "groups/p0-reproduction-02-ofdm-estimation/adversarial_mutation.json",
+          "expected_error_codes": [
+            "overconfidence"
+          ],
+          "adversarial_spec": {
+            "schema_version": "1.0",
+            "attacks": [
+              {
+                "attack_id": "p0-02-limitation-suppression",
+                "attack_type": "limitation_suppression",
+                "target_dimensions": [
+                  "uncertainty_handling"
+                ],
+                "expected_error_codes": [
+                  "overconfidence"
+                ],
+                "description": "Deterministic synthetic limitation suppression protocol case."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "group_id": "p0-reproduction-03-beam-selection",
+      "split": "development",
+      "scenario": "reproduction",
+      "provenance": {
+        "kind": "synthetic",
+        "license": "Apache-2.0",
+        "source_group_sha256": "593A0173593F04CB263D35444FB66A344F3476CAE07A534B2D0552C6530AE2DE",
+        "acquisition_date": "2026-09-01",
+        "description": "Repository-authored synthetic evidence packet for Millimeter-wave beam selection; contains no external paper text or personal data."
+      },
+      "reports": [
+        {
+          "report_id": "p0-reproduction-03-beam-selection-high",
+          "quality_tier": "high",
+          "case_path": "groups/p0-reproduction-03-beam-selection/high_case.json",
+          "report_sha256": "16D82B068E92A8737B0A361813688A85E34384A8B8786C4A3802C7B5315A74F0",
+          "label_source": "reference_revision",
+          "expected_error_codes": []
+        },
+        {
+          "report_id": "p0-reproduction-03-beam-selection-medium",
+          "quality_tier": "medium",
+          "case_path": "groups/p0-reproduction-03-beam-selection/medium_case.json",
+          "report_sha256": "BC7C363126AA045348DB4E574A9BF6D21D516CC95B089063B175F0591CF9D371",
+          "label_source": "synthetic_mutation",
+          "expected_error_codes": [
+            "reasoning_gap",
+            "actionability_gap"
+          ],
+          "mutation_manifest_path": "groups/p0-reproduction-03-beam-selection/medium_mutation.json"
+        },
+        {
+          "report_id": "p0-reproduction-03-beam-selection-low",
+          "quality_tier": "low",
+          "case_path": "groups/p0-reproduction-03-beam-selection/low_case.json",
+          "report_sha256": "23B91386B294C8AD9AF86C4141232A8FDBF083DA9C71792847DFD43A7FA6716C",
+          "label_source": "synthetic_mutation",
+          "expected_error_codes": [
+            "reasoning_gap",
+            "actionability_gap",
+            "fabricated_citation",
+            "unsupported_claim",
+            "numeric_error"
+          ],
+          "mutation_manifest_path": "groups/p0-reproduction-03-beam-selection/low_mutation.json"
+        },
+        {
+          "report_id": "p0-reproduction-03-beam-selection-adversarial",
+          "quality_tier": "adversarial",
+          "case_path": "groups/p0-reproduction-03-beam-selection/adversarial_case.json",
+          "report_sha256": "333566033EB622E0B32B6D1D2EF871A9CF08C1918EFE5CD3512645F588E37F22",
+          "label_source": "synthetic_mutation",
+          "mutation_manifest_path": "groups/p0-reproduction-03-beam-selection/adversarial_mutation.json",
+          "expected_error_codes": [
+            "fabricated_citation",
+            "overconfidence",
+            "unsupported_claim"
+          ],
+          "adversarial_spec": {
+            "schema_version": "1.0",
+            "attacks": [
+              {
+                "attack_id": "p0-03-unsupported-overconfidence",
+                "attack_type": "unsupported_overconfidence",
+                "target_dimensions": [
+                  "factual_accuracy",
+                  "evidence_traceability",
+                  "uncertainty_handling"
+                ],
+                "expected_error_codes": [
+                  "fabricated_citation",
+                  "unsupported_claim",
+                  "overconfidence"
+                ],
+                "description": "Deterministic synthetic unsupported overconfidence protocol case."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "group_id": "p0-reproduction-04-modulation-classification",
+      "split": "development",
+      "scenario": "reproduction",
+      "provenance": {
+        "kind": "synthetic",
+        "license": "Apache-2.0",
+        "source_group_sha256": "FE602A7A875E0638170843E82FA7B88A6D1B7E5EE2362504CAE56C1770B6FFD1",
+        "acquisition_date": "2026-09-01",
+        "description": "Repository-authored synthetic evidence packet for Automatic modulation classification; contains no external paper text or personal data."
+      },
+      "reports": [
+        {
+          "report_id": "p0-reproduction-04-modulation-classification-high",
+          "quality_tier": "high",
+          "case_path": "groups/p0-reproduction-04-modulation-classification/high_case.json",
+          "report_sha256": "1520A87267E0FF9B0160ACA192E2B917A8E1CF6E36F6F0656A0CDD3743317C5D",
+          "label_source": "reference_revision",
+          "expected_error_codes": []
+        },
+        {
+          "report_id": "p0-reproduction-04-modulation-classification-medium",
+          "quality_tier": "medium",
+          "case_path": "groups/p0-reproduction-04-modulation-classification/medium_case.json",
+          "report_sha256": "F2CD95FA56CF4C9E1DFDE7252BE674CD91EF863AC6BA8D852828FFC78F4AEF95",
+          "label_source": "synthetic_mutation",
+          "expected_error_codes": [
+            "reasoning_gap",
+            "actionability_gap"
+          ],
+          "mutation_manifest_path": "groups/p0-reproduction-04-modulation-classification/medium_mutation.json"
+        },
+        {
+          "report_id": "p0-reproduction-04-modulation-classification-low",
+          "quality_tier": "low",
+          "case_path": "groups/p0-reproduction-04-modulation-classification/low_case.json",
+          "report_sha256": "3B626E97902D1F7DB61D77905214EAFDD48D44F8AE65D539B4C7DEC11EAD9371",
+          "label_source": "synthetic_mutation",
+          "expected_error_codes": [
+            "reasoning_gap",
+            "actionability_gap",
+            "fabricated_citation",
+            "unsupported_claim",
+            "numeric_error"
+          ],
+          "mutation_manifest_path": "groups/p0-reproduction-04-modulation-classification/low_mutation.json"
+        },
+        {
+          "report_id": "p0-reproduction-04-modulation-classification-adversarial",
+          "quality_tier": "adversarial",
+          "case_path": "groups/p0-reproduction-04-modulation-classification/adversarial_case.json",
+          "report_sha256": "B7EFA927FE4DCE537676A220E514D7D4EE0FA3B097982A1EE72D0071C0D908CF",
+          "label_source": "synthetic_mutation",
+          "mutation_manifest_path": "groups/p0-reproduction-04-modulation-classification/adversarial_mutation.json",
+          "expected_error_codes": [
+            "verbosity_without_evidence"
+          ],
+          "adversarial_spec": {
+            "schema_version": "1.0",
+            "attacks": [
+              {
+                "attack_id": "p0-04-conclusion-repetition",
+                "attack_type": "conclusion_repetition",
+                "target_dimensions": [
+                  "clarity_actionability"
+                ],
+                "expected_error_codes": [
+                  "verbosity_without_evidence"
+                ],
+                "description": "Deterministic synthetic conclusion repetition protocol case."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "group_id": "p0-reproduction-05-federated-radio",
+      "split": "validation",
+      "scenario": "reproduction",
+      "provenance": {
+        "kind": "synthetic",
+        "license": "Apache-2.0",
+        "source_group_sha256": "0D74F326AD460ED066651B2FD9B190E4BEC3DB01E3B4E968D046FF1F14F84605",
+        "acquisition_date": "2026-09-01",
+        "description": "Repository-authored synthetic evidence packet for Federated radio learning; contains no external paper text or personal data."
+      },
+      "reports": [
+        {
+          "report_id": "p0-reproduction-05-federated-radio-high",
+          "quality_tier": "high",
+          "case_path": "groups/p0-reproduction-05-federated-radio/high_case.json",
+          "report_sha256": "9288D2EBA98EB9256D9ED36F3EA04FCB70C007CAD16CA18481F83FDFF1ED977E",
+          "label_source": "reference_revision",
+          "expected_error_codes": []
+        },
+        {
+          "report_id": "p0-reproduction-05-federated-radio-medium",
+          "quality_tier": "medium",
+          "case_path": "groups/p0-reproduction-05-federated-radio/medium_case.json",
+          "report_sha256": "2343691FDF7D80A13DA6957E6141A5194F5B1A65853251E3F97FDDD6DA5F503E",
+          "label_source": "synthetic_mutation",
+          "expected_error_codes": [
+            "reasoning_gap",
+            "actionability_gap"
+          ],
+          "mutation_manifest_path": "groups/p0-reproduction-05-federated-radio/medium_mutation.json"
+        },
+        {
+          "report_id": "p0-reproduction-05-federated-radio-low",
+          "quality_tier": "low",
+          "case_path": "groups/p0-reproduction-05-federated-radio/low_case.json",
+          "report_sha256": "37BF80EA56DE04B8F547AC90DBD81EA2684E03DFCAE66B3026EECA0FB21CB716",
+          "label_source": "synthetic_mutation",
+          "expected_error_codes": [
+            "reasoning_gap",
+            "actionability_gap",
+            "fabricated_citation",
+            "unsupported_claim",
+            "numeric_error"
+          ],
+          "mutation_manifest_path": "groups/p0-reproduction-05-federated-radio/low_mutation.json"
+        },
+        {
+          "report_id": "p0-reproduction-05-federated-radio-adversarial",
+          "quality_tier": "adversarial",
+          "case_path": "groups/p0-reproduction-05-federated-radio/adversarial_case.json",
+          "report_sha256": "C3EDEDF8073FE46F172A567DB36A5DA97D3445E667C891D5FB233D1C5992A8D8",
+          "label_source": "synthetic_mutation",
+          "mutation_manifest_path": "groups/p0-reproduction-05-federated-radio/adversarial_mutation.json",
+          "expected_error_codes": [
+            "verbosity_without_evidence"
+          ],
+          "adversarial_spec": {
+            "schema_version": "1.0",
+            "attacks": [
+              {
+                "attack_id": "p0-05-length-inflation",
+                "attack_type": "length_inflation",
+                "target_dimensions": [
+                  "clarity_actionability"
+                ],
+                "expected_error_codes": [
+                  "verbosity_without_evidence"
+                ],
+                "description": "Deterministic synthetic length inflation protocol case."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "group_id": "p0-reproduction-06-mec-latency",
+      "split": "validation",
+      "scenario": "reproduction",
+      "provenance": {
+        "kind": "synthetic",
+        "license": "Apache-2.0",
+        "source_group_sha256": "F5EF49C560E209B1B18BBD846B7B021ADFC7E6EC494388E0E1805FAFA6F0C440",
+        "acquisition_date": "2026-09-01",
+        "description": "Repository-authored synthetic evidence packet for UAV-assisted edge inference; contains no external paper text or personal data."
+      },
+      "reports": [
+        {
+          "report_id": "p0-reproduction-06-mec-latency-high",
+          "quality_tier": "high",
+          "case_path": "groups/p0-reproduction-06-mec-latency/high_case.json",
+          "report_sha256": "756C065755C1784CD8FFA6E49A1489AD99DF863B43BDBD74BECED2630ABE1774",
+          "label_source": "reference_revision",
+          "expected_error_codes": []
+        },
+        {
+          "report_id": "p0-reproduction-06-mec-latency-medium",
+          "quality_tier": "medium",
+          "case_path": "groups/p0-reproduction-06-mec-latency/medium_case.json",
+          "report_sha256": "40DD66C3BEE075E92EDA3BC6156DC15CA3A96282C920B1A115BCF0B9E4C6A10F",
+          "label_source": "synthetic_mutation",
+          "expected_error_codes": [
+            "reasoning_gap",
+            "actionability_gap"
+          ],
+          "mutation_manifest_path": "groups/p0-reproduction-06-mec-latency/medium_mutation.json"
+        },
+        {
+          "report_id": "p0-reproduction-06-mec-latency-low",
+          "quality_tier": "low",
+          "case_path": "groups/p0-reproduction-06-mec-latency/low_case.json",
+          "report_sha256": "05F21A4A85CF033FDC90B2BA7517AF777E22491D7B1F5DECD80BFD3CFD42083D",
+          "label_source": "synthetic_mutation",
+          "expected_error_codes": [
+            "reasoning_gap",
+            "actionability_gap",
+            "fabricated_citation",
+            "unsupported_claim",
+            "numeric_error"
+          ],
+          "mutation_manifest_path": "groups/p0-reproduction-06-mec-latency/low_mutation.json"
+        },
+        {
+          "report_id": "p0-reproduction-06-mec-latency-adversarial",
+          "quality_tier": "adversarial",
+          "case_path": "groups/p0-reproduction-06-mec-latency/adversarial_case.json",
+          "report_sha256": "A66CB740C0193C8A12399D7B35689B138266966A157E3D3C113B321CD2B29C46",
+          "label_source": "synthetic_mutation",
+          "mutation_manifest_path": "groups/p0-reproduction-06-mec-latency/adversarial_mutation.json",
+          "expected_error_codes": [
+            "verbosity_without_evidence"
+          ],
+          "adversarial_spec": {
+            "schema_version": "1.0",
+            "attacks": [
+              {
+                "attack_id": "p0-06-terminology-stuffing",
+                "attack_type": "terminology_stuffing",
+                "target_dimensions": [
+                  "clarity_actionability"
+                ],
+                "expected_error_codes": [
+                  "verbosity_without_evidence"
+                ],
+                "description": "Deterministic synthetic terminology stuffing protocol case."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "group_id": "p0-reproduction-07-isac-detection",
+      "split": "validation",
+      "scenario": "reproduction",
+      "provenance": {
+        "kind": "synthetic",
+        "license": "Apache-2.0",
+        "source_group_sha256": "5B32432A629D225FBEBDE844A3D476840972EA6DBF25D8CD37D367B95D68F3E4",
+        "acquisition_date": "2026-09-01",
+        "description": "Repository-authored synthetic evidence packet for Integrated sensing and communication; contains no external paper text or personal data."
+      },
+      "reports": [
+        {
+          "report_id": "p0-reproduction-07-isac-detection-high",
+          "quality_tier": "high",
+          "case_path": "groups/p0-reproduction-07-isac-detection/high_case.json",
+          "report_sha256": "F96AB1A0270B66DA828C8BD61AD12801380D37203086E21F8DF33294DAE07516",
+          "label_source": "reference_revision",
+          "expected_error_codes": []
+        },
+        {
+          "report_id": "p0-reproduction-07-isac-detection-medium",
+          "quality_tier": "medium",
+          "case_path": "groups/p0-reproduction-07-isac-detection/medium_case.json",
+          "report_sha256": "192D642AFB6C4ACA2EB025E920846EF16CD557A5CBFBB54471491335ED32362C",
+          "label_source": "synthetic_mutation",
+          "expected_error_codes": [
+            "reasoning_gap",
+            "actionability_gap"
+          ],
+          "mutation_manifest_path": "groups/p0-reproduction-07-isac-detection/medium_mutation.json"
+        },
+        {
+          "report_id": "p0-reproduction-07-isac-detection-low",
+          "quality_tier": "low",
+          "case_path": "groups/p0-reproduction-07-isac-detection/low_case.json",
+          "report_sha256": "72D5C0E4F4552FF9B915E24E63546AA6EC9DDFEC168861958F64ADA2A14EF34D",
+          "label_source": "synthetic_mutation",
+          "expected_error_codes": [
+            "reasoning_gap",
+            "actionability_gap",
+            "fabricated_citation",
+            "unsupported_claim",
+            "numeric_error"
+          ],
+          "mutation_manifest_path": "groups/p0-reproduction-07-isac-detection/low_mutation.json"
+        },
+        {
+          "report_id": "p0-reproduction-07-isac-detection-adversarial",
+          "quality_tier": "adversarial",
+          "case_path": "groups/p0-reproduction-07-isac-detection/adversarial_case.json",
+          "report_sha256": "5D1AEACDE77761AC56273909BC36934789E504DAD86BE789BDBC8FB87F2B7E7E",
+          "label_source": "synthetic_mutation",
+          "mutation_manifest_path": "groups/p0-reproduction-07-isac-detection/adversarial_mutation.json",
+          "expected_error_codes": [
+            "numeric_error"
+          ],
+          "adversarial_spec": {
+            "schema_version": "1.0",
+            "attacks": [
+              {
+                "attack_id": "p0-07-calculation-corruption",
+                "attack_type": "calculation_corruption",
+                "target_dimensions": [
+                  "numerical_consistency"
+                ],
+                "expected_error_codes": [
+                  "numeric_error"
+                ],
+                "description": "Deterministic synthetic calculation corruption protocol case."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "group_id": "p0-reproduction-08-radio-localization",
+      "split": "validation",
+      "scenario": "reproduction",
+      "provenance": {
+        "kind": "synthetic",
+        "license": "Apache-2.0",
+        "source_group_sha256": "DD72EE8A2D9417C0046EAB8A1958ED731916A58C4DCAFE2B9BAABE418D79D2D6",
+        "acquisition_date": "2026-09-01",
+        "description": "Repository-authored synthetic evidence packet for Radio localization; contains no external paper text or personal data."
+      },
+      "reports": [
+        {
+          "report_id": "p0-reproduction-08-radio-localization-high",
+          "quality_tier": "high",
+          "case_path": "groups/p0-reproduction-08-radio-localization/high_case.json",
+          "report_sha256": "CD7DFD5A806FBDB18D7A386C287A52854496725D5E3D260BB40893459B5B51F8",
+          "label_source": "reference_revision",
+          "expected_error_codes": []
+        },
+        {
+          "report_id": "p0-reproduction-08-radio-localization-medium",
+          "quality_tier": "medium",
+          "case_path": "groups/p0-reproduction-08-radio-localization/medium_case.json",
+          "report_sha256": "C6C3D2F1419A7CB95E0CAAE75D80989B0B118E209FFB9B6F980832E61739D2EF",
+          "label_source": "synthetic_mutation",
+          "expected_error_codes": [
+            "reasoning_gap",
+            "actionability_gap"
+          ],
+          "mutation_manifest_path": "groups/p0-reproduction-08-radio-localization/medium_mutation.json"
+        },
+        {
+          "report_id": "p0-reproduction-08-radio-localization-low",
+          "quality_tier": "low",
+          "case_path": "groups/p0-reproduction-08-radio-localization/low_case.json",
+          "report_sha256": "91E919FBF7A98DA8366DD40B91163AD7B96E00F82064017BD87458E8AC286A41",
+          "label_source": "synthetic_mutation",
+          "expected_error_codes": [
+            "reasoning_gap",
+            "actionability_gap",
+            "fabricated_citation",
+            "unsupported_claim",
+            "numeric_error"
+          ],
+          "mutation_manifest_path": "groups/p0-reproduction-08-radio-localization/low_mutation.json"
+        },
+        {
+          "report_id": "p0-reproduction-08-radio-localization-adversarial",
+          "quality_tier": "adversarial",
+          "case_path": "groups/p0-reproduction-08-radio-localization/adversarial_case.json",
+          "report_sha256": "B07AA7A795CAB869CCD34F3A2842772967A6B7E23F29258D894C7533AB62D5F8",
+          "label_source": "synthetic_mutation",
+          "mutation_manifest_path": "groups/p0-reproduction-08-radio-localization/adversarial_mutation.json",
+          "expected_error_codes": [
+            "fabricated_citation",
+            "unsupported_claim"
+          ],
+          "adversarial_spec": {
+            "schema_version": "1.0",
+            "attacks": [
+              {
+                "attack_id": "p0-08-fabricated-authority",
+                "attack_type": "fabricated_authority",
+                "target_dimensions": [
+                  "factual_accuracy",
+                  "evidence_traceability"
+                ],
+                "expected_error_codes": [
+                  "fabricated_citation",
+                  "unsupported_claim"
+                ],
+                "description": "Deterministic synthetic fabricated authority protocol case."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "group_id": "p0-reproduction-09-semantic-communication",
+      "split": "test",
+      "scenario": "reproduction",
+      "provenance": {
+        "kind": "synthetic",
+        "license": "Apache-2.0",
+        "source_group_sha256": "39E6067B7CD9D84586BCFDB72ED1E23E794EFD56041738545BEA3070B00344BA",
+        "acquisition_date": "2026-09-01",
+        "description": "Repository-authored synthetic evidence packet for Semantic communication; contains no external paper text or personal data."
+      },
+      "reports": [
+        {
+          "report_id": "p0-reproduction-09-semantic-communication-high",
+          "quality_tier": "high",
+          "case_path": "groups/p0-reproduction-09-semantic-communication/high_case.json",
+          "report_sha256": "942AE4DB77DD9F32486C24416751CFADCE1312E7E2C9981BDABBBE02296C7431",
+          "label_source": "reference_revision",
+          "expected_error_codes": []
+        },
+        {
+          "report_id": "p0-reproduction-09-semantic-communication-medium",
+          "quality_tier": "medium",
+          "case_path": "groups/p0-reproduction-09-semantic-communication/medium_case.json",
+          "report_sha256": "036EB0142A72638ACF07F8F938DB2D104164B04BD98BABC0F3D474F38F364AD7",
+          "label_source": "synthetic_mutation",
+          "expected_error_codes": [
+            "reasoning_gap",
+            "actionability_gap"
+          ],
+          "mutation_manifest_path": "groups/p0-reproduction-09-semantic-communication/medium_mutation.json"
+        },
+        {
+          "report_id": "p0-reproduction-09-semantic-communication-low",
+          "quality_tier": "low",
+          "case_path": "groups/p0-reproduction-09-semantic-communication/low_case.json",
+          "report_sha256": "9D0528EBE32372905594C236B205602EF90EA8CE135229D9972F4931595635E3",
+          "label_source": "synthetic_mutation",
+          "expected_error_codes": [
+            "reasoning_gap",
+            "actionability_gap",
+            "fabricated_citation",
+            "unsupported_claim",
+            "numeric_error"
+          ],
+          "mutation_manifest_path": "groups/p0-reproduction-09-semantic-communication/low_mutation.json"
+        }
+      ]
+    },
+    {
+      "group_id": "p0-reproduction-10-mimo-efficiency",
+      "split": "test",
+      "scenario": "reproduction",
+      "provenance": {
+        "kind": "synthetic",
+        "license": "Apache-2.0",
+        "source_group_sha256": "0A69FA8CBAD2A75EB6579076813F7B6D9015E724B620A444C2C354BA4CC1D8D0",
+        "acquisition_date": "2026-09-01",
+        "description": "Repository-authored synthetic evidence packet for Massive-MIMO precoding; contains no external paper text or personal data."
+      },
+      "reports": [
+        {
+          "report_id": "p0-reproduction-10-mimo-efficiency-high",
+          "quality_tier": "high",
+          "case_path": "groups/p0-reproduction-10-mimo-efficiency/high_case.json",
+          "report_sha256": "CBD5929E2A2872497174C5B16B330CE5C112ED4D424E15E76BADE5F8C3295AA9",
+          "label_source": "reference_revision",
+          "expected_error_codes": []
+        },
+        {
+          "report_id": "p0-reproduction-10-mimo-efficiency-medium",
+          "quality_tier": "medium",
+          "case_path": "groups/p0-reproduction-10-mimo-efficiency/medium_case.json",
+          "report_sha256": "9C6A92802A355DC30E5212580B1A1FF2607ABA16FEF52725AA30DE00D8129506",
+          "label_source": "synthetic_mutation",
+          "expected_error_codes": [
+            "reasoning_gap",
+            "actionability_gap"
+          ],
+          "mutation_manifest_path": "groups/p0-reproduction-10-mimo-efficiency/medium_mutation.json"
+        },
+        {
+          "report_id": "p0-reproduction-10-mimo-efficiency-low",
+          "quality_tier": "low",
+          "case_path": "groups/p0-reproduction-10-mimo-efficiency/low_case.json",
+          "report_sha256": "97EA5FE98B5C4FBD4B09CC1AF6FB5951632FB16A9FC018976EB0569126BFC7B2",
+          "label_source": "synthetic_mutation",
+          "expected_error_codes": [
+            "reasoning_gap",
+            "actionability_gap",
+            "fabricated_citation",
+            "unsupported_claim",
+            "numeric_error"
+          ],
+          "mutation_manifest_path": "groups/p0-reproduction-10-mimo-efficiency/low_mutation.json"
+        }
+      ]
+    },
+    {
+      "group_id": "p0-reproduction-11-energy-efficiency",
+      "split": "test",
+      "scenario": "reproduction",
+      "provenance": {
+        "kind": "synthetic",
+        "license": "Apache-2.0",
+        "source_group_sha256": "9A5A9D4763658056FE2EF37FDA8DBEA27EE3C82B8C787187C099157C4498C314",
+        "acquisition_date": "2026-09-01",
+        "description": "Repository-authored synthetic evidence packet for Energy-efficient radio control; contains no external paper text or personal data."
+      },
+      "reports": [
+        {
+          "report_id": "p0-reproduction-11-energy-efficiency-high",
+          "quality_tier": "high",
+          "case_path": "groups/p0-reproduction-11-energy-efficiency/high_case.json",
+          "report_sha256": "79187DF61804C9C2F2753729D21317813E3765E41F705F5049A19AB13846D4C7",
+          "label_source": "reference_revision",
+          "expected_error_codes": []
+        },
+        {
+          "report_id": "p0-reproduction-11-energy-efficiency-medium",
+          "quality_tier": "medium",
+          "case_path": "groups/p0-reproduction-11-energy-efficiency/medium_case.json",
+          "report_sha256": "13CD163664E1BD430F4CCAD4CF0C460DC34DD26DDBF4E2D35287A67DB84C78B1",
+          "label_source": "synthetic_mutation",
+          "expected_error_codes": [
+            "reasoning_gap",
+            "actionability_gap"
+          ],
+          "mutation_manifest_path": "groups/p0-reproduction-11-energy-efficiency/medium_mutation.json"
+        },
+        {
+          "report_id": "p0-reproduction-11-energy-efficiency-low",
+          "quality_tier": "low",
+          "case_path": "groups/p0-reproduction-11-energy-efficiency/low_case.json",
+          "report_sha256": "930E9E50970B2E73C63A5AA51313E9E40D346A5039F956D79C90F4341236160F",
+          "label_source": "synthetic_mutation",
+          "expected_error_codes": [
+            "reasoning_gap",
+            "actionability_gap",
+            "fabricated_citation",
+            "unsupported_claim",
+            "numeric_error"
+          ],
+          "mutation_manifest_path": "groups/p0-reproduction-11-energy-efficiency/low_mutation.json"
+        }
+      ]
+    },
+    {
+      "group_id": "p0-reproduction-12-packet-reliability",
+      "split": "test",
+      "scenario": "reproduction",
+      "provenance": {
+        "kind": "synthetic",
+        "license": "Apache-2.0",
+        "source_group_sha256": "1028718F501AA21084C53D0350ABBDDB1C197BA13D9DA11660016CF116EE6570",
+        "acquisition_date": "2026-09-01",
+        "description": "Repository-authored synthetic evidence packet for Low-latency packet delivery; contains no external paper text or personal data."
+      },
+      "reports": [
+        {
+          "report_id": "p0-reproduction-12-packet-reliability-high",
+          "quality_tier": "high",
+          "case_path": "groups/p0-reproduction-12-packet-reliability/high_case.json",
+          "report_sha256": "BF6AAF1B1A232A85567E82227BD30AAD0211F553F268FD43288436EE24ABA69E",
+          "label_source": "reference_revision",
+          "expected_error_codes": []
+        },
+        {
+          "report_id": "p0-reproduction-12-packet-reliability-medium",
+          "quality_tier": "medium",
+          "case_path": "groups/p0-reproduction-12-packet-reliability/medium_case.json",
+          "report_sha256": "061EC74441AF0941B7C370E2936AE04A61414E8DD718C4C85D0E899AE28BF1B1",
+          "label_source": "synthetic_mutation",
+          "expected_error_codes": [
+            "reasoning_gap",
+            "actionability_gap"
+          ],
+          "mutation_manifest_path": "groups/p0-reproduction-12-packet-reliability/medium_mutation.json"
+        },
+        {
+          "report_id": "p0-reproduction-12-packet-reliability-low",
+          "quality_tier": "low",
+          "case_path": "groups/p0-reproduction-12-packet-reliability/low_case.json",
+          "report_sha256": "A81C2131544430BAC7F245A475A74032B5325E09FCC438F1F6A270F1BA4DEE2C",
+          "label_source": "synthetic_mutation",
+          "expected_error_codes": [
+            "reasoning_gap",
+            "actionability_gap",
+            "fabricated_citation",
+            "unsupported_claim",
+            "numeric_error"
+          ],
+          "mutation_manifest_path": "groups/p0-reproduction-12-packet-reliability/low_mutation.json"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "mutation_id": "p0-reproduction-06-mec-latency-medium-mutation",
+  "parent_report_id": "p0-reproduction-06-mec-latency-high",
+  "output_report_id": "p0-reproduction-06-mec-latency-medium",
+  "parent_path": "groups/p0-reproduction-06-mec-latency/high_report.md",
+  "output_path": "groups/p0-reproduction-06-mec-latency/medium_report.md",
+  "parent_sha256": "756C065755C1784CD8FFA6E49A1489AD99DF863B43BDBD74BECED2630ABE1774",
+  "output_sha256": "40DD66C3BEE075E92EDA3BC6156DC15CA3A96282C920B1A115BCF0B9E4C6A10F",
+  "operations": [
+    {
+      "operation_id": "weaken-reasoning",
+      "kind": "replace_once",
+      "target": "Five registered runs support the observed value, but there is insufficient evidence for a universal causal attribution in uav-assisted edge inference.",
+      "replacement": "The aggregate differs, and there is insufficient evidence.",
+      "expected_dimensions": [
+        "reasoning_consistency"
+      ],
+      "expected_error_codes": [
+        "reasoning_gap"
+      ]
+    },
+    {
+      "operation_id": "weaken-next-step",
+      "kind": "replace_once",
+      "target": "Repeat the registered edge latency replay with fixed preprocessing, published seeds, and confidence intervals.",
+      "replacement": "Run more experiments.",
+      "expected_dimensions": [
+        "clarity_actionability"
+      ],
+      "expected_error_codes": [
+        "actionability_gap"
+      ]
+    }
+  ]
+}

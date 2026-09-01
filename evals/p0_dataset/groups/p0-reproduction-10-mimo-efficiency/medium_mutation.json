@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "mutation_id": "p0-reproduction-10-mimo-efficiency-medium-mutation",
+  "parent_report_id": "p0-reproduction-10-mimo-efficiency-high",
+  "output_report_id": "p0-reproduction-10-mimo-efficiency-medium",
+  "parent_path": "groups/p0-reproduction-10-mimo-efficiency/high_report.md",
+  "output_path": "groups/p0-reproduction-10-mimo-efficiency/medium_report.md",
+  "parent_sha256": "CBD5929E2A2872497174C5B16B330CE5C112ED4D424E15E76BADE5F8C3295AA9",
+  "output_sha256": "9C6A92802A355DC30E5212580B1A1FF2607ABA16FEF52725AA30DE00D8129506",
+  "operations": [
+    {
+      "operation_id": "weaken-reasoning",
+      "kind": "replace_once",
+      "target": "Five registered runs support the observed value, but there is insufficient evidence for a universal causal attribution in massive-mimo precoding.",
+      "replacement": "The aggregate differs, and there is insufficient evidence.",
+      "expected_dimensions": [
+        "reasoning_consistency"
+      ],
+      "expected_error_codes": [
+        "reasoning_gap"
+      ]
+    },
+    {
+      "operation_id": "weaken-next-step",
+      "kind": "replace_once",
+      "target": "Repeat the registered precoding benchmark with fixed preprocessing, published seeds, and confidence intervals.",
+      "replacement": "Run more experiments.",
+      "expected_dimensions": [
+        "clarity_actionability"
+      ],
+      "expected_error_codes": [
+        "actionability_gap"
+      ]
+    }
+  ]
+}

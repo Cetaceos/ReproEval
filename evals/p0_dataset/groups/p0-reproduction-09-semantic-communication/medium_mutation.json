@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "mutation_id": "p0-reproduction-09-semantic-communication-medium-mutation",
+  "parent_report_id": "p0-reproduction-09-semantic-communication-high",
+  "output_report_id": "p0-reproduction-09-semantic-communication-medium",
+  "parent_path": "groups/p0-reproduction-09-semantic-communication/high_report.md",
+  "output_path": "groups/p0-reproduction-09-semantic-communication/medium_report.md",
+  "parent_sha256": "942AE4DB77DD9F32486C24416751CFADCE1312E7E2C9981BDABBBE02296C7431",
+  "output_sha256": "036EB0142A72638ACF07F8F938DB2D104164B04BD98BABC0F3D474F38F364AD7",
+  "operations": [
+    {
+      "operation_id": "weaken-reasoning",
+      "kind": "replace_once",
+      "target": "Five registered runs support the observed value, but there is insufficient evidence for a universal causal attribution in semantic communication.",
+      "replacement": "The aggregate differs, and there is insufficient evidence.",
+      "expected_dimensions": [
+        "reasoning_consistency"
+      ],
+      "expected_error_codes": [
+        "reasoning_gap"
+      ]
+    },
+    {
+      "operation_id": "weaken-next-step",
+      "kind": "replace_once",
+      "target": "Repeat the registered semantic channel ablation with fixed preprocessing, published seeds, and confidence intervals.",
+      "replacement": "Run more experiments.",
+      "expected_dimensions": [
+        "clarity_actionability"
+      ],
+      "expected_error_codes": [
+        "actionability_gap"
+      ]
+    }
+  ]
+}

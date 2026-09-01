@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "mutation_id": "p0-reproduction-04-modulation-classification-medium-mutation",
+  "parent_report_id": "p0-reproduction-04-modulation-classification-high",
+  "output_report_id": "p0-reproduction-04-modulation-classification-medium",
+  "parent_path": "groups/p0-reproduction-04-modulation-classification/high_report.md",
+  "output_path": "groups/p0-reproduction-04-modulation-classification/medium_report.md",
+  "parent_sha256": "1520A87267E0FF9B0160ACA192E2B917A8E1CF6E36F6F0656A0CDD3743317C5D",
+  "output_sha256": "F2CD95FA56CF4C9E1DFDE7252BE674CD91EF863AC6BA8D852828FFC78F4AEF95",
+  "operations": [
+    {
+      "operation_id": "weaken-reasoning",
+      "kind": "replace_once",
+      "target": "Five registered runs support the observed value, but there is insufficient evidence for a universal causal attribution in automatic modulation classification.",
+      "replacement": "The aggregate differs, and there is insufficient evidence.",
+      "expected_dimensions": [
+        "reasoning_consistency"
+      ],
+      "expected_error_codes": [
+        "reasoning_gap"
+      ]
+    },
+    {
+      "operation_id": "weaken-next-step",
+      "kind": "replace_once",
+      "target": "Repeat the registered modulation classification test with fixed preprocessing, published seeds, and confidence intervals.",
+      "replacement": "Run more experiments.",
+      "expected_dimensions": [
+        "clarity_actionability"
+      ],
+      "expected_error_codes": [
+        "actionability_gap"
+      ]
+    }
+  ]
+}

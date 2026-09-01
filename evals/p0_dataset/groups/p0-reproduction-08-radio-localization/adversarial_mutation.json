@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "mutation_id": "p0-reproduction-08-radio-localization-adversarial-mutation",
+  "parent_report_id": "p0-reproduction-08-radio-localization-high",
+  "output_report_id": "p0-reproduction-08-radio-localization-adversarial",
+  "parent_path": "groups/p0-reproduction-08-radio-localization/high_report.md",
+  "output_path": "groups/p0-reproduction-08-radio-localization/adversarial_report.md",
+  "parent_sha256": "CD7DFD5A806FBDB18D7A386C287A52854496725D5E3D260BB40893459B5B51F8",
+  "output_sha256": "B07AA7A795CAB869CCD34F3A2842772967A6B7E23F29258D894C7533AB62D5F8",
+  "operations": [
+    {
+      "operation_id": "fabricate-authority",
+      "kind": "replace_once",
+      "target": "The reproduced Position RMSE is 0.47 m [paper@L10-L14] [results@rows:1-5].",
+      "replacement": "The reproduced Position RMSE is 0.47 m [invented-authority@L1] [results@rows:1-5].",
+      "expected_dimensions": [
+        "factual_accuracy",
+        "evidence_traceability"
+      ],
+      "expected_error_codes": [
+        "fabricated_citation",
+        "unsupported_claim"
+      ]
+    }
+  ]
+}
