@@ -2,6 +2,14 @@
 
 All notable ReproEval changes are documented in this file.
 
+## 0.29.0 - 2026-09-01
+
+### Added
+
+- A fail-closed Benchmark result exporter that recomputes and verifies the supplied repeated-run Stability lineage.
+- Deterministic Markdown, run-level CSV, report-level CSV, dimension-level CSV, and SHA-256 export manifest outputs.
+- A CLI workflow for creating review-ready result bundles without exposing Judge response bodies.
+
 ## 0.28.1 - 2026-09-01
 
 ### Fixed

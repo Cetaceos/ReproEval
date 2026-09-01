@@ -242,6 +242,20 @@ hy3-reproeval analyze-benchmark-stability \
 The analyzer requires distinct Judge run IDs and indexes bound to one Dataset Freeze and reports coverage,
 standard deviation, score range, and quality-band flips. See [STABILITY_PROTOCOL.md](docs/STABILITY_PROTOCOL.md).
 
+Export the verified results as a review-ready Markdown and CSV bundle:
+
+```bash
+hy3-reproeval export-benchmark-results \
+  --benchmark .reproeval/benchmark-run-1.json \
+  --benchmark .reproeval/benchmark-run-2.json \
+  --benchmark .reproeval/benchmark-run-3.json \
+  --stability .reproeval/benchmark-stability.json \
+  --output-dir .reproeval/benchmark-review
+```
+
+The exporter recomputes Stability from the Benchmark inputs before writing any result and refuses a non-empty
+output directory. See [RESULT_EXPORT.md](docs/RESULT_EXPORT.md).
+
 ### Annotation Bundle validation
 
 Validate the public synthetic protocol fixture without an API key:
@@ -330,6 +344,7 @@ docs/BENCHMARK_PROTOCOL.md  group-isolated batch metrics and claim boundaries
 docs/ADVERSARIAL_PROTOCOL.md adversarial attack registration and detection metrics
 docs/JUDGE_BATCH.md         resumable online Judge Record generation
 docs/STABILITY_PROTOCOL.md  frozen repeated-Benchmark stability analysis
+docs/RESULT_EXPORT.md       verified Markdown/CSV Benchmark review bundles
 docs/ANNOTATION_PROTOCOL.md de-identified annotation and readiness contract
 docs/reproscope/             selected ReproScope validation evidence and history
 ```

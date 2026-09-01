@@ -239,6 +239,20 @@ hy3-reproeval analyze-benchmark-stability \
 
 分析器要求不同 Judge `run_id` 和 Index 绑定同一个 Dataset Freeze，并输出覆盖率、标准差、极差和质量等级翻转。详见 [STABILITY_PROTOCOL.md](docs/STABILITY_PROTOCOL.md)。
 
+将已验证结果导出为便于审阅的 Markdown 与 CSV 工件包：
+
+```bash
+hy3-reproeval export-benchmark-results \
+  --benchmark .reproeval/benchmark-run-1.json \
+  --benchmark .reproeval/benchmark-run-2.json \
+  --benchmark .reproeval/benchmark-run-3.json \
+  --stability .reproeval/benchmark-stability.json \
+  --output-dir .reproeval/benchmark-review
+```
+
+导出器会先根据 Benchmark 输入重新计算 Stability，结果不一致或输出目录非空时直接拒绝写入。详见
+[RESULT_EXPORT.md](docs/RESULT_EXPORT.md)。
+
 ### Annotation Bundle 校验
 
 以下命令无需 API Key，可校验公开的合成协议样例：
@@ -325,6 +339,7 @@ docs/BENCHMARK_PROTOCOL.md  组内批量指标和结论边界
 docs/ADVERSARIAL_PROTOCOL.md 对抗攻击登记与检测指标协议
 docs/JUDGE_BATCH.md         可恢复在线 Judge Record 生成协议
 docs/STABILITY_PROTOCOL.md  冻结重复 Benchmark 稳定性分析协议
+docs/RESULT_EXPORT.md       已验证的 Markdown/CSV Benchmark 审查包
 docs/ANNOTATION_PROTOCOL.md 去标识化标注和就绪条件
 docs/reproscope/             ReproScope 验证证据与历史材料
 ```

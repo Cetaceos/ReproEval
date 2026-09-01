@@ -22,6 +22,7 @@ from .judge import write_judge_record
 from .judge_batch import generate_dataset_judge_records
 from .p0_dataset import materialize_p0_dataset
 from .pairwise import compare_case_files, write_pairwise_bundle
+from .results_export import export_benchmark_results
 from .stability import analyze_benchmark_stability
 
 
@@ -143,6 +144,19 @@ def build_parser() -> argparse.ArgumentParser:
         help="Dataset Benchmark result JSON; repeat for each independent Judge run.",
     )
     stability_parser.add_argument("--output", type=Path, help="Optional stability result JSON path.")
+    export_parser = subparsers.add_parser(
+        "export-benchmark-results",
+        help="Export verified repeated Benchmark results as Markdown and CSV review artifacts.",
+    )
+    export_parser.add_argument(
+        "--benchmark",
+        required=True,
+        action="append",
+        type=Path,
+        help="Dataset Benchmark result JSON; repeat for every run represented by the Stability result.",
+    )
+    export_parser.add_argument("--stability", required=True, type=Path)
+    export_parser.add_argument("--output-dir", required=True, type=Path)
     generate_parser = subparsers.add_parser(
         "generate-judge-records",
         help="Generate one resumable online Hy3 Judge Record per dataset report.",
@@ -355,6 +369,13 @@ def main(argv: Sequence[str] | None = None) -> int:
             print(output_path.as_posix())
         else:
             print(rendered, end="")
+        return 0
+    if args.command == "export-benchmark-results":
+        try:
+            result = export_benchmark_results(args.benchmark, args.stability, args.output_dir)
+        except EvaluationInputError as exc:
+            parser.error(str(exc))
+        print(result.model_dump_json(indent=2))
         return 0
     if args.command == "generate-judge-records":
         try:
