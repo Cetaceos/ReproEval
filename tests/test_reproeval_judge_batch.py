@@ -8,6 +8,7 @@ from hy3_reproeval.benchmark import BenchmarkMode, run_dataset_benchmark
 from hy3_reproeval.errors import EvaluationInputError
 from hy3_reproeval.judge_batch import (
     JUDGE_RECORD_INDEX_NAME,
+    JUDGE_RECORD_LOCK_NAME,
     JudgeRecordIndex,
     generate_dataset_judge_records,
     validate_judge_record_index,
@@ -141,6 +142,7 @@ async def test_interrupted_run_retains_partial_index_and_can_resume(tmp_path: Pa
     assert partial.complete is False
     assert partial.record_count == 1
     assert partial.run_id is not None
+    assert not (tmp_path / JUDGE_RECORD_LOCK_NAME).exists()
 
     client = FakeBatchJudgeClient()
     completed = await generate_dataset_judge_records(
@@ -156,6 +158,22 @@ async def test_interrupted_run_retains_partial_index_and_can_resume(tmp_path: Pa
     assert completed.record_count == 3
     assert completed.run_id == partial.run_id
     assert client.call_count == 2
+
+
+async def test_generation_rejects_concurrent_writer_lock(tmp_path: Path) -> None:
+    lock_path = tmp_path / JUDGE_RECORD_LOCK_NAME
+    lock_path.write_text("pid=123\n", encoding="ascii")
+
+    with pytest.raises(EvaluationInputError, match="already active"):
+        await generate_dataset_judge_records(
+            _public_manifest(),
+            tmp_path,
+            judge_client=FailIfCalledJudgeClient(),
+            model="hy3-test",
+            provider="test-provider",
+        )
+
+    assert lock_path.read_text(encoding="ascii") == "pid=123\n"
 
 
 async def test_generation_rejects_existing_output_without_resume(tmp_path: Path) -> None:

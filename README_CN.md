@@ -223,7 +223,7 @@ hy3-reproeval benchmark-dataset \
   --output .reproeval/dataset-benchmark.json
 ```
 
-需先创建输出目录；中断后应先检查已有文件，再使用 `--resume`。受控实验应在 Judge、Benchmark、标注、一致性分析和共识命令中复用同一个 `--dataset-freeze`；各输出将记录同一已验证指纹，混用工件会直接失败。详见 [JUDGE_BATCH.md](docs/JUDGE_BATCH.md) 和 [DATASET_FREEZE.md](docs/DATASET_FREEZE.md)。
+需先创建输出目录；中断后应先检查已有文件，再使用 `--resume`。同一输出目录上的并发生成器会被独占锁拒绝。受控实验应在 Judge、Benchmark、标注、一致性分析和共识命令中复用同一个 `--dataset-freeze`；各输出将记录同一已验证指纹，混用工件会直接失败。详见 [JUDGE_BATCH.md](docs/JUDGE_BATCH.md) 和 [DATASET_FREEZE.md](docs/DATASET_FREEZE.md)。
 
 ### 重复 Benchmark 稳定性
 

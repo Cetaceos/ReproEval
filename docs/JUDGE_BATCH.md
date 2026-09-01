@@ -26,7 +26,7 @@ hy3-reproeval generate-judge-records \
   --output-dir .reproeval/judge-run
 ```
 
-The command never creates the output directory, never writes an API key, and never edits the Dataset Manifest. It writes one UTF-8 LF JSON record per report and a `judge_record_index.json` bound to the current Dataset, public Rubric, model, provider, and optional verified Dataset Freeze. Each new index also records a random `run_id` and UTC start time.
+The command never creates the output directory, never writes an API key, and never edits the Dataset Manifest. It writes one UTF-8 LF JSON record per report and a `judge_record_index.json` bound to the current Dataset, public Rubric, model, provider, and optional verified Dataset Freeze. Each new index also records a random `run_id` and UTC start time. An exclusive lock rejects a second generator targeting the same directory; the lock is removed after success or handled failure.
 
 ## Resume Safely
 
@@ -41,6 +41,8 @@ hy3-reproeval generate-judge-records \
 ```
 
 Resume mode validates each existing record's file hash, request and response fingerprints, report, Case, Rubric, model, and provider before reuse. It preserves the index `run_id` and start time, so a resumed directory remains the same experimental run. A mismatch fails closed. Running without `--resume` refuses an output directory that already contains target records or an index.
+
+If the process was forcibly terminated and the lock remains, first confirm that no generator still targets the directory, inspect the partial index, and only then remove `.judge-record-generation.lock` before resuming.
 
 ## Replay the Batch
 

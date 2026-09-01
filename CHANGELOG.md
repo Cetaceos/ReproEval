@@ -2,6 +2,14 @@
 
 All notable ReproEval changes are documented in this file.
 
+## 0.28.1 - 2026-09-01
+
+### Fixed
+
+- Judge batch generation now acquires an exclusive output-directory lock before inspecting or writing records,
+  preventing concurrent generators from invalidating index file hashes.
+- The lock is released after both successful and failed API runs; an existing lock fails closed with recovery guidance.
+
 ## 0.28.0 - 2026-09-01
 
 ### Added

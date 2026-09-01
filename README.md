@@ -224,7 +224,7 @@ hy3-reproeval benchmark-dataset \
   --output .reproeval/dataset-benchmark.json
 ```
 
-Create the output directory first and use `--resume` only after reviewing an interrupted run. For controlled experiments, reuse the same `--dataset-freeze` on Judge, Benchmark, annotation, agreement, and consensus commands; each output then carries one verified lineage fingerprint and mismatches fail closed. See [JUDGE_BATCH.md](docs/JUDGE_BATCH.md) and [DATASET_FREEZE.md](docs/DATASET_FREEZE.md).
+Create the output directory first and use `--resume` only after reviewing an interrupted run. Concurrent generators targeting one output directory are rejected by an exclusive lock. For controlled experiments, reuse the same `--dataset-freeze` on Judge, Benchmark, annotation, agreement, and consensus commands; each output then carries one verified lineage fingerprint and mismatches fail closed. See [JUDGE_BATCH.md](docs/JUDGE_BATCH.md) and [DATASET_FREEZE.md](docs/DATASET_FREEZE.md).
 
 ### Repeated Benchmark stability
 

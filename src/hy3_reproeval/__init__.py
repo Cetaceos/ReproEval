@@ -5,7 +5,7 @@ from importlib.metadata import PackageNotFoundError, version
 try:
     __version__ = version("hy3-reproeval")
 except PackageNotFoundError:  # pragma: no cover - source tree without installation
-    __version__ = "0.28.0"
+    __version__ = "0.28.1"
 
 from .agreement import analyze_annotation_agreement
 from .annotations import validate_annotation_bundles

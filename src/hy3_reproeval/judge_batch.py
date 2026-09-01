@@ -3,6 +3,9 @@
 from __future__ import annotations
 
 import hashlib
+import os
+from collections.abc import Iterator
+from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
@@ -25,6 +28,7 @@ if TYPE_CHECKING:
     from hy3_reproscope_mcp.config import Settings
 
 JUDGE_RECORD_INDEX_NAME = "judge_record_index.json"
+JUDGE_RECORD_LOCK_NAME = ".judge-record-generation.lock"
 MAX_JUDGE_RECORD_INDEX_BYTES = 4 * 1024 * 1024
 
 
@@ -88,6 +92,33 @@ class LoadedJudgeRecordIndex:
 
 
 async def generate_dataset_judge_records(
+    dataset_path: str | Path,
+    output_dir: str | Path,
+    *,
+    judge_client: StructuredJudgeClient | None = None,
+    model: str | None = None,
+    provider: str | None = None,
+    resume: bool = False,
+    dataset_freeze_path: str | Path | None = None,
+) -> JudgeRecordIndex:
+    """Generate one verified semantic Judge Record per report and update a durable index."""
+
+    output_root = Path(output_dir).expanduser().resolve()
+    if not output_root.is_dir():
+        raise EvaluationInputError(f"Judge Record output directory does not exist: {output_root.as_posix()}")
+    with _exclusive_generation_lock(output_root):
+        return await _generate_dataset_judge_records_unlocked(
+            dataset_path,
+            output_root,
+            judge_client=judge_client,
+            model=model,
+            provider=provider,
+            resume=resume,
+            dataset_freeze_path=dataset_freeze_path,
+        )
+
+
+async def _generate_dataset_judge_records_unlocked(
     dataset_path: str | Path,
     output_dir: str | Path,
     *,
@@ -220,6 +251,26 @@ async def generate_dataset_judge_records(
     )
     _write_index(index_path, completed)
     return completed
+
+
+@contextmanager
+def _exclusive_generation_lock(output_root: Path) -> Iterator[None]:
+    lock_path = output_root / JUDGE_RECORD_LOCK_NAME
+    try:
+        descriptor = os.open(lock_path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+    except FileExistsError as exc:
+        raise EvaluationInputError(
+            "Judge Record generation is already active for this output directory; "
+            f"if the prior process terminated, inspect and remove {lock_path.as_posix()} before retrying"
+        ) from exc
+    try:
+        os.write(descriptor, f"pid={os.getpid()}\n".encode("ascii"))
+    finally:
+        os.close(descriptor)
+    try:
+        yield
+    finally:
+        lock_path.unlink(missing_ok=True)
 
 
 def validate_judge_record_index(
