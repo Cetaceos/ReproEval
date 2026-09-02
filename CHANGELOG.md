@@ -2,6 +2,22 @@
 
 All notable ReproEval changes are documented in this file.
 
+## 0.31.0 - 2026-09-02
+
+### Added
+
+- A one-command repeated-Judge experiment orchestrator that creates one Dataset Freeze, independent resumable
+  Judge runs, replay Benchmarks, Stability output, and a verified Markdown/CSV review bundle.
+- An experiment manifest with run state, model/provider provenance, relative artifact paths, Judge run IDs, and
+  Judge Record Index fingerprints.
+- CLI, protocol documentation, and tests for interruption recovery, completed-run verification, tamper rejection,
+  experiment locking, and no-call replay of completed experiments.
+
+### Security
+
+- Experiment output roots reject concurrent writers, changed Dataset/Freeze lineage, changed completed
+  Benchmarks, and changed exported review files without storing API credentials.
+
 ## 0.30.0 - 2026-09-01
 
 ### Added

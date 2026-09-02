@@ -20,6 +20,7 @@ from .evaluator import evaluate_case_file, evaluate_case_file_hybrid
 from .freeze import create_dataset_freeze, verify_dataset_freeze
 from .judge import write_judge_record
 from .judge_batch import generate_dataset_judge_records
+from .judge_experiment import run_judge_experiment
 from .p0_dataset import materialize_p0_dataset
 from .p1_transfer_dataset import materialize_p1_transfer_dataset
 from .pairwise import compare_case_files, write_pairwise_bundle
@@ -185,6 +186,20 @@ def build_parser() -> argparse.ArgumentParser:
         "--resume",
         action="store_true",
         help="Verify and reuse existing records from an interrupted run.",
+    )
+    experiment_parser = subparsers.add_parser(
+        "run-judge-experiment",
+        help="Run or resume a frozen repeated-Judge Benchmark and review export.",
+    )
+    experiment_parser.add_argument("--manifest", required=True, type=Path)
+    experiment_parser.add_argument("--output-dir", required=True, type=Path)
+    experiment_parser.add_argument("--runs", type=int, default=3)
+    experiment_parser.add_argument("--model", help="Optional model override; defaults to HY3_MODEL.")
+    experiment_parser.add_argument("--provider", help="Optional provider provenance override.")
+    experiment_parser.add_argument(
+        "--resume",
+        action="store_true",
+        help="Verify and resume the existing experiment directory.",
     )
     annotations_parser = subparsers.add_parser(
         "validate-annotations",
@@ -405,6 +420,22 @@ def main(argv: Sequence[str] | None = None) -> int:
                     provider=args.provider,
                     resume=args.resume,
                     dataset_freeze_path=args.dataset_freeze,
+                )
+            )
+        except (EvaluationInputError, ReproScopeError) as exc:
+            parser.error(str(exc))
+        print(result.model_dump_json(indent=2))
+        return 0
+    if args.command == "run-judge-experiment":
+        try:
+            result = asyncio.run(
+                run_judge_experiment(
+                    args.manifest,
+                    args.output_dir,
+                    runs=args.runs,
+                    model=args.model,
+                    provider=args.provider,
+                    resume=args.resume,
                 )
             )
         except (EvaluationInputError, ReproScopeError) as exc:

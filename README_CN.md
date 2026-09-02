@@ -239,6 +239,22 @@ hy3-reproeval benchmark-dataset \
 
 需先创建输出目录；中断后应先检查已有文件，再使用 `--resume`。同一输出目录上的并发生成器会被独占锁拒绝。受控实验应在 Judge、Benchmark、标注、一致性分析和共识命令中复用同一个 `--dataset-freeze`；各输出将记录同一已验证指纹，混用工件会直接失败。详见 [JUDGE_BATCH.md](docs/JUDGE_BATCH.md) 和 [DATASET_FREEZE.md](docs/DATASET_FREEZE.md)。
 
+### 一键重复 Judge 实验
+
+以下命令会依次冻结数据集，执行三轮相互独立且可恢复的 Judge，回放各轮 Benchmark，分析稳定性，
+并导出审阅工件包：
+
+```bash
+hy3-reproeval run-judge-experiment \
+  --manifest evals/p1_transfer_dataset/dataset.json \
+  --output-dir .reproeval/p1-transfer-experiment \
+  --runs 3
+```
+
+输出目录必须不存在或为空。检查中断状态后可追加 `--resume`；已完成轮次会经过哈希校验后复用，
+完整实验只执行复核，不会再次调用 API。命令使用实验级独占锁，且不会保存凭据。详见
+[JUDGE_EXPERIMENT.md](docs/JUDGE_EXPERIMENT.md)。
+
 ### 重复 Benchmark 稳定性
 
 使用三个相互独立的 Judge 输出目录生成三份 replay Benchmark 后，无需再次调用 API 即可汇总总分和逐维波动：
@@ -353,6 +369,7 @@ docs/P1_TRANSFER_DATASET.md 规范化 P1 技术迁移泛化集清单与结论边
 docs/BENCHMARK_PROTOCOL.md  组内批量指标和结论边界
 docs/ADVERSARIAL_PROTOCOL.md 对抗攻击登记与检测指标协议
 docs/JUDGE_BATCH.md         可恢复在线 Judge Record 生成协议
+docs/JUDGE_EXPERIMENT.md    一键冻结重复 Judge 实验编排协议
 docs/STABILITY_PROTOCOL.md  冻结重复 Benchmark 稳定性分析协议
 docs/RESULT_EXPORT.md       已验证的 Markdown/CSV Benchmark 审查包
 docs/ANNOTATION_PROTOCOL.md 去标识化标注和就绪条件

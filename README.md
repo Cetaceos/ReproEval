@@ -240,6 +240,23 @@ hy3-reproeval benchmark-dataset \
 
 Create the output directory first and use `--resume` only after reviewing an interrupted run. Concurrent generators targeting one output directory are rejected by an exclusive lock. For controlled experiments, reuse the same `--dataset-freeze` on Judge, Benchmark, annotation, agreement, and consensus commands; each output then carries one verified lineage fingerprint and mismatches fail closed. See [JUDGE_BATCH.md](docs/JUDGE_BATCH.md) and [DATASET_FREEZE.md](docs/DATASET_FREEZE.md).
 
+### One-command repeated Judge experiment
+
+Freeze a Dataset, produce three independent resumable Judge runs, replay each Benchmark, analyze stability,
+and export the review bundle through one command:
+
+```bash
+hy3-reproeval run-judge-experiment \
+  --manifest evals/p1_transfer_dataset/dataset.json \
+  --output-dir .reproeval/p1-transfer-experiment \
+  --runs 3
+```
+
+Use an absent or empty output directory. After inspecting an interruption, append `--resume`; completed runs
+are hash-verified and reused, while a completed experiment is revalidated without another API call. The command
+uses an experiment-level exclusive lock and never stores credentials. See
+[JUDGE_EXPERIMENT.md](docs/JUDGE_EXPERIMENT.md).
+
 ### Repeated Benchmark stability
 
 After producing three replay Benchmark results from separate Judge output directories, aggregate total-score and
@@ -358,6 +375,7 @@ docs/P1_TRANSFER_DATASET.md canonical P1 transfer-generalization inventory and b
 docs/BENCHMARK_PROTOCOL.md  group-isolated batch metrics and claim boundaries
 docs/ADVERSARIAL_PROTOCOL.md adversarial attack registration and detection metrics
 docs/JUDGE_BATCH.md         resumable online Judge Record generation
+docs/JUDGE_EXPERIMENT.md    one-command frozen repeated-Judge orchestration
 docs/STABILITY_PROTOCOL.md  frozen repeated-Benchmark stability analysis
 docs/RESULT_EXPORT.md       verified Markdown/CSV Benchmark review bundles
 docs/ANNOTATION_PROTOCOL.md de-identified annotation and readiness contract
