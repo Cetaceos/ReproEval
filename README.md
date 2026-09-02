@@ -15,7 +15,7 @@ The first migration milestone is implemented. The repository now contains the va
 - synthetic examples, offline evaluation suites, live-validation gates, and more than 380 automated tests;
 - compatibility with existing `hy3_reproscope_mcp` module and `hy3-reproscope-mcp` command names.
 
-The versioned seven-dimension rubric, deterministic validators, constrained Hy3 semantic Judge, blinded repeated comparison, reproducible dataset protocol, resumable batch Judge runs, group-isolated benchmark runner, repeated-run stability analysis, de-identified annotation validation, agreement analysis, and adjudicated consensus aggregation are implemented. A deterministic 12-group P0 synthetic Dataset candidate is included for protocol experiments. Model judgments cannot replace local citation, numerical, artifact, or hard-cap decisions. Real expert labels and frozen held-out results remain future validation work described in [the project proposal](docs/PROJECT_PROPOSAL_CN.md).
+The versioned seven-dimension rubric, deterministic validators, constrained Hy3 semantic Judge, blinded repeated comparison, reproducible dataset protocol, resumable batch Judge runs, group-isolated benchmark runner, repeated-run stability analysis, blinded human work packets, de-identified annotation validation, agreement analysis, and adjudicated consensus aggregation are implemented. A deterministic 12-group P0 synthetic Dataset candidate is included for protocol experiments. Model judgments cannot replace local citation, numerical, artifact, or hard-cap decisions. Real expert labels and frozen held-out results remain future validation work described in [the project proposal](docs/PROJECT_PROPOSAL_CN.md).
 
 ## Architecture
 
@@ -289,6 +289,22 @@ output directory. See [RESULT_EXPORT.md](docs/RESULT_EXPORT.md).
 
 ### Annotation Bundle validation
 
+Prepare a randomized work packet from one frozen Dataset before collecting independent expert labels:
+
+```bash
+hy3-reproeval prepare-annotation-packet \
+  --manifest evals/p1_transfer_dataset/dataset.json \
+  --dataset-freeze .reproeval/p1-transfer-freeze.json \
+  --output-dir private_annotations/p1-reviewer-a \
+  --assignment-id p1-independent-a \
+  --annotator-id reviewer-a \
+  --bundle-id p1-independent-bundle-a
+```
+
+Send only the generated `annotator/` directory to the reviewer; retain `coordinator_manifest.json` privately.
+After the completed directory is returned, use `finalize-annotation-packet` to verify it and emit a strict Bundle.
+See [ANNOTATION_PACKET.md](docs/ANNOTATION_PACKET.md) for the complete two-annotator workflow and trust boundary.
+
 Validate the public synthetic protocol fixture without an API key:
 
 ```bash
@@ -378,6 +394,7 @@ docs/JUDGE_BATCH.md         resumable online Judge Record generation
 docs/JUDGE_EXPERIMENT.md    one-command frozen repeated-Judge orchestration
 docs/STABILITY_PROTOCOL.md  frozen repeated-Benchmark stability analysis
 docs/RESULT_EXPORT.md       verified Markdown/CSV Benchmark review bundles
+docs/ANNOTATION_PACKET.md   blinded human work-packet preparation and finalization
 docs/ANNOTATION_PROTOCOL.md de-identified annotation and readiness contract
 docs/reproscope/             selected ReproScope validation evidence and history
 ```

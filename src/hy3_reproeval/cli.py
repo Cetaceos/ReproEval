@@ -11,6 +11,7 @@ from hy3_reproscope_mcp.errors import ReproScopeError
 
 from . import __version__
 from .agreement import analyze_annotation_agreement
+from .annotation_packet import finalize_annotation_packet, prepare_annotation_packet
 from .annotations import validate_annotation_bundles
 from .benchmark import BenchmarkMode, run_dataset_benchmark
 from .consensus import finalize_annotation_consensus
@@ -201,6 +202,24 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Verify and resume the existing experiment directory.",
     )
+    prepare_packet_parser = subparsers.add_parser(
+        "prepare-annotation-packet",
+        help="Create one randomized, label-blind work packet for an independent human annotator.",
+    )
+    prepare_packet_parser.add_argument("--manifest", required=True, type=Path)
+    prepare_packet_parser.add_argument("--dataset-freeze", required=True, type=Path)
+    prepare_packet_parser.add_argument("--output-dir", required=True, type=Path)
+    prepare_packet_parser.add_argument("--assignment-id", required=True)
+    prepare_packet_parser.add_argument("--annotator-id", required=True)
+    prepare_packet_parser.add_argument("--bundle-id", required=True)
+    finalize_packet_parser = subparsers.add_parser(
+        "finalize-annotation-packet",
+        help="Verify a completed blind packet and emit a strict human Annotation Bundle.",
+    )
+    finalize_packet_parser.add_argument("--manifest", required=True, type=Path)
+    finalize_packet_parser.add_argument("--dataset-freeze", required=True, type=Path)
+    finalize_packet_parser.add_argument("--packet-dir", required=True, type=Path)
+    finalize_packet_parser.add_argument("--output", required=True, type=Path)
     annotations_parser = subparsers.add_parser(
         "validate-annotations",
         help="Validate de-identified human or synthetic annotation bundles against a dataset.",
@@ -439,6 +458,32 @@ def main(argv: Sequence[str] | None = None) -> int:
                 )
             )
         except (EvaluationInputError, ReproScopeError) as exc:
+            parser.error(str(exc))
+        print(result.model_dump_json(indent=2))
+        return 0
+    if args.command == "prepare-annotation-packet":
+        try:
+            result = prepare_annotation_packet(
+                args.manifest,
+                args.dataset_freeze,
+                args.output_dir,
+                assignment_id=args.assignment_id,
+                annotator_id=args.annotator_id,
+                annotation_bundle_id=args.bundle_id,
+            )
+        except EvaluationInputError as exc:
+            parser.error(str(exc))
+        print(result.model_dump_json(indent=2))
+        return 0
+    if args.command == "finalize-annotation-packet":
+        try:
+            result = finalize_annotation_packet(
+                args.manifest,
+                args.dataset_freeze,
+                args.packet_dir,
+                args.output,
+            )
+        except EvaluationInputError as exc:
             parser.error(str(exc))
         print(result.model_dump_json(indent=2))
         return 0

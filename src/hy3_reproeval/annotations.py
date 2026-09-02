@@ -40,6 +40,12 @@ _DIMENSION_ERROR_CODES = {
 }
 
 
+def allowed_annotation_error_codes(dimension: DimensionId) -> list[ErrorCode]:
+    """Return the stable annotation error-code options for one Rubric dimension."""
+
+    return sorted(_DIMENSION_ERROR_CODES[dimension], key=str)
+
+
 class AnnotationSource(StrEnum):
     HUMAN = "human"
     SYNTHETIC_PROTOCOL_FIXTURE = "synthetic_protocol_fixture"

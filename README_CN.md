@@ -15,7 +15,7 @@ Hy3 ReproEval 是一个面向开放式科研报告的 Hy3 多工具应用与可�
 - 合成示例、离线评测集、在线验证门禁和 380 余项自动化测试；
 - 对原有 `hy3_reproscope_mcp` 模块和 `hy3-reproscope-mcp` 命令的兼容。
 
-版本化七维 Rubric、确定性校验器、受限 Hy3 语义 Judge、盲化重复比较、可复现数据协议、可恢复批量 Judge、组内 Benchmark、重复运行稳定性分析、去标识化标注校验、一致性分析和裁决共识聚合已经实现。仓库同时提供可确定性生成的 12 组 P0 合成数据集候选，用于协议实验。模型判断不能覆盖本地引用、数值、工件或硬性分数上限结论。真实专家标签和冻结测试集结果仍属于后续验证工作，详见[项目方案](docs/PROJECT_PROPOSAL_CN.md)。
+版本化七维 Rubric、确定性校验器、受限 Hy3 语义 Judge、盲化重复比较、可复现数据协议、可恢复批量 Judge、组内 Benchmark、重复运行稳定性分析、人工盲审工作包、去标识化标注校验、一致性分析和裁决共识聚合已经实现。仓库同时提供可确定性生成的 12 组 P0 合成数据集候选，用于协议实验。模型判断不能覆盖本地引用、数值、工件或硬性分数上限结论。真实专家标签和冻结测试集结果仍属于后续验证工作，详见[项目方案](docs/PROJECT_PROPOSAL_CN.md)。
 
 ## 架构
 
@@ -285,6 +285,20 @@ hy3-reproeval export-benchmark-results \
 
 ### Annotation Bundle 校验
 
+采集独立专家标签前，先从同一冻结数据集为每位专家生成单独随机排序的盲审工作包：
+
+```bash
+hy3-reproeval prepare-annotation-packet \
+  --manifest evals/p1_transfer_dataset/dataset.json \
+  --dataset-freeze .reproeval/p1-transfer-freeze.json \
+  --output-dir private_annotations/p1-reviewer-a \
+  --assignment-id p1-independent-a \
+  --annotator-id reviewer-a \
+  --bundle-id p1-independent-bundle-a
+```
+
+只向专家发送生成的 `annotator/` 目录，`coordinator_manifest.json` 必须由组织者私下保留。收回填写后的目录，再通过 `finalize-annotation-packet` 验签并生成严格 Bundle。完整双人流程和信任边界见 [ANNOTATION_PACKET.md](docs/ANNOTATION_PACKET.md)。
+
 以下命令无需 API Key，可校验公开的合成协议样例：
 
 ```bash
@@ -372,6 +386,7 @@ docs/JUDGE_BATCH.md         可恢复在线 Judge Record 生成协议
 docs/JUDGE_EXPERIMENT.md    一键冻结重复 Judge 实验编排协议
 docs/STABILITY_PROTOCOL.md  冻结重复 Benchmark 稳定性分析协议
 docs/RESULT_EXPORT.md       已验证的 Markdown/CSV Benchmark 审查包
+docs/ANNOTATION_PACKET.md   人工盲审工作包生成、回收与验签流程
 docs/ANNOTATION_PROTOCOL.md 去标识化标注和就绪条件
 docs/reproscope/             ReproScope 验证证据与历史材料
 ```

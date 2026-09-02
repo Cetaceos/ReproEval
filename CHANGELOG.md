@@ -2,6 +2,24 @@
 
 All notable ReproEval changes are documented in this file.
 
+## 0.32.0 - 2026-09-02
+
+### Added
+
+- Randomized, neutral-ID annotation work packets containing the public Rubric, blank response forms, and copied
+  validation/test reports without registered tiers, mutation metadata, expected errors, or system scores.
+- A private coordinator manifest that binds every neutral item to its original report and verifies Dataset Freeze,
+  Rubric, assignment, report-copy, item-inventory, and evidence-line integrity during finalization.
+- `prepare-annotation-packet` and `finalize-annotation-packet` CLI workflows that emit existing strict independent
+  human Annotation Bundles for downstream validation, agreement analysis, and consensus.
+
+### Security
+
+- Development reports are excluded, separate annotators receive independently randomized packets, and the
+  documentation defines a two-directory trust boundary so the private item mapping is never sent to reviewers.
+- Packet preparation does not execute Dataset content or call Hy3; packet outputs and human records remain private
+  and ignored by repository defaults.
+
 ## 0.31.0 - 2026-09-02
 
 ### Added

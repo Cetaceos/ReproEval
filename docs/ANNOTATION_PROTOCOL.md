@@ -1,6 +1,18 @@
 # Human Annotation Bundle Protocol
 
-ReproEval 0.21.0 and later define a strict, de-identified format for collecting report-quality judgments against the same seven-dimension public Rubric used by the evaluator. ReproEval 0.22.0 adds agreement analysis and optional system-human comparison; 0.23.0 adds repeat/adjudication lineage and fail-closed consensus aggregation.
+ReproEval 0.21.0 and later define a strict, de-identified format for collecting report-quality judgments against the same seven-dimension public Rubric used by the evaluator. ReproEval 0.22.0 adds agreement analysis and optional system-human comparison; 0.23.0 adds repeat/adjudication lineage and fail-closed consensus aggregation; 0.32.0 adds randomized, label-blind work-packet preparation and verified Bundle finalization.
+
+## Collect Independent Labels
+
+Use `prepare-annotation-packet` to create separate randomized assignments for qualified reviewers, and send only
+each packet's `annotator/` directory. Keep the neutral-item mapping private. After a reviewer completes every
+response and profile declaration, use `finalize-annotation-packet` to verify the unchanged assignment and report
+copies and emit the Bundle described below. The complete trust boundary and command sequence are documented in
+[ANNOTATION_PACKET.md](ANNOTATION_PACKET.md).
+
+This mechanism reduces direct label leakage from registered Dataset metadata. It cannot verify that a reviewer
+remained blind outside the packet, was qualified, or worked independently; those conditions require a documented
+study protocol and coordinator oversight.
 
 ## Annotation Unit
 
