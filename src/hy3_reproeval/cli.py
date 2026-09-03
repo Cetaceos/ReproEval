@@ -25,6 +25,7 @@ from .judge_experiment import run_judge_experiment
 from .p0_dataset import materialize_p0_dataset
 from .p1_transfer_dataset import materialize_p1_transfer_dataset
 from .pairwise import compare_case_files, write_pairwise_bundle
+from .result_figures import render_results_figures, verify_results_figures
 from .results_export import export_benchmark_results, verify_results_export
 from .stability import analyze_benchmark_stability
 
@@ -175,6 +176,18 @@ def build_parser() -> argparse.ArgumentParser:
         help="Verify the closed inventory and SHA-256 fingerprints of a public results bundle.",
     )
     verify_export_parser.add_argument("--bundle", required=True, type=Path)
+    figures_parser = subparsers.add_parser(
+        "render-results-figures",
+        help="Render deterministic SVG figures from a verified public results bundle.",
+    )
+    figures_parser.add_argument("--bundle", required=True, type=Path)
+    figures_parser.add_argument("--output-dir", required=True, type=Path)
+    verify_figures_parser = subparsers.add_parser(
+        "verify-results-figures",
+        help="Verify a closed SVG figure bundle and its optional source-results binding.",
+    )
+    verify_figures_parser.add_argument("--figures", required=True, type=Path)
+    verify_figures_parser.add_argument("--source-bundle", type=Path)
     generate_parser = subparsers.add_parser(
         "generate-judge-records",
         help="Generate one resumable online Hy3 Judge Record per dataset report.",
@@ -437,6 +450,20 @@ def main(argv: Sequence[str] | None = None) -> int:
     if args.command == "verify-results-export":
         try:
             result = verify_results_export(args.bundle)
+        except EvaluationInputError as exc:
+            parser.error(str(exc))
+        print(result.model_dump_json(indent=2))
+        return 0
+    if args.command == "render-results-figures":
+        try:
+            result = render_results_figures(args.bundle, args.output_dir)
+        except EvaluationInputError as exc:
+            parser.error(str(exc))
+        print(result.model_dump_json(indent=2))
+        return 0
+    if args.command == "verify-results-figures":
+        try:
+            result = verify_results_figures(args.figures, source_bundle=args.source_bundle)
         except EvaluationInputError as exc:
             parser.error(str(exc))
         print(result.model_dump_json(indent=2))

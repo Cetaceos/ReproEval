@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0",
+  "engine_version": "0.35.0",
+  "dataset_id": "reproeval-p1-synthetic-transfer",
+  "dataset_version": "0.1.0",
+  "source_export_manifest_sha256": "DD3BDAC5F5E204E2BACB2BD4DF22835065BC0C96E0136D0272DFE5D173A83072",
+  "figures": [
+    {
+      "path": "dimension_stability.svg",
+      "bytes": 4232,
+      "sha256": "74B5A194332E0FD1D08BBB5E2E396C32C3229AE11D12E3DCF89A662CAC9F823E"
+    },
+    {
+      "path": "score_by_tier.svg",
+      "bytes": 2680,
+      "sha256": "28AD9FF14EFBB9C643CAF661AEE180503258C71E3567766C4CFC45BA957C1F20"
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 470" role="img" aria-labelledby="title description">
+<title id="title">Mean report score by registered quality tier</title>
+<desc id="description">Mean report score by registered quality tier</desc>
+<style>
+text { font-family: Arial, Helvetica, sans-serif; fill: #17212B; }
+.title { font-size: 25px; font-weight: 700; }
+.subtitle { font-size: 14px; fill: #55616E; }
+.label { font-size: 16px; font-weight: 700; }
+.dimension { font-size: 13px; }
+.value { font-size: 14px; font-weight: 700; }
+.value-small { font-size: 12px; font-weight: 700; }
+.axis { font-size: 12px; fill: #5F6B76; }
+.axis-label { font-size: 14px; font-weight: 700; }
+.legend { font-size: 13px; }
+.grid { stroke: #D9DEE4; stroke-width: 1; }
+</style>
+<rect width="960" height="470" fill="#FFFFFF"/>
+<text x="48" y="55" class="title">Mean report score by quality tier</text>
+<text x="48" y="82" class="subtitle">Verified aggregate results; 0-100 scale</text>
+<line x1="210.0" y1="110" x2="210.0" y2="365" class="grid"/>
+<text x="210.0" y="395" text-anchor="middle" class="axis">0</text>
+<line x1="340.0" y1="110" x2="340.0" y2="365" class="grid"/>
+<text x="340.0" y="395" text-anchor="middle" class="axis">20</text>
+<line x1="470.0" y1="110" x2="470.0" y2="365" class="grid"/>
+<text x="470.0" y="395" text-anchor="middle" class="axis">40</text>
+<line x1="600.0" y1="110" x2="600.0" y2="365" class="grid"/>
+<text x="600.0" y="395" text-anchor="middle" class="axis">60</text>
+<line x1="730.0" y1="110" x2="730.0" y2="365" class="grid"/>
+<text x="730.0" y="395" text-anchor="middle" class="axis">80</text>
+<line x1="860.0" y1="110" x2="860.0" y2="365" class="grid"/>
+<text x="860.0" y="395" text-anchor="middle" class="axis">100</text>
+<text x="185" y="164" text-anchor="end" class="label">High</text>
+<rect x="210" y="135" width="650" height="40" rx="4" fill="#EEF1F4"/>
+<rect x="210" y="135" width="614.2" height="40" rx="4" fill="#16805C"/>
+<text x="834.2" y="162" class="value">94.5 (n=5)</text>
+<text x="185" y="246" text-anchor="end" class="label">Medium</text>
+<rect x="210" y="217" width="650" height="40" rx="4" fill="#EEF1F4"/>
+<rect x="210" y="217" width="568.8" height="40" rx="4" fill="#D18A00"/>
+<text x="788.8" y="244" class="value">87.5 (n=5)</text>
+<text x="185" y="328" text-anchor="end" class="label">Low</text>
+<rect x="210" y="299" width="650" height="40" rx="4" fill="#EEF1F4"/>
+<rect x="210" y="299" width="217.8" height="40" rx="4" fill="#C4443E"/>
+<text x="437.8" y="326" class="value">33.5 (n=5)</text>
+<text x="535" y="438" text-anchor="middle" class="axis-label">Mean total score</text>
+</svg>

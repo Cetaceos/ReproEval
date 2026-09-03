@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 584" role="img" aria-labelledby="title description">
+<title id="title">Repeated-run score stability by evaluation dimension</title>
+<desc id="description">Repeated-run score stability by evaluation dimension</desc>
+<style>
+text { font-family: Arial, Helvetica, sans-serif; fill: #17212B; }
+.title { font-size: 25px; font-weight: 700; }
+.subtitle { font-size: 14px; fill: #55616E; }
+.label { font-size: 16px; font-weight: 700; }
+.dimension { font-size: 13px; }
+.value { font-size: 14px; font-weight: 700; }
+.value-small { font-size: 12px; font-weight: 700; }
+.axis { font-size: 12px; fill: #5F6B76; }
+.axis-label { font-size: 14px; font-weight: 700; }
+.legend { font-size: 13px; }
+.grid { stroke: #D9DEE4; stroke-width: 1; }
+</style>
+<rect width="960" height="584" fill="#FFFFFF"/>
+<text x="48" y="55" class="title">Dimension-level repeated-run stability</text>
+<text x="48" y="82" class="subtitle">Lower standard deviation indicates higher stability</text>
+<rect x="650" y="49" width="14" height="14" rx="2" fill="#2E6F9E"/>
+<text x="672" y="61" class="legend">Mean</text>
+<rect x="755" y="49" width="14" height="14" rx="2" fill="#D45B45"/>
+<text x="777" y="61" class="legend">Maximum</text>
+<line x1="300.0" y1="115" x2="300.0" y2="489" class="grid"/>
+<text x="300.0" y="514" text-anchor="middle" class="axis">0</text>
+<line x1="414.0" y1="115" x2="414.0" y2="489" class="grid"/>
+<text x="414.0" y="514" text-anchor="middle" class="axis">0.2</text>
+<line x1="528.0" y1="115" x2="528.0" y2="489" class="grid"/>
+<text x="528.0" y="514" text-anchor="middle" class="axis">0.4</text>
+<line x1="642.0" y1="115" x2="642.0" y2="489" class="grid"/>
+<text x="642.0" y="514" text-anchor="middle" class="axis">0.6</text>
+<line x1="756.0" y1="115" x2="756.0" y2="489" class="grid"/>
+<text x="756.0" y="514" text-anchor="middle" class="axis">0.8</text>
+<line x1="870.0" y1="115" x2="870.0" y2="489" class="grid"/>
+<text x="870.0" y="514" text-anchor="middle" class="axis">1</text>
+<text x="280" y="148" text-anchor="end" class="dimension">factual accuracy</text>
+<rect x="300" y="130" width="0.0" height="25" rx="3" fill="#D45B45"/>
+<rect x="300" y="136" width="0.0" height="13" rx="2" fill="#2E6F9E"/>
+<text x="308.0" y="148" class="value-small">0.000 / 0.000</text>
+<text x="280" y="200" text-anchor="end" class="dimension">evidence traceability</text>
+<rect x="300" y="182" width="0.0" height="25" rx="3" fill="#D45B45"/>
+<rect x="300" y="188" width="0.0" height="13" rx="2" fill="#2E6F9E"/>
+<text x="308.0" y="200" class="value-small">0.000 / 0.000</text>
+<text x="280" y="252" text-anchor="end" class="dimension">numerical consistency</text>
+<rect x="300" y="234" width="0.0" height="25" rx="3" fill="#D45B45"/>
+<rect x="300" y="240" width="0.0" height="13" rx="2" fill="#2E6F9E"/>
+<text x="308.0" y="252" class="value-small">0.000 / 0.000</text>
+<text x="280" y="304" text-anchor="end" class="dimension">reasoning consistency</text>
+<rect x="300" y="286" width="537.4" height="25" rx="3" fill="#D45B45"/>
+<rect x="300" y="292" width="215.0" height="13" rx="2" fill="#2E6F9E"/>
+<text x="845.4" y="304" class="value-small">0.377 / 0.943</text>
+<text x="280" y="356" text-anchor="end" class="dimension">uncertainty handling</text>
+<rect x="300" y="338" width="0.0" height="25" rx="3" fill="#D45B45"/>
+<rect x="300" y="344" width="0.0" height="13" rx="2" fill="#2E6F9E"/>
+<text x="308.0" y="356" class="value-small">0.000 / 0.000</text>
+<text x="280" y="408" text-anchor="end" class="dimension">content completeness</text>
+<rect x="300" y="390" width="0.0" height="25" rx="3" fill="#D45B45"/>
+<rect x="300" y="396" width="0.0" height="13" rx="2" fill="#2E6F9E"/>
+<text x="308.0" y="408" class="value-small">0.000 / 0.000</text>
+<text x="280" y="460" text-anchor="end" class="dimension">clarity actionability</text>
+<rect x="300" y="442" width="0.0" height="25" rx="3" fill="#D45B45"/>
+<rect x="300" y="448" width="0.0" height="13" rx="2" fill="#2E6F9E"/>
+<text x="308.0" y="460" class="value-small">0.000 / 0.000</text>
+<text x="585.0" y="556" text-anchor="middle" class="axis-label">Report score standard deviation (mean / maximum)</text>
+</svg>

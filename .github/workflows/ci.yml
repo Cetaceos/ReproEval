@@ -78,7 +78,9 @@ jobs:
           python -m hy3_reproeval validate-dataset --manifest evals/p1_transfer_dataset/dataset.json
 
       - name: Verify published P1 results
-        run: python -m hy3_reproeval verify-results-export --bundle results/p1_transfer_judge
+        run: |
+          python -m hy3_reproeval verify-results-export --bundle results/p1_transfer_judge
+          python -m hy3_reproeval verify-results-figures --figures results/p1_transfer_judge_figures --source-bundle results/p1_transfer_judge
 
       - name: Run deterministic offline evaluations
         run: |

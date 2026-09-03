@@ -43,6 +43,14 @@ validation 和 test 分别包含 2 个来源组、6 份报告；三次运行中�
 
 高、中、低三档在连续分数上保持严格顺序，但高档和中档都落入 `excellent` 质量带。这说明当前连续分数具有判别力，而离散质量带对高、中档的区分仍然偏粗。
 
+### 3.1 聚合结果图
+
+![P1 高中低三档平均得分](../results/p1_transfer_judge_figures/score_by_tier.svg)
+
+![P1 七维重复评测稳定性](../results/p1_transfer_judge_figures/dimension_stability.svg)
+
+两张 SVG 仅由已验签的聚合 CSV 确定性生成。其 Figure Manifest 绑定源结果包 manifest 的 SHA-256；图表用于辅助阅读，不构成额外实验样本或新结论。
+
 ## 4. 稳定性
 
 - 15/15 份报告在三次运行中均完整评分；
@@ -89,6 +97,9 @@ validation 和 test 分别包含 2 个来源组、6 份报告；三次运行中�
 
 ```bash
 hy3-reproeval verify-results-export --bundle results/p1_transfer_judge
+hy3-reproeval verify-results-figures \
+  --figures results/p1_transfer_judge_figures \
+  --source-bundle results/p1_transfer_judge
 ```
 
 公开结果不包含 API Key 或原始 Hy3 响应；manifest 保留 Dataset、Freeze、Rubric、Benchmark 和 Judge Record Index 的指纹，用于确认公开汇总对应同一条冻结实验血缘。

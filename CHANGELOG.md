@@ -2,6 +2,22 @@
 
 All notable ReproEval changes are documented in this file.
 
+## 0.35.0 - 2026-09-03
+
+### Added
+
+- Dependency-free deterministic SVG rendering for quality-tier scores and dimension-level repeated-run stability.
+- A closed Figure Manifest that binds every figure to the verified source result manifest and records byte sizes
+  and SHA-256 fingerprints.
+- `render-results-figures` and `verify-results-figures` CLI workflows, a tracked P1 figure bundle, CI verification,
+  protocol documentation, and tamper-focused tests.
+
+### Safety
+
+- Figure rendering consumes verified aggregate CSV artifacts only and never reads raw Judge responses or calls
+  Hy3; self-contained SVG output cannot load scripts or external resources.
+- Visualization does not create new evidence or expand the scientific claims supported by the source experiment.
+
 ## 0.34.0 - 2026-09-03
 
 ### Added

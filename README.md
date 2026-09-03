@@ -307,6 +307,20 @@ hy3-reproeval verify-results-export --bundle results/p1_transfer_judge
 See the [P1 experiment analysis](docs/P1_JUDGE_EXPERIMENT_CN.md) for result attribution, observed failure modes,
 and claim boundaries.
 
+Render and verify self-contained SVG figures from any verified result bundle:
+
+```bash
+hy3-reproeval render-results-figures \
+  --bundle results/p1_transfer_judge \
+  --output-dir .reproeval/p1-figures
+hy3-reproeval verify-results-figures \
+  --figures .reproeval/p1-figures \
+  --source-bundle results/p1_transfer_judge
+```
+
+The tracked [P1 figures](results/p1_transfer_judge_figures) are bound to the published result manifest and contain
+no raw model responses. See [RESULT_FIGURES.md](docs/RESULT_FIGURES.md).
+
 ### Annotation Bundle validation
 
 Prepare a randomized work packet from one frozen Dataset before collecting independent expert labels:
@@ -411,6 +425,7 @@ docs/P1_TRANSFER_DATASET.md canonical P1 transfer-generalization inventory and b
 docs/P1_JUDGE_EXPERIMENT_CN.md P1 real-Hy3 result analysis and failure modes
 docs/SKILL_ADAPTER.md        Agent Skill installation and orchestration contract
 docs/DELIVERY_STATUS_CN.md   requirement-by-requirement final delivery status
+docs/RESULT_FIGURES.md       deterministic SVG rendering and verification protocol
 docs/BENCHMARK_PROTOCOL.md  group-isolated batch metrics and claim boundaries
 docs/ADVERSARIAL_PROTOCOL.md adversarial attack registration and detection metrics
 docs/JUDGE_BATCH.md         resumable online Judge Record generation

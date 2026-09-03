@@ -297,6 +297,19 @@ hy3-reproeval verify-results-export --bundle results/p1_transfer_judge
 
 结果归因、失败模式和结论边界见 [P1 实验分析](docs/P1_JUDGE_EXPERIMENT_CN.md)。
 
+从任意已验签结果包生成并验证自包含 SVG 图表：
+
+```bash
+hy3-reproeval render-results-figures \
+  --bundle results/p1_transfer_judge \
+  --output-dir .reproeval/p1-figures
+hy3-reproeval verify-results-figures \
+  --figures .reproeval/p1-figures \
+  --source-bundle results/p1_transfer_judge
+```
+
+仓库跟踪的 [P1 图表包](results/p1_transfer_judge_figures)与公开结果 manifest 绑定，不包含模型原始响应。协议与结论边界见 [RESULT_FIGURES.md](docs/RESULT_FIGURES.md)。
+
 ### Annotation Bundle 校验
 
 采集独立专家标签前，先从同一冻结数据集为每位专家生成单独随机排序的盲审工作包：
@@ -397,6 +410,7 @@ docs/P1_TRANSFER_DATASET.md 规范化 P1 技术迁移泛化集清单与结论边
 docs/P1_JUDGE_EXPERIMENT_CN.md P1 真实 Hy3 结果、归因与失败模式
 docs/SKILL_ADAPTER.md        Agent Skill 安装与编排契约
 docs/DELIVERY_STATUS_CN.md   最终任务书逐项完成状态与倒排计划
+docs/RESULT_FIGURES.md       确定性 SVG 生成与验签协议
 docs/BENCHMARK_PROTOCOL.md  组内批量指标和结论边界
 docs/ADVERSARIAL_PROTOCOL.md 对抗攻击登记与检测指标协议
 docs/JUDGE_BATCH.md         可恢复在线 Judge Record 生成协议

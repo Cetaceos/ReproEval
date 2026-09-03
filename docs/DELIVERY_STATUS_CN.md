@@ -16,7 +16,7 @@
 
 | 任务书要求 | 状态 | 当前证据 | 仍需处理 |
 | --- | --- | --- | --- |
-| 独立公开仓库并标明个人活动作品 | 已完成 | README 首屏明确说明项目性质 | 将本地 3 个提交 push 后确认 GitHub 展示正常 |
+| 独立公开仓库并标明个人活动作品 | 已完成 | README 首屏明确说明项目性质 | 将本地待推送提交 push 后确认 GitHub 展示正常 |
 | README、运行方法和环境要求 | 已完成 | [`README_CN.md`](../README_CN.md)、[`.env.example`](../.env.example)、[`.mcp.json`](../.mcp.json) | 最终检查链接和安装命令 |
 | 基于 Hy3 的可运行 AI 应用 | 已完成 | 10 个 stdio MCP Tool，两条端到端流程，真实 Hy3 API 验证 | 保留 API 渠道与模型标识说明 |
 | 明确目标用户、问题和使用大模型的必要性 | 已完成 | README、[项目方案](PROJECT_PROPOSAL_CN.md) | 终稿摘要保持简洁 |
@@ -26,7 +26,7 @@
 | 难例和反例 | 已完成 | P0 的 44 份分档/对抗报告及 8 份 adversarial report，P1 的 10 个 Mutation | 不外推为真实攻击鲁棒性 |
 | 判别力验证 | 已完成 | [P1 三轮结果](../results/p1_transfer_judge/summary.md)：三轮组内排序均为 100% | 明确这是合成档位判别力 |
 | 一致性验证 | 已完成（重复稳定性） | 15/15 报告完整评分，总分标准差最大值 3.535534，0 次质量带翻转 | 人工一致性仍待增强 |
-| 完整结果表格 | 已完成 | 运行级、报告级、维度级 CSV 与 SHA-256 manifest | 无 |
+| 完整结果表格与图表 | 已完成 | 运行级、报告级、维度级 CSV、两张确定性 SVG 与独立 SHA-256 manifest | 无 |
 | 典型 Case 归因和失败模式 | 已完成 | [P1 实验报告](P1_JUDGE_EXPERIMENT_CN.md) | 最终答辩突出 `reasoning_gap` 和中档偏高 |
 | 对抗性验证 | 部分完成（鼓励项） | 对抗类型、Mutation、检测指标和确定性协议已实现 | 尚无 P1 真实 Hy3 对抗运行和专家确认 |
 | 人工标注接口 | 已完成（增强基础设施） | [盲审工作包](ANNOTATION_PACKET.md)、一致性分析和裁决共识 | 尚未取得两名真实专家 Bundle |
@@ -82,7 +82,7 @@ hy3-reproeval finalize-annotations ...
 
 | 日期 | 工作 | 完成标准 |
 | --- | --- | --- |
-| 9 月 3 日 | push 当前 3 个本地提交并观察 CI | GitHub `main` 与本地同步，Python 3.11–3.13 全部通过 |
+| 9 月 3 日 | push 当前待推送提交并观察 CI | GitHub `main` 与本地同步，Python 3.11–3.13 全部通过 |
 | 9 月 4–5 日 | 组织双人盲评，或确认无法获得专家资源 | 有真实 Bundle，或在报告中明确未完成原因 |
 | 9 月 6 日 | 可选：补真实 Hy3 对抗运行或少量合法真实案例 | 生成可验证结果；失败时不影响主线 |
 | 9 月 7–8 日 | 录制并剪辑最终演示 | 时长不超过 2 分钟，无密钥和 traceback |
@@ -101,8 +101,9 @@ python -m ruff format --check src tests scripts
 python -m hy3_reproeval build-p0-dataset --output evals/p0_dataset --check
 python -m hy3_reproeval build-p1-transfer-dataset --output evals/p1_transfer_dataset --check
 python -m hy3_reproeval verify-results-export --bundle results/p1_transfer_judge
+python -m hy3_reproeval verify-results-figures --figures results/p1_transfer_judge_figures --source-bundle results/p1_transfer_judge
 python -m build
-python scripts/check_distribution.py dist --version 0.34.0
+python scripts/check_distribution.py dist --version 0.35.0
 ```
 
 在提交前还需执行 `git status`，确认真实 `.mcp.json`、`.env`、私有标注、原始 Judge Record、录屏原文件和 `.reproeval` 均未进入暂存区。
