@@ -396,6 +396,7 @@ docs/P0_DATASET.md          规范化 P0 合成数据集清单与结论边界
 docs/P1_TRANSFER_DATASET.md 规范化 P1 技术迁移泛化集清单与结论边界
 docs/P1_JUDGE_EXPERIMENT_CN.md P1 真实 Hy3 结果、归因与失败模式
 docs/SKILL_ADAPTER.md        Agent Skill 安装与编排契约
+docs/DELIVERY_STATUS_CN.md   最终任务书逐项完成状态与倒排计划
 docs/BENCHMARK_PROTOCOL.md  组内批量指标和结论边界
 docs/ADVERSARIAL_PROTOCOL.md 对抗攻击登记与检测指标协议
 docs/JUDGE_BATCH.md         可恢复在线 Judge Record 生成协议

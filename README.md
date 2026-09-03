@@ -410,6 +410,7 @@ docs/P0_DATASET.md          canonical synthetic P0 Dataset inventory and boundar
 docs/P1_TRANSFER_DATASET.md canonical P1 transfer-generalization inventory and boundaries
 docs/P1_JUDGE_EXPERIMENT_CN.md P1 real-Hy3 result analysis and failure modes
 docs/SKILL_ADAPTER.md        Agent Skill installation and orchestration contract
+docs/DELIVERY_STATUS_CN.md   requirement-by-requirement final delivery status
 docs/BENCHMARK_PROTOCOL.md  group-isolated batch metrics and claim boundaries
 docs/ADVERSARIAL_PROTOCOL.md adversarial attack registration and detection metrics
 docs/JUDGE_BATCH.md         resumable online Judge Record generation
