@@ -2,6 +2,22 @@
 
 All notable ReproEval changes are documented in this file.
 
+## 0.34.0 - 2026-09-03
+
+### Added
+
+- A repository-level `reproeval-research-audit` Agent Skill that routes paper-reproduction and technology-transfer
+  requests through the existing ten-tool Hy3 ReproScope MCP boundary.
+- Progressive workflow references for exact artifact chaining, partial-evidence behavior, report completion, and
+  research-specific claim boundaries.
+- Structural tests that validate Skill metadata and references and require its documented tool inventory to match
+  the live MCP `list_tools()` contract exactly.
+
+### Safety
+
+- The Skill forbids internal-handler fallbacks, third-party code execution, invented evidence, fraud findings,
+  legal conclusions, deployment guarantees, and unsupported target-performance predictions.
+
 ## 0.33.0 - 2026-09-03
 
 ### Added

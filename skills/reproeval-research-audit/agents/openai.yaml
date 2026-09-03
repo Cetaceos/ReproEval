@@ -1,0 +1,4 @@
+interface:
+  display_name: "Hy3 ReproEval Research Audit"
+  short_description: "Evidence-grounded paper and transfer assessment"
+  default_prompt: "Use $reproeval-research-audit to audit these research materials and return a traceable report."

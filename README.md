@@ -12,7 +12,7 @@ The first migration milestone is implemented. The repository now contains the va
 
 - 10 stdio MCP tools for reproducibility review, transfer assessment, evidence graphs, reports, and read-only repository audits;
 - deterministic statistics, schema validation, source hashes, artifact lineage, and fail-closed evidence checks;
-- synthetic examples, offline evaluation suites, live-validation gates, and more than 380 automated tests;
+- synthetic examples, offline evaluation suites, live-validation gates, and more than 400 automated tests;
 - compatibility with existing `hy3_reproscope_mcp` module and `hy3-reproscope-mcp` command names.
 
 The versioned seven-dimension rubric, deterministic validators, constrained Hy3 semantic Judge, blinded repeated comparison, reproducible dataset protocol, resumable batch Judge runs, group-isolated benchmark runner, repeated-run stability analysis, blinded human work packets, de-identified annotation validation, agreement analysis, and adjudicated consensus aggregation are implemented. A deterministic 12-group P0 synthetic Dataset candidate is included for protocol experiments. Model judgments cannot replace local citation, numerical, artifact, or hard-cap decisions. Real expert labels and frozen held-out results remain future validation work described in [the project proposal](docs/PROJECT_PROPOSAL_CN.md).
@@ -82,6 +82,16 @@ hy3-reproscope-mcp
 ```
 
 Use [.mcp.json](.mcp.json) as the project-level configuration template. Replace placeholder paths and inject secrets through private client configuration.
+
+## Agent Skill
+
+The repository includes [`reproeval-research-audit`](skills/reproeval-research-audit), a thin Agent Skill that
+routes natural-language requests through the two complete MCP workflows while preserving artifact lineage,
+insufficient-evidence outcomes, and safety boundaries. It does not replace the MCP server or contain credentials.
+
+Install it from a source checkout into an Agent Skills-compatible client, then invoke
+`$reproeval-research-audit`. See [SKILL_ADAPTER.md](docs/SKILL_ADAPTER.md) for installation, workflow behavior, and
+validation details.
 
 ## Report Evaluation
 
@@ -399,6 +409,7 @@ docs/DATASET_FREEZE.md      experiment-input freeze, verification, and P0 gate
 docs/P0_DATASET.md          canonical synthetic P0 Dataset inventory and boundaries
 docs/P1_TRANSFER_DATASET.md canonical P1 transfer-generalization inventory and boundaries
 docs/P1_JUDGE_EXPERIMENT_CN.md P1 real-Hy3 result analysis and failure modes
+docs/SKILL_ADAPTER.md        Agent Skill installation and orchestration contract
 docs/BENCHMARK_PROTOCOL.md  group-isolated batch metrics and claim boundaries
 docs/ADVERSARIAL_PROTOCOL.md adversarial attack registration and detection metrics
 docs/JUDGE_BATCH.md         resumable online Judge Record generation
@@ -409,6 +420,7 @@ docs/ANNOTATION_PACKET.md   blinded human work-packet preparation and finalizati
 docs/ANNOTATION_PROTOCOL.md de-identified annotation and readiness contract
 docs/reproscope/             selected ReproScope validation evidence and history
 results/                     published aggregate result bundles with SHA-256 manifests
+skills/                      reusable Agent Skill for the two MCP workflows
 ```
 
 See [MIGRATION.md](docs/MIGRATION.md) for compatibility and provenance details.

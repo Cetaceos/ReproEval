@@ -12,7 +12,7 @@ Hy3 ReproEval 是一个面向开放式科研报告的 Hy3 多工具应用与可�
 
 - 10 个 stdio MCP Tool，覆盖论文复现、方案迁移、证据图、报告和只读仓库审计；
 - 本地统计重算、Schema 校验、来源哈希、工件血缘和证据不足拒答；
-- 合成示例、离线评测集、在线验证门禁和 380 余项自动化测试；
+- 合成示例、离线评测集、在线验证门禁和 400 余项自动化测试；
 - 对原有 `hy3_reproscope_mcp` 模块和 `hy3-reproscope-mcp` 命令的兼容。
 
 版本化七维 Rubric、确定性校验器、受限 Hy3 语义 Judge、盲化重复比较、可复现数据协议、可恢复批量 Judge、组内 Benchmark、重复运行稳定性分析、人工盲审工作包、去标识化标注校验、一致性分析和裁决共识聚合已经实现。仓库同时提供可确定性生成的 12 组 P0 合成数据集候选，用于协议实验。模型判断不能覆盖本地引用、数值、工件或硬性分数上限结论。真实专家标签和冻结测试集结果仍属于后续验证工作，详见[项目方案](docs/PROJECT_PROPOSAL_CN.md)。
@@ -82,6 +82,12 @@ hy3-reproscope-mcp
 ```
 
 项目级客户端配置可参考 [.mcp.json](.mcp.json)，使用时需替换占位路径，并在私有配置中注入密钥。
+
+## Agent Skill
+
+仓库提供 [`reproeval-research-audit`](skills/reproeval-research-audit) Agent Skill，将自然语言任务路由到两条完整 MCP 流程，并保持工件血缘、证据不足状态和安全边界。Skill 不替代 MCP Server，也不保存任何凭据。
+
+从源码仓库将 Skill 安装到支持 Agent Skills 的客户端后，可通过 `$reproeval-research-audit` 调用。安装方法、编排行为和验证方式见 [SKILL_ADAPTER.md](docs/SKILL_ADAPTER.md)。
 
 ## 报告评估
 
@@ -389,6 +395,7 @@ docs/DATASET_FREEZE.md      实验输入冻结、复核与 P0 门槛
 docs/P0_DATASET.md          规范化 P0 合成数据集清单与结论边界
 docs/P1_TRANSFER_DATASET.md 规范化 P1 技术迁移泛化集清单与结论边界
 docs/P1_JUDGE_EXPERIMENT_CN.md P1 真实 Hy3 结果、归因与失败模式
+docs/SKILL_ADAPTER.md        Agent Skill 安装与编排契约
 docs/BENCHMARK_PROTOCOL.md  组内批量指标和结论边界
 docs/ADVERSARIAL_PROTOCOL.md 对抗攻击登记与检测指标协议
 docs/JUDGE_BATCH.md         可恢复在线 Judge Record 生成协议
@@ -399,6 +406,7 @@ docs/ANNOTATION_PACKET.md   人工盲审工作包生成、回收与验签流程
 docs/ANNOTATION_PROTOCOL.md 去标识化标注和就绪条件
 docs/reproscope/             ReproScope 验证证据与历史材料
 results/                     带 SHA-256 manifest 的公开聚合结果包
+skills/                      面向两条 MCP 流程的可复用 Agent Skill
 ```
 
 兼容性和来源说明见 [MIGRATION.md](docs/MIGRATION.md)。
