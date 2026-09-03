@@ -25,7 +25,7 @@ from .judge_experiment import run_judge_experiment
 from .p0_dataset import materialize_p0_dataset
 from .p1_transfer_dataset import materialize_p1_transfer_dataset
 from .pairwise import compare_case_files, write_pairwise_bundle
-from .results_export import export_benchmark_results
+from .results_export import export_benchmark_results, verify_results_export
 from .stability import analyze_benchmark_stability
 
 
@@ -170,6 +170,11 @@ def build_parser() -> argparse.ArgumentParser:
     )
     export_parser.add_argument("--stability", required=True, type=Path)
     export_parser.add_argument("--output-dir", required=True, type=Path)
+    verify_export_parser = subparsers.add_parser(
+        "verify-results-export",
+        help="Verify the closed inventory and SHA-256 fingerprints of a public results bundle.",
+    )
+    verify_export_parser.add_argument("--bundle", required=True, type=Path)
     generate_parser = subparsers.add_parser(
         "generate-judge-records",
         help="Generate one resumable online Hy3 Judge Record per dataset report.",
@@ -425,6 +430,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     if args.command == "export-benchmark-results":
         try:
             result = export_benchmark_results(args.benchmark, args.stability, args.output_dir)
+        except EvaluationInputError as exc:
+            parser.error(str(exc))
+        print(result.model_dump_json(indent=2))
+        return 0
+    if args.command == "verify-results-export":
+        try:
+            result = verify_results_export(args.bundle)
         except EvaluationInputError as exc:
             parser.error(str(exc))
         print(result.model_dump_json(indent=2))

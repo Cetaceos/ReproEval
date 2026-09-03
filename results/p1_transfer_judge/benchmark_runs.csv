@@ -1,0 +1,4 @@
+run,judge_run_id,judge_record_index_sha256,report_count,ranking_score_coverage,pairwise_accuracy,complete_order_accuracy,macro_spearman_correlation,error_label_recall,adversarial_report_detection_rate,adversarial_attack_detection_rate,adversarial_attack_false_acceptance_rate,adversarial_error_label_recall
+1,677b241bc30f4d52b36f5890baf9e6f5,08A49385BA523C052FC8E819B5C5B9E475A13F4E93EC857CD36B3C9CC3C38F23,15,1.0,1.0,1.0,1.0,1.0,,,,
+2,438987ccef474e9cafcf4b974b231a8d,92C789C9538B2CFBE252E552B01E395F79EF707CF35CF74DE1E7250BE53676C5,15,1.0,1.0,1.0,1.0,1.0,,,,
+3,94eade6dfc67409b88dbe73e6193d3b0,D9DC8835A8009248DA03FDE75BE4B246770B72F1E6D0BA3035B05F1FF79E9F7F,15,1.0,1.0,1.0,1.0,1.0,,,,

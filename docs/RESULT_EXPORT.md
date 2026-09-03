@@ -1,7 +1,8 @@
 # Benchmark Result Export
 
 ReproEval 0.29.0 converts repeated Dataset Benchmark and Stability JSON artifacts into a deterministic review
-bundle. The exporter does not call Hy3 and does not include Judge response bodies.
+bundle. ReproEval 0.33.0 adds standalone verification for published bundles. Neither operation calls Hy3 or
+includes Judge response bodies.
 
 ## Command
 
@@ -30,6 +31,17 @@ fail-closed.
 | `report_stability.csv` | Report-level mean, dispersion, coverage, and flip indicators |
 | `dimension_stability.csv` | Rubric-dimension coverage, dispersion, and status flips |
 | `export_manifest.json` | Input lineage plus byte size and SHA-256 for every exported result |
+
+Verify a copied or published bundle without its private Benchmark inputs:
+
+```bash
+hy3-reproeval verify-results-export --bundle results/p1_transfer_judge
+```
+
+Verification requires the exact closed five-file inventory, rejects symbolic links and extra files, validates the
+manifest schema, and checks every declared byte size and SHA-256 fingerprint. It proves public-bundle integrity,
+not that the private inputs were scientifically valid; the initial exporter performs the stronger recomputation
+before publication.
 
 The bundle summarizes the supplied model runs. It does not create human labels, prove expert agreement, or
 establish generalization. Review source-material policy before publishing any associated private artifacts.

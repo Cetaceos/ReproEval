@@ -1,0 +1,16 @@
+report_id,group_id,split,quality_tier,mean_score,score_stddev,score_range,score_coverage,quality_band_flip,ranking_eligibility_flip,evaluation_status_flip
+p1-transfer-01-gpu-to-cpu-edge-high,p1-transfer-01-gpu-to-cpu-edge,development,high,95.0,3.535534,7.5,1.0,False,False,False
+p1-transfer-01-gpu-to-cpu-edge-low,p1-transfer-01-gpu-to-cpu-edge,development,low,34.5,0.0,0.0,1.0,False,False,False
+p1-transfer-01-gpu-to-cpu-edge-medium,p1-transfer-01-gpu-to-cpu-edge,development,medium,87.5,0.0,0.0,1.0,False,False,False
+p1-transfer-02-federated-uav-link-high,p1-transfer-02-federated-uav-link,validation,high,95.0,3.535534,7.5,1.0,False,False,False
+p1-transfer-02-federated-uav-link-low,p1-transfer-02-federated-uav-link,validation,low,32.0,3.535534,7.5,1.0,False,False,False
+p1-transfer-02-federated-uav-link-medium,p1-transfer-02-federated-uav-link,validation,medium,87.5,0.0,0.0,1.0,False,False,False
+p1-transfer-03-mmwave-to-sub6-array-high,p1-transfer-03-mmwave-to-sub6-array,validation,high,92.5,0.0,0.0,1.0,False,False,False
+p1-transfer-03-mmwave-to-sub6-array-low,p1-transfer-03-mmwave-to-sub6-array,validation,low,34.5,0.0,0.0,1.0,False,False,False
+p1-transfer-03-mmwave-to-sub6-array-medium,p1-transfer-03-mmwave-to-sub6-array,validation,medium,87.5,0.0,0.0,1.0,False,False,False
+p1-transfer-04-isac-bandwidth-transfer-high,p1-transfer-04-isac-bandwidth-transfer,test,high,95.0,3.535534,7.5,1.0,False,False,False
+p1-transfer-04-isac-bandwidth-transfer-low,p1-transfer-04-isac-bandwidth-transfer,test,low,34.5,0.0,0.0,1.0,False,False,False
+p1-transfer-04-isac-bandwidth-transfer-medium,p1-transfer-04-isac-bandwidth-transfer,test,medium,87.5,0.0,0.0,1.0,False,False,False
+p1-transfer-05-semantic-codec-embedded-high,p1-transfer-05-semantic-codec-embedded,test,high,95.0,3.535534,7.5,1.0,False,False,False
+p1-transfer-05-semantic-codec-embedded-low,p1-transfer-05-semantic-codec-embedded,test,low,32.0,3.535534,7.5,1.0,False,False,False
+p1-transfer-05-semantic-codec-embedded-medium,p1-transfer-05-semantic-codec-embedded,test,medium,87.5,0.0,0.0,1.0,False,False,False

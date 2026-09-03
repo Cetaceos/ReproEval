@@ -7,9 +7,9 @@ import hashlib
 import io
 import json
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
-from pydantic import Field
+from pydantic import Field, model_validator
 
 from . import __version__
 from .benchmark import DatasetBenchmarkResult
@@ -22,6 +22,15 @@ from .stability import (
 )
 
 MAX_STABILITY_RESULT_BYTES = 32 * 1024 * 1024
+MAX_EXPORT_MANIFEST_BYTES = 1024 * 1024
+MAX_EXPORTED_RESULT_BYTES = 16 * 1024 * 1024
+EXPORT_MANIFEST_NAME = "export_manifest.json"
+ExportedResultPath = Literal[
+    "benchmark_runs.csv",
+    "dimension_stability.csv",
+    "report_stability.csv",
+    "summary.md",
+]
 
 
 class ResultsExport(StrictModel):
@@ -29,6 +38,72 @@ class ResultsExport(StrictModel):
     dataset_id: str
     run_count: int = Field(ge=2)
     files: list[str]
+
+
+class ExportedResultFile(StrictModel):
+    path: ExportedResultPath
+    bytes: int = Field(ge=1, le=MAX_EXPORTED_RESULT_BYTES)
+    sha256: str = Field(pattern=r"^[A-F0-9]{64}$")
+
+
+class ResultsExportManifest(StrictModel):
+    schema_version: Literal["1.0"] = "1.0"
+    engine_version: str
+    dataset_id: str
+    dataset_version: str
+    dataset_manifest_sha256: str = Field(pattern=r"^[A-F0-9]{64}$")
+    dataset_freeze_sha256: str = Field(pattern=r"^[A-F0-9]{64}$")
+    rubric_version: str
+    rubric_sha256: str = Field(pattern=r"^[A-F0-9]{64}$")
+    run_count: int = Field(ge=2)
+    stability_result_sha256: str = Field(pattern=r"^[A-F0-9]{64}$")
+    benchmark_result_sha256s: list[str] = Field(min_length=2)
+    judge_record_index_sha256s: list[str] = Field(min_length=2)
+    judge_run_ids: list[str] = Field(min_length=2)
+    outputs: list[ExportedResultFile] = Field(min_length=4, max_length=4)
+
+    @model_validator(mode="after")
+    def validate_inventory(self) -> ResultsExportManifest:
+        if not (
+            len(self.benchmark_result_sha256s)
+            == len(self.judge_record_index_sha256s)
+            == len(self.judge_run_ids)
+            == self.run_count
+        ):
+            raise ValueError("export lineage lists must match run_count")
+        for label, values in (
+            ("Benchmark result", self.benchmark_result_sha256s),
+            ("Judge Record Index", self.judge_record_index_sha256s),
+        ):
+            if any(
+                len(value) != 64 or any(character not in "0123456789ABCDEF" for character in value) for value in values
+            ):
+                raise ValueError(f"{label} fingerprints must be uppercase SHA-256 values")
+            if len(values) != len(set(values)):
+                raise ValueError(f"{label} fingerprints must be unique")
+        if len(self.judge_run_ids) != len(set(self.judge_run_ids)):
+            raise ValueError("Judge run IDs must be unique")
+        expected_paths = {
+            "benchmark_runs.csv",
+            "dimension_stability.csv",
+            "report_stability.csv",
+            "summary.md",
+        }
+        paths = [item.path for item in self.outputs]
+        if set(paths) != expected_paths or paths != sorted(paths):
+            raise ValueError("export outputs must contain the canonical sorted public result inventory")
+        return self
+
+
+class ResultsExportVerification(StrictModel):
+    output_root: str
+    dataset_id: str
+    dataset_version: str
+    engine_version: str
+    run_count: int = Field(ge=2)
+    file_count: Literal[5] = 5
+    manifest_sha256: str = Field(pattern=r"^[A-F0-9]{64}$")
+    valid: Literal[True] = True
 
 
 def export_benchmark_results(
@@ -60,32 +135,61 @@ def export_benchmark_results(
     }
     for name, payload in payloads.items():
         (output_root / name).write_bytes(payload)
-    manifest = {
-        "schema_version": "1.0",
-        "engine_version": __version__,
-        "dataset_id": stability.dataset_id,
-        "dataset_version": stability.dataset_version,
-        "dataset_manifest_sha256": stability.dataset_manifest_sha256,
-        "dataset_freeze_sha256": stability.dataset_freeze_sha256,
-        "rubric_version": stability.rubric_version,
-        "rubric_sha256": stability.rubric_sha256,
-        "run_count": stability.run_count,
-        "stability_result_sha256": stability_sha256,
-        "benchmark_result_sha256s": stability.benchmark_result_sha256s,
-        "judge_record_index_sha256s": stability.judge_record_index_sha256s,
-        "judge_run_ids": stability.judge_run_ids,
-        "outputs": [
-            {"path": name, "bytes": len(payload), "sha256": _sha256(payload)}
+    manifest = ResultsExportManifest(
+        engine_version=__version__,
+        dataset_id=stability.dataset_id,
+        dataset_version=stability.dataset_version,
+        dataset_manifest_sha256=stability.dataset_manifest_sha256,
+        dataset_freeze_sha256=stability.dataset_freeze_sha256,
+        rubric_version=stability.rubric_version,
+        rubric_sha256=stability.rubric_sha256,
+        run_count=stability.run_count,
+        stability_result_sha256=stability_sha256,
+        benchmark_result_sha256s=stability.benchmark_result_sha256s,
+        judge_record_index_sha256s=stability.judge_record_index_sha256s,
+        judge_run_ids=stability.judge_run_ids,
+        outputs=[
+            ExportedResultFile(path=name, bytes=len(payload), sha256=_sha256(payload))
             for name, payload in sorted(payloads.items())
         ],
-    }
-    manifest_name = "export_manifest.json"
-    (output_root / manifest_name).write_bytes(_json_bytes(manifest))
+    )
+    (output_root / EXPORT_MANIFEST_NAME).write_bytes(_json_bytes(manifest.model_dump(mode="json")))
     return ResultsExport(
         output_root=output_root.as_posix(),
         dataset_id=stability.dataset_id,
         run_count=stability.run_count,
-        files=[*sorted(payloads), manifest_name],
+        files=[*sorted(payloads), EXPORT_MANIFEST_NAME],
+    )
+
+
+def verify_results_export(output_dir: str | Path) -> ResultsExportVerification:
+    """Verify the closed public inventory and hashes of one result export bundle."""
+
+    output_root = Path(output_dir).expanduser().resolve()
+    if not output_root.is_dir():
+        raise EvaluationInputError(f"results export directory does not exist: {output_root.as_posix()}")
+    manifest_path = output_root / EXPORT_MANIFEST_NAME
+    manifest_payload = _read_limited(manifest_path, MAX_EXPORT_MANIFEST_BYTES, "results export manifest")
+    try:
+        manifest = ResultsExportManifest.model_validate_json(manifest_payload)
+    except ValueError as exc:
+        raise EvaluationInputError(f"invalid results export manifest: {exc}") from exc
+    expected_paths = {EXPORT_MANIFEST_NAME, *(item.path for item in manifest.outputs)}
+    entries = list(output_root.iterdir())
+    actual_paths = {entry.name for entry in entries}
+    if actual_paths != expected_paths or any(not entry.is_file() or entry.is_symlink() for entry in entries):
+        raise EvaluationInputError("results export directory does not match the closed manifest inventory")
+    for item in manifest.outputs:
+        payload = _read_limited(output_root / item.path, MAX_EXPORTED_RESULT_BYTES, f"exported result '{item.path}'")
+        if len(payload) != item.bytes or _sha256(payload) != item.sha256:
+            raise EvaluationInputError(f"exported result fingerprint changed: {item.path}")
+    return ResultsExportVerification(
+        output_root=output_root.as_posix(),
+        dataset_id=manifest.dataset_id,
+        dataset_version=manifest.dataset_version,
+        engine_version=manifest.engine_version,
+        run_count=manifest.run_count,
+        manifest_sha256=_sha256(manifest_payload),
     )
 
 

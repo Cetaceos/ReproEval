@@ -2,6 +2,21 @@
 
 All notable ReproEval changes are documented in this file.
 
+## 0.33.0 - 2026-09-03
+
+### Added
+
+- A strict standalone verifier for published Benchmark review bundles, including manifest schema, closed inventory,
+  byte-size, SHA-256, symlink, extra-file, lineage-list, and duplicate-run checks.
+- A tracked aggregate result bundle from three completed online Hy3 runs over the synthetic P1 transfer Dataset.
+- A P1 experiment report covering discrimination, repeated-run stability, unexpected semantic findings, typical
+  failure modes, and explicit scientific claim boundaries.
+
+### Security
+
+- Published results contain aggregate Markdown/CSV artifacts and cryptographic lineage only; raw Hy3 requests,
+  responses, private experiment state, and credentials remain outside version control.
+
 ## 0.32.0 - 2026-09-02
 
 ### Added

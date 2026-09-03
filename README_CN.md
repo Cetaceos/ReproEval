@@ -283,6 +283,14 @@ hy3-reproeval export-benchmark-results \
 导出器会先根据 Benchmark 输入重新计算 Stability，结果不一致或输出目录非空时直接拒绝写入。详见
 [RESULT_EXPORT.md](docs/RESULT_EXPORT.md)。
 
+仓库跟踪的 [P1 技术迁移 Judge 结果包](results/p1_transfer_judge)记录了合成迁移数据集上的三次真实 Hy3 运行，不公开模型原始响应。可在本地执行完整性校验：
+
+```bash
+hy3-reproeval verify-results-export --bundle results/p1_transfer_judge
+```
+
+结果归因、失败模式和结论边界见 [P1 实验分析](docs/P1_JUDGE_EXPERIMENT_CN.md)。
+
 ### Annotation Bundle 校验
 
 采集独立专家标签前，先从同一冻结数据集为每位专家生成单独随机排序的盲审工作包：
@@ -380,6 +388,7 @@ docs/DATASET_PROTOCOL.md    数据集、划分、来源与变异协议
 docs/DATASET_FREEZE.md      实验输入冻结、复核与 P0 门槛
 docs/P0_DATASET.md          规范化 P0 合成数据集清单与结论边界
 docs/P1_TRANSFER_DATASET.md 规范化 P1 技术迁移泛化集清单与结论边界
+docs/P1_JUDGE_EXPERIMENT_CN.md P1 真实 Hy3 结果、归因与失败模式
 docs/BENCHMARK_PROTOCOL.md  组内批量指标和结论边界
 docs/ADVERSARIAL_PROTOCOL.md 对抗攻击登记与检测指标协议
 docs/JUDGE_BATCH.md         可恢复在线 Judge Record 生成协议
@@ -389,6 +398,7 @@ docs/RESULT_EXPORT.md       已验证的 Markdown/CSV Benchmark 审查包
 docs/ANNOTATION_PACKET.md   人工盲审工作包生成、回收与验签流程
 docs/ANNOTATION_PROTOCOL.md 去标识化标注和就绪条件
 docs/reproscope/             ReproScope 验证证据与历史材料
+results/                     带 SHA-256 manifest 的公开聚合结果包
 ```
 
 兼容性和来源说明见 [MIGRATION.md](docs/MIGRATION.md)。

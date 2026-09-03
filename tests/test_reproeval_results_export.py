@@ -9,7 +9,7 @@ from test_reproeval_stability import _write_stability_runs
 
 from hy3_reproeval.cli import main
 from hy3_reproeval.errors import EvaluationInputError
-from hy3_reproeval.results_export import export_benchmark_results
+from hy3_reproeval.results_export import export_benchmark_results, verify_results_export
 from hy3_reproeval.stability import analyze_benchmark_stability
 
 
@@ -38,6 +38,10 @@ async def test_results_export_writes_verified_markdown_csv_and_manifest(tmp_path
     assert manifest["run_count"] == 3
     assert len(manifest["stability_result_sha256"]) == 64
     assert len(manifest["outputs"]) == 4
+    verification = verify_results_export(output_dir)
+    assert verification.valid is True
+    assert verification.file_count == 5
+    assert len(verification.manifest_sha256) == 64
 
 
 async def test_results_export_rejects_mismatched_stability(tmp_path: Path) -> None:
@@ -79,3 +83,34 @@ async def test_cli_exports_results_bundle(tmp_path: Path, capsys: pytest.Capture
     payload = json.loads(capsys.readouterr().out)
     assert payload["run_count"] == 3
     assert (output_dir / "summary.md").is_file()
+
+    assert main(["verify-results-export", "--bundle", str(output_dir)]) == 0
+    verified = json.loads(capsys.readouterr().out)
+    assert verified["valid"] is True
+
+
+async def test_results_export_verifier_rejects_tampered_output(tmp_path: Path) -> None:
+    benchmarks = await _write_stability_runs(tmp_path)
+    stability = analyze_benchmark_stability(benchmarks)
+    stability_path = tmp_path / "stability.json"
+    stability_path.write_text(stability.model_dump_json(indent=2) + "\n", encoding="utf-8")
+    output_dir = tmp_path / "export"
+    export_benchmark_results(benchmarks, stability_path, output_dir)
+    summary_path = output_dir / "summary.md"
+    summary_path.write_text(summary_path.read_text(encoding="utf-8") + "tampered\n", encoding="utf-8")
+
+    with pytest.raises(EvaluationInputError, match="fingerprint changed"):
+        verify_results_export(output_dir)
+
+
+async def test_results_export_verifier_rejects_extra_file(tmp_path: Path) -> None:
+    benchmarks = await _write_stability_runs(tmp_path)
+    stability = analyze_benchmark_stability(benchmarks)
+    stability_path = tmp_path / "stability.json"
+    stability_path.write_text(stability.model_dump_json(indent=2) + "\n", encoding="utf-8")
+    output_dir = tmp_path / "export"
+    export_benchmark_results(benchmarks, stability_path, output_dir)
+    (output_dir / "raw-model-response.json").write_text("{}\n", encoding="utf-8")
+
+    with pytest.raises(EvaluationInputError, match="closed manifest inventory"):
+        verify_results_export(output_dir)

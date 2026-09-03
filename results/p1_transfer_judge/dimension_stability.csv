@@ -1,0 +1,8 @@
+dimension,report_count,fully_assessed_report_count,fully_assessed_report_coverage,mean_report_score_stddev,maximum_report_score_stddev,report_status_flip_count
+factual_accuracy,15,15,1.0,0.0,0.0,0
+evidence_traceability,15,15,1.0,0.0,0.0,0
+numerical_consistency,15,15,1.0,0.0,0.0,0
+reasoning_consistency,15,15,1.0,0.377124,0.942809,0
+uncertainty_handling,15,15,1.0,0.0,0.0,0
+content_completeness,15,15,1.0,0.0,0.0,0
+clarity_actionability,15,15,1.0,0.0,0.0,0

@@ -7,7 +7,7 @@ from hy3_reproeval.cli import main
 
 
 def test_reproeval_version_tracks_migrated_release() -> None:
-    assert __version__ == "0.32.0"
+    assert __version__ == "0.33.0"
 
 
 def test_cli_prints_help_without_starting_server(capsys: pytest.CaptureFixture[str]) -> None:
@@ -16,4 +16,5 @@ def test_cli_prints_help_without_starting_server(capsys: pytest.CaptureFixture[s
     assert "serve-mcp" in output
     assert "run-judge-experiment" in output
     assert "prepare-annotation-packet" in output
+    assert "verify-results-export" in output
     assert "evidence-grounded research reports" in output

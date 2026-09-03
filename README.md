@@ -287,6 +287,16 @@ hy3-reproeval export-benchmark-results \
 The exporter recomputes Stability from the Benchmark inputs before writing any result and refuses a non-empty
 output directory. See [RESULT_EXPORT.md](docs/RESULT_EXPORT.md).
 
+The tracked [P1 transfer Judge result bundle](results/p1_transfer_judge) records three real Hy3 runs over the
+synthetic transfer Dataset without publishing raw model responses. Its integrity can be checked locally:
+
+```bash
+hy3-reproeval verify-results-export --bundle results/p1_transfer_judge
+```
+
+See the [P1 experiment analysis](docs/P1_JUDGE_EXPERIMENT_CN.md) for result attribution, observed failure modes,
+and claim boundaries.
+
 ### Annotation Bundle validation
 
 Prepare a randomized work packet from one frozen Dataset before collecting independent expert labels:
@@ -388,6 +398,7 @@ docs/DATASET_PROTOCOL.md    dataset, split, provenance, and mutation contract
 docs/DATASET_FREEZE.md      experiment-input freeze, verification, and P0 gate
 docs/P0_DATASET.md          canonical synthetic P0 Dataset inventory and boundaries
 docs/P1_TRANSFER_DATASET.md canonical P1 transfer-generalization inventory and boundaries
+docs/P1_JUDGE_EXPERIMENT_CN.md P1 real-Hy3 result analysis and failure modes
 docs/BENCHMARK_PROTOCOL.md  group-isolated batch metrics and claim boundaries
 docs/ADVERSARIAL_PROTOCOL.md adversarial attack registration and detection metrics
 docs/JUDGE_BATCH.md         resumable online Judge Record generation
@@ -397,6 +408,7 @@ docs/RESULT_EXPORT.md       verified Markdown/CSV Benchmark review bundles
 docs/ANNOTATION_PACKET.md   blinded human work-packet preparation and finalization
 docs/ANNOTATION_PROTOCOL.md de-identified annotation and readiness contract
 docs/reproscope/             selected ReproScope validation evidence and history
+results/                     published aggregate result bundles with SHA-256 manifests
 ```
 
 See [MIGRATION.md](docs/MIGRATION.md) for compatibility and provenance details.
