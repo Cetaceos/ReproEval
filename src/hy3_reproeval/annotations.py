@@ -21,6 +21,7 @@ from .validators import load_evaluation_case
 
 MAX_ANNOTATION_BUNDLE_BYTES = 8 * 1024 * 1024
 MAX_ANNOTATION_BUNDLES = 32
+MAX_HUMAN_EVIDENCE_LINES = 16
 
 _DIMENSION_ERROR_CODES = {
     DimensionId.FACTUAL_ACCURACY: {ErrorCode.UNSUPPORTED_CLAIM},
@@ -59,7 +60,7 @@ class AnnotationRound(StrEnum):
 
 class AnnotatorProfile(StrictModel):
     annotator_id: str = Field(min_length=1, max_length=64, pattern=r"^[A-Za-z0-9][A-Za-z0-9_.-]*$")
-    expertise_description: str = Field(min_length=1, max_length=500)
+    expertise_description: str = Field(min_length=1, max_length=2000)
     independent_annotation: bool
     blind_to_system_scores: bool
     rubric_training_completed: bool
@@ -67,12 +68,27 @@ class AnnotatorProfile(StrictModel):
     conflict_of_interest_present: bool
 
 
+class SourceEvidenceReference(StrictModel):
+    source_id: str = Field(min_length=1, pattern=r"^[A-Za-z0-9][A-Za-z0-9_.:-]*$")
+    evidence_lines: list[int] = Field(min_length=1, max_length=MAX_HUMAN_EVIDENCE_LINES)
+
+    @field_validator("evidence_lines")
+    @classmethod
+    def validate_evidence_lines(cls, value: list[int]) -> list[int]:
+        if any(line < 1 for line in value):
+            raise ValueError("source evidence lines must be positive")
+        if len(value) != len(set(value)):
+            raise ValueError("source evidence lines must be unique")
+        return value
+
+
 class DimensionAnnotation(StrictModel):
     dimension: DimensionId
     status: DimensionStatus
     score: int | None = Field(default=None, ge=0, le=4)
     rationale: str = Field(min_length=1, max_length=2000)
-    evidence_lines: list[int] = Field(default_factory=list, max_length=8)
+    evidence_lines: list[int] = Field(default_factory=list, max_length=MAX_HUMAN_EVIDENCE_LINES)
+    source_evidence: list[SourceEvidenceReference] = Field(default_factory=list, max_length=8)
     error_codes: list[ErrorCode] = Field(default_factory=list)
 
     @field_validator("evidence_lines")
@@ -95,6 +111,9 @@ class DimensionAnnotation(StrictModel):
             raise ValueError("insufficient_evidence annotation dimension cannot define a score")
         if len(self.error_codes) != len(set(self.error_codes)):
             raise ValueError("annotation error codes must be unique")
+        source_ids = [reference.source_id for reference in self.source_evidence]
+        if len(source_ids) != len(set(source_ids)):
+            raise ValueError("annotation source evidence IDs must be unique")
         invalid = set(self.error_codes) - _DIMENSION_ERROR_CODES[self.dimension]
         if invalid:
             names = ", ".join(sorted(error.value for error in invalid))
@@ -119,7 +138,7 @@ class ReportAnnotation(StrictModel):
 
 
 class AnnotationBundle(StrictModel):
-    schema_version: Literal["1.0"] = "1.0"
+    schema_version: Literal["1.0", "1.1"] = "1.1"
     annotation_bundle_id: str = Field(min_length=1, pattern=r"^[A-Za-z0-9][A-Za-z0-9_.:-]*$")
     annotation_source: AnnotationSource
     annotation_round: AnnotationRound
@@ -132,6 +151,7 @@ class AnnotationBundle(StrictModel):
     rubric_sha256: str = Field(pattern=r"^[A-F0-9]{64}$")
     annotator: AnnotatorProfile
     parent_annotation_bundle_ids: list[str] = Field(default_factory=list, max_length=32)
+    parent_annotation_bundle_sha256: dict[str, str] = Field(default_factory=dict)
     annotations: list[ReportAnnotation] = Field(min_length=1)
 
     @model_validator(mode="after")
@@ -141,6 +161,15 @@ class AnnotationBundle(StrictModel):
             raise ValueError("annotation bundle report IDs must be unique")
         if len(self.parent_annotation_bundle_ids) != len(set(self.parent_annotation_bundle_ids)):
             raise ValueError("parent annotation Bundle IDs must be unique")
+        if self.parent_annotation_bundle_sha256 and set(self.parent_annotation_bundle_sha256) != set(
+            self.parent_annotation_bundle_ids
+        ):
+            raise ValueError("parent annotation Bundle hashes must cover every declared parent Bundle ID")
+        if any(
+            len(value) != 64 or any(character not in "0123456789ABCDEF" for character in value)
+            for value in self.parent_annotation_bundle_sha256.values()
+        ):
+            raise ValueError("parent annotation Bundle hashes must be uppercase SHA-256 values")
         if self.annotation_round is AnnotationRound.INDEPENDENT and self.parent_annotation_bundle_ids:
             raise ValueError("independent annotation Bundle cannot declare parent Bundles")
         if self.annotation_round is AnnotationRound.REPEAT and len(self.parent_annotation_bundle_ids) != 1:
@@ -251,10 +280,10 @@ def validate_annotation_bundles(
             inventory_item = inventory.get(annotation.report_id)
             if inventory_item is None:
                 raise EvaluationInputError(f"annotation references unknown report '{annotation.report_id}'")
-            group_id, split, report_sha256, line_count = inventory_item
+            group_id, split, report_sha256, line_count, source_line_counts = inventory_item
             if annotation.group_id != group_id or annotation.report_sha256 != report_sha256:
                 raise EvaluationInputError(f"annotation metadata mismatch for report '{annotation.report_id}'")
-            _validate_annotation_lines(annotation, line_count)
+            _validate_annotation_lines(annotation, line_count, source_line_counts)
             annotated_reports.add(annotation.report_id)
             split_counts[split] += 1
             if bundle.annotation_source is AnnotationSource.HUMAN:
@@ -278,7 +307,7 @@ def validate_annotation_bundles(
 
     target_reports = {
         report_id
-        for report_id, (_, split, _, _) in inventory.items()
+        for report_id, (_, split, _, _, _) in inventory.items()
         if split in {DatasetSplit.VALIDATION, DatasetSplit.TEST}
     }
     double_annotated = {
@@ -338,6 +367,7 @@ def load_validated_annotation_bundles(
 
 def _validate_bundle_lineage(bundles: list[tuple[AnnotationBundle, str]]) -> None:
     by_id = {bundle.annotation_bundle_id: bundle for bundle, _ in bundles}
+    hashes_by_id = {bundle.annotation_bundle_id: bundle_sha256 for bundle, bundle_sha256 in bundles}
     for bundle, _ in bundles:
         if bundle.annotation_round is AnnotationRound.INDEPENDENT:
             continue
@@ -348,6 +378,11 @@ def _validate_bundle_lineage(bundles: list[tuple[AnnotationBundle, str]]) -> Non
                 + ", ".join(unknown)
             )
         parents = [by_id[parent_id] for parent_id in bundle.parent_annotation_bundle_ids]
+        for parent_id, expected_sha256 in bundle.parent_annotation_bundle_sha256.items():
+            if hashes_by_id[parent_id] != expected_sha256:
+                raise EvaluationInputError(
+                    f"annotation bundle '{bundle.annotation_bundle_id}' parent fingerprint changed: {parent_id}"
+                )
         if any(
             parent.annotation_round is not AnnotationRound.INDEPENDENT
             or parent.annotation_source is not AnnotationSource.HUMAN
@@ -411,17 +446,43 @@ def _validate_bundle_identity(
         )
 
 
-def _report_inventory(dataset: LoadedDatasetManifest) -> dict[str, tuple[str, DatasetSplit, str, int]]:
-    inventory: dict[str, tuple[str, DatasetSplit, str, int]] = {}
+def _report_inventory(
+    dataset: LoadedDatasetManifest,
+) -> dict[str, tuple[str, DatasetSplit, str, int, dict[str, int | None]]]:
+    inventory: dict[str, tuple[str, DatasetSplit, str, int, dict[str, int | None]]] = {}
     for group in dataset.manifest.groups:
         for entry in group.reports:
             loaded = load_evaluation_case(dataset.resolve(entry.case_path, "evaluation case"))
             line_count = len(loaded.report_text.splitlines() or [""])
-            inventory[entry.report_id] = (group.group_id, group.split, entry.report_sha256, line_count)
+            source_line_counts: dict[str, int | None] = {}
+            for artifact in loaded.case.artifacts:
+                artifact_path = (loaded.root / artifact.path).resolve()
+                if not artifact_path.is_relative_to(loaded.root) or not artifact_path.is_file():
+                    raise EvaluationInputError(
+                        f"annotation source path is missing or escapes case root: {artifact.path}"
+                    )
+                try:
+                    artifact_text = artifact_path.read_text(encoding="utf-8")
+                except UnicodeDecodeError:
+                    source_line_counts[artifact.artifact_id] = None
+                    continue
+                artifact_line_count = len(artifact_text.splitlines())
+                source_line_counts[artifact.artifact_id] = artifact_line_count or None
+            inventory[entry.report_id] = (
+                group.group_id,
+                group.split,
+                entry.report_sha256,
+                line_count,
+                source_line_counts,
+            )
     return inventory
 
 
-def _validate_annotation_lines(annotation: ReportAnnotation, line_count: int) -> None:
+def _validate_annotation_lines(
+    annotation: ReportAnnotation,
+    line_count: int,
+    source_line_counts: dict[str, int | None],
+) -> None:
     invalid = sorted(
         {line for dimension in annotation.dimensions for line in dimension.evidence_lines if line > line_count}
     )
@@ -430,6 +491,24 @@ def _validate_annotation_lines(annotation: ReportAnnotation, line_count: int) ->
             f"annotation for report '{annotation.report_id}' references lines outside the report: "
             + ", ".join(str(line) for line in invalid)
         )
+    for dimension in annotation.dimensions:
+        for reference in dimension.source_evidence:
+            source_line_count = source_line_counts.get(reference.source_id)
+            if source_line_count is None:
+                if reference.source_id in source_line_counts:
+                    raise EvaluationInputError(
+                        f"annotation for report '{annotation.report_id}' references non-text or empty source "
+                        f"'{reference.source_id}'"
+                    )
+                raise EvaluationInputError(
+                    f"annotation for report '{annotation.report_id}' references unknown source '{reference.source_id}'"
+                )
+            invalid_source_lines = sorted(line for line in reference.evidence_lines if line > source_line_count)
+            if invalid_source_lines:
+                raise EvaluationInputError(
+                    f"annotation for report '{annotation.report_id}' references lines outside source "
+                    f"'{reference.source_id}': " + ", ".join(str(line) for line in invalid_source_lines)
+                )
 
 
 def is_benchmark_eligible(bundle: AnnotationBundle, split: DatasetSplit) -> bool:

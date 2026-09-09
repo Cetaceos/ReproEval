@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "mutation_id": "real-paper-02-pyngham-medium-mutation",
+  "parent_report_id": "real-paper-02-pyngham-high",
+  "output_report_id": "real-paper-02-pyngham-medium",
+  "parent_path": "groups/real-paper-02-pyngham/high_report.md",
+  "output_path": "groups/real-paper-02-pyngham/medium_report.md",
+  "parent_sha256": "6DFDD142F2A0692AE80DE1B3D89EFC508F61F847B0C6E89966C902603AB499E3",
+  "output_sha256": "45980CDEC14B6DE5F88091FAD3963C58925F3CA67E41C74806675D93E82F939A",
+  "operations": [
+    {
+      "operation_id": "weaken-evidence-boundary",
+      "kind": "replace_once",
+      "target": "ReproEval did not execute the archived software, so there is insufficient evidence to claim numerical reproduction.",
+      "replacement": "There is insufficient evidence, but the paper appears reproducible.",
+      "expected_dimensions": [
+        "reasoning_consistency"
+      ],
+      "expected_error_codes": [
+        "reasoning_gap"
+      ]
+    },
+    {
+      "operation_id": "weaken-next-step",
+      "kind": "replace_once",
+      "target": "To test the central claim, compare archived Python encoder and decoder outputs against the original C implementation for all seven packet sizes and controlled symbol errors, recording the exact archive, dependencies, commands, outputs,\nand comparison tolerance.",
+      "replacement": "Run the software and inspect the results.",
+      "expected_dimensions": [
+        "clarity_actionability"
+      ],
+      "expected_error_codes": [
+        "actionability_gap"
+      ]
+    }
+  ]
+}

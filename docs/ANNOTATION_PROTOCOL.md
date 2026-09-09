@@ -1,16 +1,18 @@
 # Human Annotation Bundle Protocol
 
-ReproEval 0.21.0 and later define a strict, de-identified format for collecting report-quality judgments against the same seven-dimension public Rubric used by the evaluator. ReproEval 0.22.0 adds agreement analysis and optional system-human comparison; 0.23.0 adds repeat/adjudication lineage and fail-closed consensus aggregation; 0.32.0 adds randomized, label-blind work-packet preparation and verified Bundle finalization.
+ReproEval 0.21.0 and later define a strict, de-identified format for collecting report-quality judgments against the same seven-dimension public Rubric used by the evaluator. ReproEval 0.22.0 adds agreement analysis and optional system-human comparison; 0.23.0 adds repeat/adjudication lineage and fail-closed consensus aggregation; 0.32.0 adds randomized, label-blind work-packet preparation and verified Bundle finalization; 0.36.0 adds frozen source materials, canonical line IDs, and source-evidence validation. ReproEval 0.37.0 adds an attributed real-paper Pilot whose curator-draft tiers remain ineligible for human-validity claims until this protocol is completed. ReproEval 0.38.0 adds verified source inventories and a separate human sign-off gate for Hy3-generated high-tier candidates; this gate does not replace independent blind annotation.
 
 ## Collect Independent Labels
 
 Use `prepare-annotation-packet` to create separate randomized assignments for qualified reviewers, and send only
 each packet's `annotator/` directory. Keep the neutral-item mapping private. After a reviewer completes every
-response and profile declaration, use `finalize-annotation-packet` to verify the unchanged assignment and report
-copies and emit the Bundle described below. The complete trust boundary and command sequence are documented in
+response and profile declaration, use `finalize-annotation-packet` to verify the unchanged assignment, report
+copies, and source copies and emit the Bundle described below. The complete trust boundary and command sequence are documented in
 [ANNOTATION_PACKET.md](ANNOTATION_PACKET.md).
 
-This mechanism reduces direct label leakage from registered Dataset metadata. It cannot verify that a reviewer
+Packet schema `1.1` supplies each report together with de-identified, canonically numbered source materials and
+their hashes. Assessed factual, traceability, and numerical judgments retain source-line references in the finalized
+Bundle. This mechanism reduces direct label leakage from registered Dataset metadata. It cannot verify that a reviewer
 remained blind outside the packet, was qualified, or worked independently; those conditions require a documented
 study protocol and coordinator oversight.
 
@@ -21,6 +23,8 @@ One Bundle records one annotator's work and binds it to exact Dataset Manifest a
 - match a registered group, report ID, and report hash;
 - contain every Rubric dimension exactly once;
 - use `assessed` with a 0-4 score and at least one valid report line, or `insufficient_evidence` without a score;
+- cite at least one registered source line for assessed factual accuracy, evidence traceability, and numerical consistency
+  when finalized through a blind packet;
 - include a concise rationale and only dimension-compatible error codes.
 
 Annotator IDs must be pseudonymous identifiers, not names or email addresses. Expertise, rubric training, independence, blinding, and conflict-of-interest fields are auditable declarations, not proof of identity or expertise.
@@ -83,7 +87,13 @@ Repeat stability is an intra-annotator measurement. It is never counted toward d
 
 ## Adjudication and Consensus
 
-An `adjudication` Bundle must reference at least two independent human parent Bundles through `parent_annotation_bundle_ids`. Its adjudicator must be distinct from all referenced parent annotators, trained on the Rubric, blind to system scores, and free of a disclosed conflict. Every adjudicated report must occur in at least two parent Bundles. Because every report annotation contains all seven dimensions, the adjudication Bundle should include only reports that have queued disputes.
+An `adjudication` Bundle must reference at least two independent human parent Bundles through
+`parent_annotation_bundle_ids`. Packets produced by `prepare-adjudication-packet` also bind the exact parent files
+through `parent_annotation_bundle_sha256`. Its adjudicator must be distinct from all referenced parent annotators,
+trained on the Rubric, blind to system scores, and free of a disclosed conflict. Every adjudicated report must occur
+in at least two parent Bundles. Because every report annotation contains all seven dimensions, the adjudication
+Bundle includes explicit non-adjudicated placeholders outside the queued dimensions; consensus ignores those
+placeholders and retains the independent aggregate.
 
 ```bash
 hy3-reproeval finalize-annotations \

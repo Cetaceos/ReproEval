@@ -1,0 +1,4 @@
+run,judge_run_id,report_count,coverage,spearman,mean_absolute_error
+1,dcbd993c1a3d44daaa665430354949d1,12,1,0.988483,15.791667
+2,f1e28c670a1d47aab69739fa4b030e97,12,1,1,15.166667
+3,0a1019c85ef543ebb2a5be90b7e71733,12,1,0.988483,14.541667

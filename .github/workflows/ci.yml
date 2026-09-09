@@ -77,10 +77,21 @@ jobs:
           python -m hy3_reproeval build-p1-transfer-dataset --output evals/p1_transfer_dataset --check
           python -m hy3_reproeval validate-dataset --manifest evals/p1_transfer_dataset/dataset.json
 
+      - name: Verify canonical real-paper Pilot
+        run: |
+          python -m hy3_reproeval build-real-paper-pilot --output evals/real_paper_pilot --check
+          python -m hy3_reproeval validate-dataset --manifest evals/real_paper_pilot/dataset.json
+
       - name: Verify published P1 results
         run: |
           python -m hy3_reproeval verify-results-export --bundle results/p1_transfer_judge
           python -m hy3_reproeval verify-results-figures --figures results/p1_transfer_judge_figures --source-bundle results/p1_transfer_judge
+
+      - name: Verify published real-paper Pilot results
+        run: |
+          python -m hy3_reproeval verify-results-export --bundle results/real_paper_judge
+          python -m hy3_reproeval verify-results-figures --figures results/real_paper_judge_figures --source-bundle results/real_paper_judge
+          python -m hy3_reproeval verify-human-consensus-results --bundle results/real_paper_human_consensus
 
       - name: Run deterministic offline evaluations
         run: |

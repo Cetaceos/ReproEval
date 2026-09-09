@@ -1,0 +1,75 @@
+{
+  "schema_version": "1.0",
+  "case_id": "real-paper-04-lyceanem-low-case",
+  "scenario": "reproduction",
+  "report_path": "low_report.md",
+  "sources": [
+    {
+      "source_id": "evidence",
+      "locators": [
+        "E01",
+        "E02",
+        "E03",
+        "E04",
+        "E05"
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "lyceanem-paper-claim",
+      "marker": "The paper-backed claim is",
+      "required_source_ids": [
+        "evidence"
+      ]
+    },
+    {
+      "claim_id": "lyceanem-numeric-claim",
+      "marker": "The registered numeric fact is",
+      "required_source_ids": [
+        "evidence"
+      ]
+    }
+  ],
+  "numeric_expectations": [
+    {
+      "fact_id": "lyceanem-registered-fact",
+      "label": "The registered numeric fact is",
+      "expected": "26",
+      "absolute_tolerance": "0",
+      "critical": true,
+      "unit": "GHz"
+    }
+  ],
+  "required_sections": [
+    {
+      "section_id": "summary",
+      "heading": "Executive summary"
+    },
+    {
+      "section_id": "evidence",
+      "heading": "Experimental evidence"
+    },
+    {
+      "section_id": "limitations",
+      "heading": "Evidence and limitations"
+    },
+    {
+      "section_id": "next",
+      "heading": "Next steps"
+    }
+  ],
+  "uncertainty": {
+    "required": true,
+    "accepted_phrases": [
+      "insufficient evidence"
+    ]
+  },
+  "artifacts": [
+    {
+      "artifact_id": "lyceanem-source",
+      "path": "source_material.md",
+      "sha256": "6D9C989F315E6738A1D3A282811B39E1E7A030C7BEDA37283D678FF4A6407CCB"
+    }
+  ]
+}

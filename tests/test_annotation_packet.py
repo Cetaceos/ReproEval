@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
 
@@ -42,6 +43,8 @@ def _prepare(tmp_path: Path, annotator_id: str) -> tuple[Path, Path]:
 
 
 def _complete_responses(packet_path: Path) -> None:
+    assignment = json.loads((packet_path / "annotator" / "assignment.json").read_text(encoding="utf-8"))
+    sources_by_item = {item["item_id"]: item["sources"] for item in assignment["items"]}
     path = packet_path / "annotator" / "responses.json"
     payload = json.loads(path.read_text(encoding="utf-8"))
     payload["annotation_date"] = "2026-09-02"
@@ -62,6 +65,17 @@ def _complete_responses(packet_path: Path) -> None:
                 evidence_lines=[1],
                 error_codes=[],
             )
+            if dimension["dimension"] in {
+                "factual_accuracy",
+                "evidence_traceability",
+                "numerical_consistency",
+            }:
+                dimension["source_evidence"] = [
+                    {
+                        "source_id": sources_by_item[response["item_id"]][0]["source_id"],
+                        "evidence_lines": [1],
+                    }
+                ]
     path.write_text(json.dumps(payload, ensure_ascii=True, indent=2) + "\n", encoding="utf-8")
 
 
@@ -75,12 +89,32 @@ def test_packet_blinds_labels_and_excludes_development_split(tmp_path: Path) -> 
 
     assert len(assignment["items"]) == 12
     assert len(list((annotator_root / "reports").iterdir())) == 12
+    assert len(list((annotator_root / "sources").iterdir())) == 12
+    assert assignment["schema_version"] == "1.1"
     assert all(item["item_id"].startswith("item-") for item in assignment["items"])
     assert all(item["report_path"].startswith("reports/item-") for item in assignment["items"])
+    assert all(len(item["sources"]) == 1 for item in assignment["items"])
+    assert all(item["sources"][0]["source_id"] == "source-001" for item in assignment["items"])
     for private_field in ("quality_tier", "label_source", "expected_error_codes", "mutation_manifest"):
         assert private_field not in assignment_text
     assert all(item["group_id"] != "p1-transfer-01-gpu-to-cpu-edge" for item in coordinator["items"])
     assert "quality_tier" not in coordinator_text
+
+    public_text = "\n".join(path.read_text(encoding="utf-8") for path in annotator_root.rglob("*") if path.is_file())
+    manifest = json.loads(_manifest().read_text(encoding="utf-8"))
+    for group in manifest["groups"]:
+        assert group["group_id"] not in public_text
+        for report in group["reports"]:
+            assert report["report_id"] not in public_text
+
+    first_item = assignment["items"][0]
+    report_lines = (annotator_root / first_item["report_path"]).read_text(encoding="utf-8").splitlines()
+    assert report_lines[0].startswith("L000001 | ")
+    source = first_item["sources"][0]
+    source_payload = (annotator_root / source["source_path"]).read_bytes()
+    assert source_payload.decode("utf-8").splitlines()[0].startswith("L000001 | ")
+    assert hashlib.sha256(source_payload).hexdigest().upper() == source["numbered_source_sha256"]
+    assert source["source_sha256"] != source["numbered_source_sha256"]
 
 
 def test_two_completed_packets_emit_valid_benchmark_ready_bundles(tmp_path: Path) -> None:
@@ -100,6 +134,13 @@ def test_two_completed_packets_emit_valid_benchmark_ready_bundles(tmp_path: Path
         bundle_path = tmp_path / f"bundle-{annotator_id}.json"
         bundle = finalize_annotation_packet(_manifest(), freeze_path, packet_path, bundle_path)
         assert len(bundle.annotations) == 12
+        assert bundle.schema_version == "1.1"
+        assert all(
+            dimension.source_evidence
+            for annotation in bundle.annotations
+            for dimension in annotation.dimensions
+            if dimension.dimension.value in {"factual_accuracy", "evidence_traceability", "numerical_consistency"}
+        )
         bundle_paths.append(bundle_path)
 
     result = validate_annotation_bundles(
@@ -115,6 +156,53 @@ def test_two_completed_packets_emit_valid_benchmark_ready_bundles(tmp_path: Path
     assert result.benchmark_ready is True
 
 
+def test_finalizer_accepts_display_line_ids_and_source_lines_alias(tmp_path: Path) -> None:
+    packet_path, freeze_path = _prepare(tmp_path, "reviewer-a")
+    _complete_responses(packet_path)
+    responses_path = packet_path / "annotator" / "responses.json"
+    responses = json.loads(responses_path.read_text(encoding="utf-8"))
+    responses["annotator_profile"]["expertise_description"] = "x" * 600
+    first_dimension = responses["responses"][0]["dimensions"][0]
+    first_dimension["evidence_lines"] = ["L000001"]
+    source_reference = first_dimension["source_evidence"][0]
+    source_reference["lines"] = source_reference.pop("evidence_lines")
+    source_reference["lines"] = ["L000001"]
+    responses_path.write_text(json.dumps(responses, ensure_ascii=True, indent=2) + "\n", encoding="utf-8")
+
+    bundle = finalize_annotation_packet(
+        _manifest(),
+        freeze_path,
+        packet_path,
+        tmp_path / "bundle.json",
+    )
+
+    assert all(
+        isinstance(line, int)
+        for annotation in bundle.annotations
+        for dimension in annotation.dimensions
+        for line in dimension.evidence_lines
+    )
+    assert all(
+        isinstance(line, int)
+        for annotation in bundle.annotations
+        for dimension in annotation.dimensions
+        for reference in dimension.source_evidence
+        for line in reference.evidence_lines
+    )
+
+
+def test_finalizer_rejects_malformed_display_line_id(tmp_path: Path) -> None:
+    packet_path, freeze_path = _prepare(tmp_path, "reviewer-a")
+    _complete_responses(packet_path)
+    responses_path = packet_path / "annotator" / "responses.json"
+    responses = json.loads(responses_path.read_text(encoding="utf-8"))
+    responses["responses"][0]["dimensions"][0]["evidence_lines"] = ["line one"]
+    responses_path.write_text(json.dumps(responses, ensure_ascii=True, indent=2) + "\n", encoding="utf-8")
+
+    with pytest.raises(EvaluationInputError, match="invalid displayed line identifier"):
+        finalize_annotation_packet(_manifest(), freeze_path, packet_path, tmp_path / "bundle.json")
+
+
 def test_finalizer_rejects_tampered_blinded_report(tmp_path: Path) -> None:
     packet_path, freeze_path = _prepare(tmp_path, "reviewer-a")
     _complete_responses(packet_path)
@@ -122,6 +210,16 @@ def test_finalizer_rejects_tampered_blinded_report(tmp_path: Path) -> None:
     report_path.write_text(report_path.read_text(encoding="utf-8") + "\nTampered.\n", encoding="utf-8")
 
     with pytest.raises(EvaluationInputError, match="fingerprint changed"):
+        finalize_annotation_packet(_manifest(), freeze_path, packet_path, tmp_path / "bundle.json")
+
+
+def test_finalizer_rejects_tampered_blinded_source(tmp_path: Path) -> None:
+    packet_path, freeze_path = _prepare(tmp_path, "reviewer-a")
+    _complete_responses(packet_path)
+    source_path = next((packet_path / "annotator" / "sources").iterdir())
+    source_path.write_text(source_path.read_text(encoding="utf-8") + "L999999 | Tampered.\n", encoding="utf-8")
+
+    with pytest.raises(EvaluationInputError, match="blinded source fingerprint changed"):
         finalize_annotation_packet(_manifest(), freeze_path, packet_path, tmp_path / "bundle.json")
 
 
@@ -146,6 +244,47 @@ def test_finalizer_rejects_changed_coordinator_inventory(tmp_path: Path) -> None
     coordinator_path.write_text(json.dumps(coordinator, ensure_ascii=True, indent=2) + "\n", encoding="utf-8")
 
     with pytest.raises(EvaluationInputError, match="every validation/test report exactly once"):
+        finalize_annotation_packet(_manifest(), freeze_path, packet_path, tmp_path / "bundle.json")
+
+
+def test_finalizer_rejects_changed_coordinator_source_inventory(tmp_path: Path) -> None:
+    packet_path, freeze_path = _prepare(tmp_path, "reviewer-a")
+    _complete_responses(packet_path)
+    coordinator_path = packet_path / "coordinator_manifest.json"
+    coordinator = json.loads(coordinator_path.read_text(encoding="utf-8"))
+    coordinator["items"][0]["sources"][0]["artifact_id"] = "changed-artifact"
+    coordinator_path.write_text(json.dumps(coordinator, ensure_ascii=True, indent=2) + "\n", encoding="utf-8")
+
+    with pytest.raises(EvaluationInputError, match="coordinator source inventory changed"):
+        finalize_annotation_packet(_manifest(), freeze_path, packet_path, tmp_path / "bundle.json")
+
+
+def test_finalizer_rejects_out_of_range_source_evidence(tmp_path: Path) -> None:
+    packet_path, freeze_path = _prepare(tmp_path, "reviewer-a")
+    _complete_responses(packet_path)
+    responses_path = packet_path / "annotator" / "responses.json"
+    responses = json.loads(responses_path.read_text(encoding="utf-8"))
+    responses["responses"][0]["dimensions"][0]["source_evidence"][0]["evidence_lines"] = [999]
+    responses_path.write_text(json.dumps(responses, ensure_ascii=True, indent=2) + "\n", encoding="utf-8")
+
+    with pytest.raises(EvaluationInputError, match="source evidence line is outside"):
+        finalize_annotation_packet(_manifest(), freeze_path, packet_path, tmp_path / "bundle.json")
+
+
+def test_finalizer_requires_source_evidence_for_source_grounded_dimensions(tmp_path: Path) -> None:
+    packet_path, freeze_path = _prepare(tmp_path, "reviewer-a")
+    _complete_responses(packet_path)
+    responses_path = packet_path / "annotator" / "responses.json"
+    responses = json.loads(responses_path.read_text(encoding="utf-8"))
+    factual = next(
+        dimension
+        for dimension in responses["responses"][0]["dimensions"]
+        if dimension["dimension"] == "factual_accuracy"
+    )
+    factual["source_evidence"] = []
+    responses_path.write_text(json.dumps(responses, ensure_ascii=True, indent=2) + "\n", encoding="utf-8")
+
+    with pytest.raises(EvaluationInputError, match="requires source evidence"):
         finalize_annotation_packet(_manifest(), freeze_path, packet_path, tmp_path / "bundle.json")
 
 

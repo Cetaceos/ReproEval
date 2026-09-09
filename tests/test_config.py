@@ -39,13 +39,13 @@ def test_settings_use_documented_defaults(monkeypatch: pytest.MonkeyPatch) -> No
 def test_settings_read_environment_and_hide_secret(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("HY3_BASE_URL", "https://example.test/v1/")
     monkeypatch.setenv("HY3_API_KEY", "top-secret-value")
-    monkeypatch.setenv("HY3_MODEL", "hy3-preview")
+    monkeypatch.setenv("HY3_MODEL", "hy3")
     monkeypatch.setenv("HY3_REASONING_EFFORT", "low")
 
     settings = Settings()
 
     assert settings.hy3_base_url == "https://example.test/v1"
-    assert settings.hy3_model == "hy3-preview"
+    assert settings.hy3_model == "hy3"
     assert settings.hy3_reasoning_effort == "low"
     assert settings.require_api_key() == "top-secret-value"
     assert "top-secret-value" not in repr(settings)

@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "mutation_id": "real-paper-03-differt2d-medium-mutation",
+  "parent_report_id": "real-paper-03-differt2d-high",
+  "output_report_id": "real-paper-03-differt2d-medium",
+  "parent_path": "groups/real-paper-03-differt2d/high_report.md",
+  "output_path": "groups/real-paper-03-differt2d/medium_report.md",
+  "parent_sha256": "FD88AE9DB6102155778B731F34657921F9F4267B00B960823B7920502DE5D013",
+  "output_sha256": "44DED7E992B2640D11C4943F1C065FF368D1A662EA09799F04567E48933CE490",
+  "operations": [
+    {
+      "operation_id": "weaken-evidence-boundary",
+      "kind": "replace_once",
+      "target": "ReproEval did not execute the archived software, so there is insufficient evidence to claim numerical reproduction.",
+      "replacement": "There is insufficient evidence, but the paper appears reproducible.",
+      "expected_dimensions": [
+        "reasoning_consistency"
+      ],
+      "expected_error_codes": [
+        "reasoning_gap"
+      ]
+    },
+    {
+      "operation_id": "weaken-next-step",
+      "kind": "replace_once",
+      "target": "To test the central claim, execute the archived v0.3.4 Figure 2 script, preserve environment metadata, compare the generated map, and keep physical-fidelity claims within the paper's approximation boundary, recording the exact archive, dependencies, commands, outputs,\nand comparison tolerance.",
+      "replacement": "Run the software and inspect the results.",
+      "expected_dimensions": [
+        "clarity_actionability"
+      ],
+      "expected_error_codes": [
+        "actionability_gap"
+      ]
+    }
+  ]
+}

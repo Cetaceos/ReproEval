@@ -15,7 +15,7 @@ The first migration milestone is implemented. The repository now contains the va
 - synthetic examples, offline evaluation suites, live-validation gates, and more than 400 automated tests;
 - compatibility with existing `hy3_reproscope_mcp` module and `hy3-reproscope-mcp` command names.
 
-The versioned seven-dimension rubric, deterministic validators, constrained Hy3 semantic Judge, blinded repeated comparison, reproducible dataset protocol, resumable batch Judge runs, group-isolated benchmark runner, repeated-run stability analysis, blinded human work packets, de-identified annotation validation, agreement analysis, and adjudicated consensus aggregation are implemented. A deterministic 12-group P0 synthetic Dataset candidate is included for protocol experiments. Model judgments cannot replace local citation, numerical, artifact, or hard-cap decisions. Real expert labels and frozen held-out results remain future validation work described in [the project proposal](docs/PROJECT_PROPOSAL_CN.md).
+The versioned seven-dimension rubric, deterministic validators, constrained Hy3 semantic Judge, blinded repeated comparison, reproducible dataset protocol, resumable batch Judge runs, group-isolated benchmark runner, repeated-run stability analysis, human-annotation schemas, agreement analysis, and adjudicated consensus aggregation are implemented. Blind packets include de-identified reports, de-identified source materials, source hashes, and canonical line identifiers; quality tiers, Mutations, expected errors, and system scores stay outside the annotator directory. The repository contains a 12-group synthetic protocol suite and a six-group Pilot grounded in verifiable open-access papers. The Pilot has not executed third-party software. Three online `hy3` Judge runs, independent double annotation of all 12 validation/test reports, and third-reviewer resolution of all four queued disputes are complete; the final result has `consensus_ready=true` and a public de-identified export. Separately generated high-tier candidates remain an unsigned experimental track outside the current Dataset. See [the project proposal](docs/PROJECT_PROPOSAL_CN.md).
 
 ## Architecture
 
@@ -64,7 +64,7 @@ Load the variables in `.env.example` into the parent shell, or provide them thro
 HY3_API_PROVIDER=tokenhub
 HY3_BASE_URL=https://tokenhub.tencentmaas.com/v1
 HY3_API_KEY=replace-with-your-key
-HY3_MODEL=hy3-preview
+HY3_MODEL=hy3
 REPROSCOPE_ALLOWED_ROOTS=.
 REPROSCOPE_WORKSPACE=.reproeval/reproscope
 ```
@@ -86,8 +86,9 @@ Use [.mcp.json](.mcp.json) as the project-level configuration template. Replace 
 ## Agent Skill
 
 The repository includes [`reproeval-research-audit`](skills/reproeval-research-audit), a thin Agent Skill that
-routes natural-language requests through the two complete MCP workflows while preserving artifact lineage,
-insufficient-evidence outcomes, and safety boundaries. It does not replace the MCP server or contain credentials.
+routes natural-language requests through the two ReproScope MCP workflows while preserving artifact lineage,
+insufficient-evidence outcomes, and safety boundaries. It does not replace the MCP server or contain credentials;
+the ReproEval quality-evaluation commands currently remain CLI operations.
 
 Install it from a source checkout into an Agent Skills-compatible client, then invoke
 `$reproeval-research-audit`. See [SKILL_ADAPTER.md](docs/SKILL_ADAPTER.md) for installation, workflow behavior, and
@@ -172,7 +173,63 @@ hy3-reproeval benchmark-dataset \
 
 The validator enforces one evaluation contract per source group, prevents a declared source fingerprint from crossing splits, confines paths, and requires exact closure for locally detectable errors. Adversarial reports must additionally register each attack type, target dimension, and expected error with Mutation closure. Semantic labels remain hypotheses for later Hy3 Judge or human validation. Both public fixtures are synthetic development groups for protocol verification, not held-out benchmarks. See [DATASET_PROTOCOL.md](docs/DATASET_PROTOCOL.md) and [ADVERSARIAL_PROTOCOL.md](docs/ADVERSARIAL_PROTOCOL.md).
 
-### P0 synthetic Dataset candidate
+### Real-paper Pilot
+
+The real-paper Pilot contains six CC BY 4.0 JOSS papers and publication-time software archives. It has balanced
+2/2/2 development, validation, and test splits, 18 high/medium/low candidate reports, and four hard groups:
+
+```bash
+hy3-reproeval build-real-paper-pilot --output evals/real_paper_pilot --check
+hy3-reproeval validate-dataset --manifest evals/real_paper_pilot/dataset.json
+```
+
+This Pilot evaluates reproducibility readiness; it does not claim that ReproEval installed or ran the external
+software. Dataset 1.2 registers 30 source assets, and each paper evidence packet contains five IDs with a PDF page,
+section, and short excerpt. PDFs remain outside Git, while their bytes and all 30 excerpts can be checked locally:
+
+```bash
+hy3-reproeval verify-real-paper-sources --source-dir .reproeval/source_cache
+```
+
+High reports use `curator_draft` and are not expert ground truth before real human review. Generate fresh traceable
+Hy3 candidates and require explicit review approval with:
+
+```bash
+hy3-reproeval generate-real-paper-references \
+  --manifest evals/real_paper_pilot/dataset.json \
+  --output-dir .reproeval/real-paper-reference-candidates
+
+hy3-reproeval validate-reference-reviews \
+  --manifest evals/real_paper_pilot/dataset.json \
+  --bundle-dir .reproeval/real-paper-reference-candidates \
+  --require-approved
+```
+
+See [REAL_PAPER_PILOT.md](docs/REAL_PAPER_PILOT.md) and the
+[Chinese generation/review runbook](docs/REFERENCE_GENERATION_REVIEW_CN.md).
+
+The tracked [real-paper Pilot aggregate result bundle](results/real_paper_judge) comes from three TokenHub `hy3`
+runs over the same Freeze, totaling 54 successful Judge records. It excludes raw requests, responses, and credentials:
+
+```bash
+hy3-reproeval verify-results-export --bundle results/real_paper_judge
+hy3-reproeval verify-results-figures \
+  --figures results/real_paper_judge_figures \
+  --source-bundle results/real_paper_judge
+hy3-reproeval verify-human-consensus-results \
+  --bundle results/real_paper_human_consensus
+```
+
+All three runs recover the registered within-group order, but Run 1 emits one additional `reasoning_gap`. Independent
+double annotation covers all 12 validation/test reports with quadratic weighted kappa `0.964225`. System-consensus
+Spearman correlation is `0.988483`, `1.0`, and `0.988483` across the three runs, while MAE is
+`14.541667–15.791667`, showing stronger ranking than absolute-score calibration. Four factual-accuracy error-code
+disagreements were resolved by a third reviewer, producing consensus for all 12 target reports. The
+[de-identified public bundle](results/real_paper_human_consensus) contains report-level, dimension-level, and per-run system-human CSVs without reviewer identities,
+Bundle IDs, rationales, or raw model responses. See the [Judge experiment](docs/REAL_PAPER_JUDGE_EXPERIMENT_CN.md) and
+[human-validation report](docs/REAL_PAPER_HUMAN_VALIDATION_CN.md).
+
+### P0 synthetic protocol Dataset
 
 The tracked P0 candidate contains 12 isolated synthetic source groups, balanced 4/4/4 development, validation,
 and test splits, 44 reports, and 8 adversarial reports covering all seven registered attack types. Rebuild or
@@ -183,7 +240,7 @@ hy3-reproeval build-p0-dataset --output evals/p0_dataset --check
 hy3-reproeval validate-dataset --manifest evals/p0_dataset/dataset.json
 ```
 
-Its generated labels validate the protocol and P0 structural gates; they are not expert ground truth or a
+Its generated labels validate regression, Mutation, and adversarial protocols; they are not expert ground truth or a
 held-out performance result. See [P0_DATASET.md](docs/P0_DATASET.md).
 
 ### P1 transfer-generalization Dataset
@@ -297,8 +354,10 @@ hy3-reproeval export-benchmark-results \
 The exporter recomputes Stability from the Benchmark inputs before writing any result and refuses a non-empty
 output directory. See [RESULT_EXPORT.md](docs/RESULT_EXPORT.md).
 
-The tracked [P1 transfer Judge result bundle](results/p1_transfer_judge) records three real Hy3 runs over the
-synthetic transfer Dataset without publishing raw model responses. Its integrity can be checked locally:
+The tracked [P1 transfer Judge result bundle](results/p1_transfer_judge) records three online Hy3 Judge runs through
+Tencent Cloud TokenHub over synthetic transfer reports, without publishing raw model responses. These results
+validate only the current synthetic evaluation protocol, not real technology-transfer outcomes. Bundle integrity
+can be checked locally:
 
 ```bash
 hy3-reproeval verify-results-export --bundle results/p1_transfer_judge
@@ -323,7 +382,9 @@ no raw model responses. See [RESULT_FIGURES.md](docs/RESULT_FIGURES.md).
 
 ### Annotation Bundle validation
 
-Prepare a randomized work packet from one frozen Dataset before collecting independent expert labels:
+The following command creates a randomized blind-review packet. Each item contains a canonically numbered candidate
+report and its registered source materials. `assignment.json` records each source's raw and numbered-copy hashes for
+delivery verification:
 
 ```bash
 hy3-reproeval prepare-annotation-packet \
@@ -336,7 +397,8 @@ hy3-reproeval prepare-annotation-packet \
 ```
 
 Send only the generated `annotator/` directory to the reviewer; retain `coordinator_manifest.json` privately.
-After the completed directory is returned, use `finalize-annotation-packet` to verify it and emit a strict Bundle.
+Assessed factual-accuracy, evidence-traceability, and numerical-consistency dimensions require both report-line and
+source-line citations. After the completed directory is returned, use `finalize-annotation-packet` to verify it and emit a strict Bundle.
 See [ANNOTATION_PACKET.md](docs/ANNOTATION_PACKET.md) for the complete two-annotator workflow and trust boundary.
 
 Validate the public synthetic protocol fixture without an API key:
@@ -363,7 +425,33 @@ hy3-reproeval analyze-annotations \
 
 The result includes quadratic weighted Cohen's Kappa, exact and within-one-point agreement, mean absolute score difference, per-dimension and per-pair metrics, and an adjudication queue for status mismatches or score gaps above one point. The queue does not resolve disputes automatically. System-human comparison requires at least two eligible human scores per report and reports Spearman correlation and MAE only after Dataset, Rubric, report inventory, split, and content hashes match. Undefined statistics remain `null`; `agreement_ready=true` establishes coverage, not expert provenance or label quality.
 
-Repeat and adjudication Bundles declare `parent_annotation_bundle_ids`. A repeat round references one independent Bundle from the same annotator and appears as repeat stability, not human-human agreement. An adjudication round references at least two independent Bundles, covers reports present in at least two parents, and uses a trained, system-score-blind, conflict-free separate adjudicator. Finalize consensus with the complete lineage set:
+Repeat and adjudication Bundles declare `parent_annotation_bundle_ids`. An adjudication packet contains only the
+program-generated disputed reports and dimensions, exposes both parent evidence traces under anonymous aliases,
+and binds the finalized Bundle to the parent-file SHA-256 values. The third reviewer must be distinct from both
+parents, Rubric-trained, and blind to system scores:
+
+```bash
+hy3-reproeval prepare-adjudication-packet \
+  --manifest path/to/frozen_dataset.json \
+  --dataset-freeze .reproeval/dataset-freeze.json \
+  --bundle private_annotations/annotator-01.json \
+  --bundle private_annotations/annotator-02.json \
+  --output-dir private_annotations/adjudicator-03 \
+  --assignment-id adjudication-03 \
+  --adjudicator-id adjudicator-03 \
+  --bundle-id adjudication-bundle-03
+
+hy3-reproeval finalize-adjudication-packet \
+  --manifest path/to/frozen_dataset.json \
+  --dataset-freeze .reproeval/dataset-freeze.json \
+  --bundle private_annotations/annotator-01.json \
+  --bundle private_annotations/annotator-02.json \
+  --packet-dir private_annotations/adjudicator-03 \
+  --output private_annotations/adjudication-03.json
+```
+
+A repeat round references one independent Bundle from the same annotator and appears as repeat stability, not
+human-human agreement. After adjudication, finalize consensus with the complete lineage set:
 
 ```bash
 hy3-reproeval finalize-annotations \
@@ -420,6 +508,8 @@ docs/PROJECT_PROPOSAL_CN.md practical-stage design and delivery plan
 docs/EVALUATION_CORE.md     deterministic evaluator contract and limitations
 docs/DATASET_PROTOCOL.md    dataset, split, provenance, and mutation contract
 docs/DATASET_FREEZE.md      experiment-input freeze, verification, and P0 gate
+docs/REAL_PAPER_PILOT.md    open-access real-paper Pilot, provenance, and experiment boundary
+docs/REAL_PAPER_JUDGE_EXPERIMENT_CN.md real-paper Pilot repeated-Hy3 results and boundaries
 docs/P0_DATASET.md          canonical synthetic P0 Dataset inventory and boundaries
 docs/P1_TRANSFER_DATASET.md canonical P1 transfer-generalization inventory and boundaries
 docs/P1_JUDGE_EXPERIMENT_CN.md P1 real-Hy3 result analysis and failure modes
@@ -434,8 +524,10 @@ docs/STABILITY_PROTOCOL.md  frozen repeated-Benchmark stability analysis
 docs/RESULT_EXPORT.md       verified Markdown/CSV Benchmark review bundles
 docs/ANNOTATION_PACKET.md   blinded human work-packet preparation and finalization
 docs/ANNOTATION_PROTOCOL.md de-identified annotation and readiness contract
+docs/REAL_PILOT_REVIEW_GUIDE_CN.md real-paper Pilot human-review runbook
+docs/REFERENCE_GENERATION_REVIEW_CN.md Hy3 reference generation and human sign-off gate
 docs/reproscope/             selected ReproScope validation evidence and history
-results/                     published aggregate result bundles with SHA-256 manifests
+results/                     model, figure, and de-identified human result bundles with SHA-256 manifests
 skills/                      reusable Agent Skill for the two MCP workflows
 ```
 

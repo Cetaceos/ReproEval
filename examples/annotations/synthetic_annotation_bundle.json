@@ -6,7 +6,7 @@
   "annotation_date": "2026-08-31",
   "dataset_id": "reproeval-public-synthetic-sample",
   "dataset_version": "0.1.0",
-  "dataset_manifest_sha256": "1CA552BF92472F5DDB91042ABF15B5C725B45A805BC3F8F6BF863982EF0361BE",
+  "dataset_manifest_sha256": "CC60D5A2C4586E6CEC88F6968DF4BA7B2F2D62F1D33CBAC72AF1E91ACA56969B",
   "rubric_version": "0.1.0",
   "rubric_sha256": "1B1F6F8A425C1B84AAE88EFDA8E21950F2CF603325414316AEA773A1CD68F40A",
   "annotator": {

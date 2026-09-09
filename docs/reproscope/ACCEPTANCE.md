@@ -9,7 +9,7 @@ tested. Never capture an API key in screenshots or recordings.
 | --- | --- | --- | --- | --- |
 | Local 0.15.0 wheel | Final `76A3F8...` wheel installed successfully; ten tools discovered from both module and console-script stdio entrypoints | Latest live-tested `3C940...` wheel completed paper, transfer, and ISAC explicit/auto chains; exact `76A3F8...` online Hy3 repeat was not run | 13 completed runs and 28 hash-verified artifacts retained in a sanitized index; one empty-completion retry is recorded separately | Final candidate passes build, distribution, installation, dependency, and stdio gates; exact-candidate online repeat and new remote CI remain pending |
 | Historical TokenHub 0.5.0 | Five tools | Complete paper workflow passed, including two repairs | Five primary artifacts and completed manifests verified | Historical evidence only |
-| CodeBuddy | Current 0.15.0 ten-tool screenshot | Current stdio report calls, artifact-lineage rejection, and completed transfer-report rendering | Final MP4 plus persisted report artifacts; artifact hashes remain authoritative | Final demo recorded; the video does not independently prove a fresh full Hy3 chain |
+| CodeBuddy | Current 0.15.0 ten-tool screenshot | Current stdio report calls, artifact-lineage rejection, and completed transfer-report rendering | Persisted report artifacts and a historical user-provided recording that is not distributed in this repository | Client evidence exists, but the current repository does not contain the original MP4 and it does not prove a fresh full Hy3 chain |
 | Visual Studio Code 1.131.0 | Current 0.15.0 ten-tool screenshot | Runtime-equivalent prior `61F776...` wheel completed `reproscope_audit_repository` without Hy3 | `repository_8246ee4f34e0` plus machine-checkable content/payload hashes | Real MCP call passed; exact `76A3F8...` GUI repeat was not run |
 | Cursor or Cline | Not required | Not run | Not run | Optional additional client |
 
@@ -101,8 +101,9 @@ The `--execute` path is intentionally opt-in and requires both `REPROSCOPE_RUN_L
     SHA-256 digest is recorded with `status=denied` and `executed=false`.
 16. Confirm `report_manifest.json` exists, lists the Markdown artifact with its file hash, and does not list itself.
 17. Confirm each Tool run directory contains `run_manifest.json` with a completed status and ordered status history.
-18. Confirm the final MP4 shows the MCP Tool card, completed status, Schema 1.21, `graph_validated=true`, and relative
-    artifact paths without exposing credentials.
+18. If the historical recording is reviewed from its private archive, confirm it shows the MCP Tool card, completed
+    status, Schema 1.21, `graph_validated=true`, and relative artifact paths without exposing credentials. The file is
+    not part of this repository and cannot be used as a checked-in release artifact.
 
 For adversarial evidence-input checks, set `REPROSCOPE_PROMPT_INJECTION_POLICY=reject` and confirm a source matching
 the detector is refused before any Hy3 request. The detector is best-effort; an empty signal is not a safety proof.
@@ -166,8 +167,8 @@ Use Cline as the alternative if Cursor is unavailable:
 
 ## Final Evidence
 
-The final CodeBuddy recording is stored as `docs/assets/demo-0.15.0-codebuddy-mcp.mp4`; current ten-tool discovery
-screenshots and the evidence montage are stored in the same directory. The MP4 shows real stdio report calls,
-artifact validation, and a completed transfer report. It contains local paths and preceding rejected calls, so its
-scope must not be expanded into a claim that every Hy3 workflow was freshly executed in the recording. Historical
-0.5.0 evidence remains useful context but cannot satisfy current-version claims.
+The original CodeBuddy recording was reviewed during the ReproScope 0.15.0 work but is not distributed in this
+repository. The checked-in evidence is limited to the current ten-tool discovery screenshots, the
+[client-discovery montage](../assets/demo-0.15.0-client-discovery-montage.gif), and the sanitized machine-checkable
+index. None of these artifacts proves that every Hy3 workflow was freshly executed in the current ReproEval version.
+Historical 0.5.0 evidence remains useful context but cannot satisfy current-version claims.

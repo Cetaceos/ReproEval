@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "mutation_id": "real-paper-06-cdcam-medium-mutation",
+  "parent_report_id": "real-paper-06-cdcam-high",
+  "output_report_id": "real-paper-06-cdcam-medium",
+  "parent_path": "groups/real-paper-06-cdcam/high_report.md",
+  "output_path": "groups/real-paper-06-cdcam/medium_report.md",
+  "parent_sha256": "4F78EEE82A90601A606F54016295B44D2056B45C645D89C87581B510674E2C43",
+  "output_sha256": "BB171F1952AD0BE1F99F2C2DB66A9C756FE05884CC60F9DE3FE1A3BF1F66931D",
+  "operations": [
+    {
+      "operation_id": "weaken-evidence-boundary",
+      "kind": "replace_once",
+      "target": "ReproEval did not execute the archived software, so there is insufficient evidence to claim numerical reproduction.",
+      "replacement": "There is insufficient evidence, but the paper appears reproducible.",
+      "expected_dimensions": [
+        "reasoning_consistency"
+      ],
+      "expected_error_codes": [
+        "reasoning_gap"
+      ]
+    },
+    {
+      "operation_id": "weaken-next-step",
+      "kind": "replace_once",
+      "target": "To test the central claim, run the archived model with one documented regional scenario, verify the capacity lookup inputs, and separate software reproducibility from policy validity, recording the exact archive, dependencies, commands, outputs,\nand comparison tolerance.",
+      "replacement": "Run the software and inspect the results.",
+      "expected_dimensions": [
+        "clarity_actionability"
+      ],
+      "expected_error_codes": [
+        "actionability_gap"
+      ]
+    }
+  ]
+}

@@ -356,11 +356,16 @@ def _resolve_runtime(
 
     from hy3_reproscope_mcp.config import Settings
 
-    settings = Settings()
+    settings_overrides: dict[str, str] = {}
+    if model is not None:
+        settings_overrides["HY3_MODEL"] = model
+    if provider is not None:
+        settings_overrides["HY3_API_PROVIDER"] = provider
+    settings = Settings(**settings_overrides)
     return (
         None,
-        model or settings.hy3_model,
-        provider or settings.resolved_api_provider(),
+        settings.hy3_model,
+        settings.resolved_api_provider(),
         settings,
     )
 

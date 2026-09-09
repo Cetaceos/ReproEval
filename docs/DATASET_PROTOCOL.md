@@ -33,6 +33,35 @@ The strict `1.0` schema records:
 - an optional Judge Record path and SHA-256, which must be declared together;
 - provenance kind, license signal, acquisition date, source-group fingerprint, and public description.
 
+Dataset schema `1.1` retains those fields and adds:
+
+- `study_mode`: `constructed_protocol`, `reproducibility_readiness`, or `result_reproduction`;
+- `difficulty`: `standard` or `hard`;
+- for `open_access` provenance, a citation, HTTPS paper URL, reviewed PDF SHA-256, and redistribution policy;
+- optional software repository and publication-archive URLs;
+- `curator_draft` as an explicit label source for a reference candidate that has not completed human review.
+
+An open-access group fails validation when its citation, paper URL, PDF hash, or redistribution policy is absent.
+`result_reproduction` must be reserved for cases with independently retained execution evidence; source curation alone
+uses `reproducibility_readiness`. A `curator_draft` may exercise the pipeline, but its quality tier is a construction
+hypothesis and cannot support a human-validity claim.
+
+Dataset schema `1.2` adds a closed source inventory to every group. Each source asset declares a stable ID, kind,
+media type, license signal, acquisition date, description, and either an HTTPS URI or a repository-local path.
+Downloaded paper PDFs are registered by URL and SHA-256 without being committed. A local evidence packet must declare
+its SHA-256 and the upstream source IDs from which it was derived. The validator recomputes every local asset hash and
+the canonical source-inventory hash; changing a packet, URL, source relationship, or registered digest invalidates the
+Dataset. Open-access groups must contain exactly one hashed `paper_pdf` and at least one local `evidence_packet`.
+
+This protocol distinguishes four claims that must not be collapsed:
+
+- URL registration says where material was acquired.
+- SHA-256 verification says which exact bytes were reviewed.
+- excerpt verification says the registered evidence text occurs on the declared PDF page.
+- human approval says a named, qualified reviewer accepted a Hy3 candidate after source review.
+
+Only the first three can be automated. A pending review form or passing Dataset validator is not human approval.
+
 Each group must contain at least three reports, exactly one `high` report, and at least one `medium` and one `low` report. All reports in a group must use the same deterministic evaluation contract. The validator rejects duplicate report content, duplicate IDs, and reuse of one declared source-group fingerprint across groups or splits.
 
 An `adversarial` report cannot be a reference revision and must include an `adversarial_spec`. Attack errors must be declared in the report's expected-error inventory. For synthetic mutations, every attack target dimension must also be covered by at least one registered Mutation operation. See [ADVERSARIAL_PROTOCOL.md](ADVERSARIAL_PROTOCOL.md).
@@ -78,7 +107,10 @@ hy3-reproeval validate-dataset \
   --output dataset-validation.json
 ```
 
-The result reports group, report, mutation, split, tier, scenario, deterministic-error, human-review, adversarial-report, attack-instance, and attack-type counts. It also warns when the dataset lacks validation/test splits, the planned 12 source groups, 8 adversarial reports, or human-reviewed labels.
+The result reports group, report, mutation, split, tier, scenario, deterministic-error, human-review, curator-draft,
+open-access, study-mode, difficulty, adversarial-report, attack-instance, and attack-type counts. It also warns when
+the dataset lacks validation/test splits, the planned 12 source groups, 8 adversarial reports, or human-reviewed
+labels, and when curator drafts are present.
 
 The repository includes a three-tier synthetic development fixture and a separate synthetic adversarial development fixture. They verify schema, hash, replay, isolation, deterministic-error, and attack-metric behavior only. Ranking accuracy, model-human agreement, stability, and adversarial robustness require the larger group-isolated and human-reviewed dataset planned in the project proposal.
 

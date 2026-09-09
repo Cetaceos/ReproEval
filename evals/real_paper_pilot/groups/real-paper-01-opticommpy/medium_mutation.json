@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "mutation_id": "real-paper-01-opticommpy-medium-mutation",
+  "parent_report_id": "real-paper-01-opticommpy-high",
+  "output_report_id": "real-paper-01-opticommpy-medium",
+  "parent_path": "groups/real-paper-01-opticommpy/high_report.md",
+  "output_path": "groups/real-paper-01-opticommpy/medium_report.md",
+  "parent_sha256": "2C5263ED6F23806FFCEA2C83AFD32DEF2B03B3E6D251D8ACEE5B897D1512FCC1",
+  "output_sha256": "9CB4E2333448AB89CD2E8715BB8E8C1F4CD6819D6D7AAF583BDE0E41255E6BFA",
+  "operations": [
+    {
+      "operation_id": "weaken-evidence-boundary",
+      "kind": "replace_once",
+      "target": "ReproEval did not execute the archived software, so there is insufficient evidence to claim numerical reproduction.",
+      "replacement": "There is insufficient evidence, but the paper appears reproducible.",
+      "expected_dimensions": [
+        "reasoning_consistency"
+      ],
+      "expected_error_codes": [
+        "reasoning_gap"
+      ]
+    },
+    {
+      "operation_id": "weaken-next-step",
+      "kind": "replace_once",
+      "target": "To test the central claim, run the archived Figure 2 example in a pinned environment and compare exported BER and Q-factor curves with the paper, recording the exact archive, dependencies, commands, outputs,\nand comparison tolerance.",
+      "replacement": "Run the software and inspect the results.",
+      "expected_dimensions": [
+        "clarity_actionability"
+      ],
+      "expected_error_codes": [
+        "actionability_gap"
+      ]
+    }
+  ]
+}

@@ -10,25 +10,25 @@
 
 | 客户端 | 当前证据 | 可证明的范围 |
 | --- | --- | --- |
-| CodeBuddy | [十工具发现截图](assets/codebuddy-0.15.0-tool-discovery.png)、用户提供的十步调用截图和 [最终演示 MP4](assets/demo-0.15.0-codebuddy-mcp.mp4) | 0.15.0 工具发现、客户端顺序调用、工件血缘拒绝和迁移报告成功生成 |
-| Visual Studio Code 1.131.0 | [十工具发现截图](assets/vscode-0.15.0-tool-discovery.png) 和 [机器可校验证据](CLIENT_VALIDATION_0_15_INDEX.json) | 0.15.0 工具发现，以及前一构建 wheel 的一次真实静态审计 Tool 调用；当前精确 wheel GUI 待复核 |
+| CodeBuddy | [十工具发现截图](../assets/codebuddy-0.15.0-tool-discovery.png)、用户提供的十步调用截图，以及未随当前仓库分发的历史录屏 | 0.15.0 工具发现、客户端顺序调用、工件血缘拒绝和迁移报告成功生成；仓库内没有可复核的原始 MP4 |
+| Visual Studio Code 1.131.0 | [十工具发现截图](../assets/vscode-0.15.0-tool-discovery.png) 和 [机器可校验证据](../CLIENT_VALIDATION_0_15_INDEX.json) | 0.15.0 工具发现，以及前一构建 wheel 的一次真实静态审计 Tool 调用；当前精确 wheel GUI 待复核 |
 
 两张截图没有 API key、Authorization header、`.env` 内容、用户名或私有 endpoint。2026-08-01 的 VS Code 调用使用
 Python 3.13.5 和运行时代码等价的前一构建 wheel `61F776...`，生成 completed run `repository_8246ee4f34e0`：Schema 1.21、
 83 个检查文件、0 gaps、0 warnings、`scan_truncated=false`、`executed_repository_code=false`。JSON artifact 的
 content hash 为 `8f271a...`，payload hash 为 `34342b...`；run manifest 文件 SHA-256 为 `BA024C...`。凭据值扫描
-为 0 命中。该调用证明 VS Code 确实通过 MCP 执行 0.15.0 Tool，不代表执行第三方仓库代码，也不替代真实 Hy3 链。最终候选 wheel 哈希为 `76A3F8...`，已通过本地安装和双入口 stdio 发现；其精确在线 Hy3 重复未执行。`3C940...` 是已完成真实 Hy3 三链验证的最近候选。
+为 0 命中。该调用证明 VS Code 确实通过 MCP 执行 0.15.0 Tool，不代表执行第三方仓库代码，也不替代在线 Hy3 API 链。最终候选 wheel 哈希为 `76A3F8...`，已通过本地安装和双入口 stdio 发现；其精确在线 Hy3 重复未执行。`3C940...` 是已对仓库合成示例完成三条在线 Hy3 API 链的最近候选。
 
-真实论文、迁移和 ISAC 链的 run ID、artifact hash 和结果见
+合成论文、迁移和 ISAC 示例的在线调用 run ID、artifact hash 和结果见
 [LIVE_VALIDATION_0_15_CN.md](LIVE_VALIDATION_0_15_CN.md)。最小截图 montage 位于
-[demo-0.15.0-client-discovery-montage.gif](assets/demo-0.15.0-client-discovery-montage.gif)，它不是完整交互录屏。
+[demo-0.15.0-client-discovery-montage.gif](../assets/demo-0.15.0-client-discovery-montage.gif)，它不是完整交互录屏。
 
-CodeBuddy 最终演示为原始 MP4，时长 74.66 秒，SHA-256 为
+CodeBuddy 历史演示为原始 MP4，时长 74.66 秒，SHA-256 为
 `43BA80B1CEE67E8F32F29B88035017F4FB17DE3DF951C473641F963C227CE20C`。录屏未显示 API key、Authorization header、
 `.env` 内容或 traceback；它保留了错误工作区/混合血缘输入被拒绝，以及随后
 `reproscope_render_transfer_report` 返回 `completed`、Schema 1.21、`graph_validated=true` 和 Markdown artifact 的过程。
-画面包含本机 Windows 用户名、本地绝对路径和前序校验失败，因此它证明真实 MCP 报告调用与恢复过程，不单独证明
-论文链重新执行或模型质量。项目按参赛者最终选择将该文件作为公开演示，并保留这些证据边界。
+画面包含本机 Windows 用户名、本地绝对路径和前序校验失败，因此它只能辅助说明当时的 MCP 报告调用与恢复过程，
+不单独证明论文链重新执行或模型质量。该原始录屏未随当前仓库分发，不能作为仓库内可复核的最终演示链接。
 
 脱敏客户端证据可用
 `python scripts/validate_client_evidence.py docs/CLIENT_VALIDATION_0_15_INDEX.json` 校验。该门禁只接受 Schema 1.21、
@@ -40,14 +40,14 @@ CodeBuddy 最终演示为原始 MP4，时长 74.66 秒，SHA-256 为
 
 0.15.0 已扩展为十个 Tool，并加入技术迁移、静态仓库审计和实验性 ISAC Profile。当前证据证明两个客户端均能
 发现十个 Tool，且两端都已有实际调用记录；其中 VS Code 有可机器校验的 persisted run。由于现有 GUI 调用对应
-运行时代码等价的前一构建 wheel，精确当前 wheel 的双端复核仍是严格发布复核项；最终 CodeBuddy MP4 已归档。本文件下方内容保持为
+运行时代码等价的前一构建 wheel，精确当前 wheel 的双端复核仍是严格发布复核项；历史 CodeBuddy MP4 未随当前仓库归档。本文件下方内容保持为
 0.5.0 历史证据，避免把旧截图改写成新版本结果。
 
 ## 1. 验证结论
 
 ReproScope 0.5.0 曾在 CodeBuddy 和 Visual Studio Code 两个不同的 MCP 客户端中完成实际调用。
 
-| 客户端 | Tool 发现 | 真实 Hy3 调用 | 本地工件 | 当前证据 |
+| 客户端 | Tool 发现 | 在线 Hy3 API 调用 | 本地工件 | 当前证据 |
 | --- | --- | --- | --- | --- |
 | CodeBuddy | 已通过 | 已完成论文 Claim 抽取和工作流调用 | 已生成 | 用户实际运行；最终 PR 前建议重新保存截图或录屏 |
 | Visual Studio Code | 5/5 Tool | `reproscope_compare_results` 已通过 | completed comparison + run manifest | 两张脱敏截图和本地工件 |
@@ -94,9 +94,9 @@ VS Code 成功发现并启用全部五个 Tool：
 - `reproscope_build_evidence_graph`
 - `reproscope_render_report`
 
-![VS Code MCP Tool discovery](assets/vscode-tool-discovery.png)
+![VS Code MCP Tool discovery](../assets/vscode-tool-discovery.png)
 
-## 4. 真实比较调用
+## 4. 在线比较调用（合成输入）
 
 实际调用：
 
@@ -119,7 +119,7 @@ reproscope_compare_results
 | latency 样本数 | 5 |
 | latency 严重度 | `unknown`，论文未报告该指标 |
 
-![VS Code comparison result](assets/vscode-compare-results.png)
+![VS Code comparison result](../assets/vscode-compare-results.png)
 
 ## 5. 本地工件复核
 
@@ -157,7 +157,7 @@ compare_e91ecd751b02
 
 - 两个不同 MCP 客户端均可连接 ReproScope；
 - Visual Studio Code 能发现完整 Tool Schema；
-- Visual Studio Code 能通过 stdio 发起真实 Hy3 Tool 调用；
+- Visual Studio Code 能通过 stdio 发起在线 Hy3 API Tool 调用；
 - GUI 输出、本地确定性结果和运行生命周期工件一致。
 
 当前 0.15.0/Schema 1.21 已在 CodeBuddy 和 Visual Studio Code 留下工具发现与实际调用证据；VS Code 证据索引

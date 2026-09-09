@@ -25,7 +25,7 @@
 | Model | `hy3` |
 | Schema | `1.21` |
 | 端到端耗时 | `312.521 s` |
-| HTTP 结果 | 真实 Hy3 调用完成；请求正文、密钥和 endpoint 私密参数不入库 |
+| HTTP 结果 | 对仓库合成示例的在线 Hy3 API 调用完成；请求正文、密钥和 endpoint 私密参数不入库 |
 | 输入 | `examples/sample_paper.md`、`sample_results.csv`、`sample_train.log` |
 | 输入性质 | 仓库内合成演示材料，不是真实论文 benchmark |
 
@@ -77,14 +77,14 @@
 | auto positive ISAC | `claims_399109c85ab3` | `auto / isac_phy` | `auto_detection` | 2 metrics、4 assumptions、12 findings、2 risk | `4e53d3c69b82377c4eb21e9193bb84c5478f8dfd52948be7863c05c1c3019240` | `99bbfbecf6ed81dc496a62d17c46c2d0b9966d7cadfe5fc1fdf7cd7dde868c4c` | `374cc648643298209d43b2e819494b0a2fdb942d062360f63f51715c276a823f` |
 | auto radar negative | `claims_d2bac55494b0` | `auto / generic` | `default_generic` | 0 metrics、0 assumptions、0 findings | `bff6d868a9bec8b1d48073b50b8e7a45aefcec247d1d6a88e90d61cbe1e84dcf` | `10206fc0ce8e9cb2e5b212bb52f1c91078891999f951f1d5c2b8dd9408e65d13` | `8903cce0472ad658918be62938408a4dd19fc0e7ed2f324d35196e2d6dd9283e` |
 
-三份 manifest 均为 `created -> running -> completed`，Schema 均为 `1.21`。第二次在线运行设置 `HY3_MAX_TOKENS=32000`、`HY3_REASONING_EFFORT=low`，避免自动正例在默认 16000 token 预算下被截断；这只是请求参数记录，不是模型质量结论。ISAC findings 固定 `affects_score=false`，上述结果只证明当前示例材料的真实 Hy3 调用和本地归一化链。
+三份 manifest 均为 `created -> running -> completed`，Schema 均为 `1.21`。第二次在线运行设置 `HY3_MAX_TOKENS=32000`、`HY3_REASONING_EFFORT=low`，避免自动正例在默认 16000 token 预算下被截断；这只是请求参数记录，不是模型质量结论。ISAC findings 固定 `affects_score=false`，上述结果只证明当前合成示例材料的在线 Hy3 API 调用和本地归一化链。
 
 ## 5. 当前客户端证据
 
 两张用户提供的当前版本工具发现截图已保存：
 
-- [CodeBuddy 0.15.0 十工具发现](assets/codebuddy-0.15.0-tool-discovery.png)
-- [Visual Studio Code 0.15.0 十工具发现](assets/vscode-0.15.0-tool-discovery.png)
+- [CodeBuddy 0.15.0 十工具发现](../assets/codebuddy-0.15.0-tool-discovery.png)
+- [Visual Studio Code 0.15.0 十工具发现](../assets/vscode-0.15.0-tool-discovery.png)
 
 The CodeBuddy full-pipeline capture supplied after the 0.15.0 run adds a client-side
 cross-step assertion for `transfer_graph.graph_validated=true`. This is stronger than tool discovery,
@@ -92,7 +92,7 @@ but it remains a user-provided GUI capture; the persisted JSON artifact is the a
 For both clients, verify the top-level `graph_validated` boolean in `transfer_graph.json`, or use the
 same marker exposed by `reproscope_render_transfer_report` and `transfer_report_manifest.json`.
 
-截图可证明两个客户端各发现 10 个 Tool，且未包含 API key、Authorization header、`.env` 内容或私有 endpoint。用户另行提供的 CodeBuddy 全流程截图包含十步顺序执行和 `transfer_graph.graph_validated=true` 跨步断言。Visual Studio Code 1.131.0 使用运行时代码等价的前一构建 wheel `61F776...` 完成 `reproscope_audit_repository`：run `repository_8246ee4f34e0`、Schema 1.21、0 gaps、0 warnings、未截断、未执行代码；artifact content/payload hash 为 `8f271a...`/`34342b...`。最终 CodeBuddy 演示位于 [demo-0.15.0-codebuddy-mcp.mp4](assets/demo-0.15.0-codebuddy-mcp.mp4)，展示报告 Tool 的真实 stdio 调用、血缘拒绝和 completed 迁移报告；它不证明论文链或新构建 wheel 的完整在线重复。脱敏索引见 [CLIENT_VALIDATION_0_15_INDEX.json](CLIENT_VALIDATION_0_15_INDEX.json)，并由 `validate_client_evidence.py` 校验。双客户端发现 montage 位于 [demo-0.15.0-client-discovery-montage.gif](assets/demo-0.15.0-client-discovery-montage.gif)。
+截图可证明两个客户端各发现 10 个 Tool，且未包含 API key、Authorization header、`.env` 内容或私有 endpoint。用户另行提供的 CodeBuddy 全流程截图包含十步顺序执行和 `transfer_graph.graph_validated=true` 跨步断言。Visual Studio Code 1.131.0 使用运行时代码等价的前一构建 wheel `61F776...` 完成 `reproscope_audit_repository`：run `repository_8246ee4f34e0`、Schema 1.21、0 gaps、0 warnings、未截断、未执行代码；artifact content/payload hash 为 `8f271a...`/`34342b...`。历史 CodeBuddy 原始录屏未随当前仓库分发，因此不能作为仓库内可复核链接，也不证明论文链或新构建 wheel 的完整在线重复。脱敏索引见 [CLIENT_VALIDATION_0_15_INDEX.json](../CLIENT_VALIDATION_0_15_INDEX.json)，并由 `validate_client_evidence.py` 校验。双客户端发现 montage 位于 [demo-0.15.0-client-discovery-montage.gif](../assets/demo-0.15.0-client-discovery-montage.gif)。
 
 ## 6. 在线验证命令
 

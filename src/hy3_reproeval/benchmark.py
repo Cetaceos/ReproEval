@@ -283,6 +283,13 @@ async def run_dataset_benchmark(
             "Synthetic mutation labels and replay records validate protocol behavior; "
             "they are not model-human benchmark evidence."
         )
+    if any(
+        report.label_source == "curator_draft" for group in loaded_dataset.manifest.groups for report in group.reports
+    ):
+        warnings.append(
+            "Curator-draft quality tiers are preregistered construction hypotheses; "
+            "report ordering is not human-validated until blinded annotations are complete."
+        )
     if validation.adversarial_report_count:
         warnings.append(
             "Adversarial metrics from synthetic or development labels validate attack-protocol behavior; "

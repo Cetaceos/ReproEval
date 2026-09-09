@@ -1,0 +1,75 @@
+{
+  "schema_version": "1.0",
+  "case_id": "real-paper-03-differt2d-medium-case",
+  "scenario": "reproduction",
+  "report_path": "medium_report.md",
+  "sources": [
+    {
+      "source_id": "evidence",
+      "locators": [
+        "E01",
+        "E02",
+        "E03",
+        "E04",
+        "E05"
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "differt2d-paper-claim",
+      "marker": "The paper-backed claim is",
+      "required_source_ids": [
+        "evidence"
+      ]
+    },
+    {
+      "claim_id": "differt2d-numeric-claim",
+      "marker": "The registered numeric fact is",
+      "required_source_ids": [
+        "evidence"
+      ]
+    }
+  ],
+  "numeric_expectations": [
+    {
+      "fact_id": "differt2d-registered-fact",
+      "label": "The registered numeric fact is",
+      "expected": "1000",
+      "absolute_tolerance": "0",
+      "critical": true,
+      "unit": "minimization steps"
+    }
+  ],
+  "required_sections": [
+    {
+      "section_id": "summary",
+      "heading": "Executive summary"
+    },
+    {
+      "section_id": "evidence",
+      "heading": "Experimental evidence"
+    },
+    {
+      "section_id": "limitations",
+      "heading": "Evidence and limitations"
+    },
+    {
+      "section_id": "next",
+      "heading": "Next steps"
+    }
+  ],
+  "uncertainty": {
+    "required": true,
+    "accepted_phrases": [
+      "insufficient evidence"
+    ]
+  },
+  "artifacts": [
+    {
+      "artifact_id": "differt2d-source",
+      "path": "source_material.md",
+      "sha256": "61D036BEA8C4DD42ABCC5BFE2E829C6C35A540228C2E37899E8353872DDF13DF"
+    }
+  ]
+}

@@ -217,7 +217,11 @@ def finalize_annotation_consensus(
     consensus_ready = (
         agreement.agreement_ready and not unresolved and bool(target_reports) and len(reports) == len(target_reports)
     )
-    warnings = list(agreement.warnings)
+    warnings = [
+        warning
+        for warning in agreement.warnings
+        if "pairwise dimension disagreements require adjudication" not in warning
+    ]
     if unresolved:
         warnings.append(f"{len(unresolved)} disputed dimensions remain unresolved.")
     if not consensus_ready:

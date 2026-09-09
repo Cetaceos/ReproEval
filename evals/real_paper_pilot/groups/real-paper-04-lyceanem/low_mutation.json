@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0",
+  "mutation_id": "real-paper-04-lyceanem-low-mutation",
+  "parent_report_id": "real-paper-04-lyceanem-high",
+  "output_report_id": "real-paper-04-lyceanem-low",
+  "parent_path": "groups/real-paper-04-lyceanem/high_report.md",
+  "output_path": "groups/real-paper-04-lyceanem/low_report.md",
+  "parent_sha256": "40E563F76751C58FB52500BF1E1B1FB3B3568670E843ECB1F134432B649F1D82",
+  "output_sha256": "6DEA96EBE5B76C0C49F7072F03389E8E436887B28710366A6D2024C3D43FFC9B",
+  "operations": [
+    {
+      "operation_id": "weaken-evidence-boundary",
+      "kind": "replace_once",
+      "target": "ReproEval did not execute the archived software, so there is insufficient evidence to claim numerical reproduction.",
+      "replacement": "There is insufficient evidence, but the paper appears reproducible.",
+      "expected_dimensions": [
+        "reasoning_consistency"
+      ],
+      "expected_error_codes": [
+        "reasoning_gap"
+      ]
+    },
+    {
+      "operation_id": "weaken-next-step",
+      "kind": "replace_once",
+      "target": "To test the central claim, identify the archived script and raw measurement inputs for the scattering comparison, then compare the frequency- and time-domain outputs under a pinned CUDA and package environment, recording the exact archive, dependencies, commands, outputs,\nand comparison tolerance.",
+      "replacement": "Run the software and inspect the results.",
+      "expected_dimensions": [
+        "clarity_actionability"
+      ],
+      "expected_error_codes": [
+        "actionability_gap"
+      ]
+    },
+    {
+      "operation_id": "corrupt-registered-fact",
+      "kind": "replace_once",
+      "target": "The registered numeric fact is 26 GHz [evidence@E04].",
+      "replacement": "The registered numeric fact is 60 GHz [invented-authority@Table-1].",
+      "expected_dimensions": [
+        "factual_accuracy",
+        "evidence_traceability",
+        "numerical_consistency"
+      ],
+      "expected_error_codes": [
+        "fabricated_citation",
+        "unsupported_claim",
+        "numeric_error"
+      ]
+    }
+  ]
+}

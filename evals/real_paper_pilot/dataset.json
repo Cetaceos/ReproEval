@@ -1,0 +1,668 @@
+{
+  "schema_version": "1.2",
+  "dataset_id": "reproeval-real-paper-pilot",
+  "dataset_version": "0.2.0",
+  "description": "Six-group open-access real-paper pilot for reproducibility-readiness evaluation. Source packets are grounded in CC BY JOSS papers and archived software metadata. No third-party code was executed; quality tiers remain curator-draft hypotheses until blinded human annotation is complete.",
+  "groups": [
+    {
+      "group_id": "real-paper-01-opticommpy",
+      "split": "development",
+      "scenario": "reproduction",
+      "study_mode": "reproducibility_readiness",
+      "difficulty": "standard",
+      "provenance": {
+        "kind": "open_access",
+        "license": "CC-BY-4.0",
+        "source_group_sha256": "532D152BBB9542F8D2905A0F7B02BC6C584E12E4460C411813314CF2B89E72EA",
+        "acquisition_date": "2026-09-07",
+        "description": "ReproEval-authored evidence packet paraphrased from an attributed JOSS paper and its software links; the external software was not executed.",
+        "citation": "da Silva and Herbster (2024). OptiCommPy: Open-source Simulation of Fiber Optic Communications with Python. Journal of Open Source Software. 10.21105/joss.06600.",
+        "paper_url": "https://joss.theoj.org/papers/10.21105/joss.06600.pdf",
+        "repository_url": "https://github.com/edsonportosilva/OptiCommPy",
+        "archive_url": "https://doi.org/10.5281/zenodo.11450597",
+        "paper_sha256": "146FF130EB0B8DF3E2C6F8232AE889367D83CC148DA8269FE09D1714EFB6DD3E",
+        "redistribution_policy": "The JOSS paper is CC BY 4.0. This repository stores an attributed paraphrased evidence packet, not the downloaded PDF or third-party software.",
+        "source_assets": [
+          {
+            "source_id": "paper-pdf",
+            "kind": "paper_pdf",
+            "media_type": "application/pdf",
+            "license": "CC-BY-4.0",
+            "description": "Published JOSS paper reviewed for the evidence register.",
+            "uri": "https://joss.theoj.org/papers/10.21105/joss.06600.pdf",
+            "sha256": "146FF130EB0B8DF3E2C6F8232AE889367D83CC148DA8269FE09D1714EFB6DD3E",
+            "acquisition_date": "2026-09-07"
+          },
+          {
+            "source_id": "journal-record",
+            "kind": "journal_record",
+            "media_type": "text/html",
+            "license": "CC-BY-4.0",
+            "description": "JOSS publication page containing citation, review, license, and software links.",
+            "uri": "https://joss.theoj.org/papers/10.21105/joss.06600",
+            "acquisition_date": "2026-09-07"
+          },
+          {
+            "source_id": "software-repository",
+            "kind": "software_repository",
+            "media_type": "text/html",
+            "license": "not-evaluated",
+            "description": "Moving public repository referenced by the journal record; not executed by ReproEval.",
+            "uri": "https://github.com/edsonportosilva/OptiCommPy",
+            "acquisition_date": "2026-09-07"
+          },
+          {
+            "source_id": "software-archive",
+            "kind": "software_archive",
+            "media_type": "text/html",
+            "license": "not-evaluated",
+            "description": "Persistent publication-time software archive referenced by the journal record.",
+            "uri": "https://doi.org/10.5281/zenodo.11450597",
+            "acquisition_date": "2026-09-07"
+          },
+          {
+            "source_id": "evidence-packet",
+            "kind": "evidence_packet",
+            "media_type": "text/markdown",
+            "license": "Apache-2.0 with attributed CC-BY-4.0 excerpts",
+            "description": "Repository-local evidence register derived from the reviewed paper PDF.",
+            "local_path": "groups/real-paper-01-opticommpy/source_material.md",
+            "sha256": "348E532AD5D96A816FDF0D009B5DBB443575D558B008E328DFB0AC8E2D1817DF",
+            "derived_from": [
+              "paper-pdf",
+              "journal-record"
+            ],
+            "acquisition_date": "2026-09-07"
+          }
+        ]
+      },
+      "reports": [
+        {
+          "report_id": "real-paper-01-opticommpy-high",
+          "quality_tier": "high",
+          "case_path": "groups/real-paper-01-opticommpy/high_case.json",
+          "report_sha256": "2C5263ED6F23806FFCEA2C83AFD32DEF2B03B3E6D251D8ACEE5B897D1512FCC1",
+          "label_source": "curator_draft",
+          "expected_error_codes": []
+        },
+        {
+          "report_id": "real-paper-01-opticommpy-medium",
+          "quality_tier": "medium",
+          "case_path": "groups/real-paper-01-opticommpy/medium_case.json",
+          "report_sha256": "9CB4E2333448AB89CD2E8715BB8E8C1F4CD6819D6D7AAF583BDE0E41255E6BFA",
+          "label_source": "synthetic_mutation",
+          "expected_error_codes": [
+            "reasoning_gap",
+            "actionability_gap"
+          ],
+          "mutation_manifest_path": "groups/real-paper-01-opticommpy/medium_mutation.json"
+        },
+        {
+          "report_id": "real-paper-01-opticommpy-low",
+          "quality_tier": "low",
+          "case_path": "groups/real-paper-01-opticommpy/low_case.json",
+          "report_sha256": "C32BFBCD6A6C665CF7500C760E37A39D7BEE5F2F33B940E8D16D17EA3426B4AC",
+          "label_source": "synthetic_mutation",
+          "expected_error_codes": [
+            "reasoning_gap",
+            "actionability_gap",
+            "fabricated_citation",
+            "unsupported_claim",
+            "numeric_error"
+          ],
+          "mutation_manifest_path": "groups/real-paper-01-opticommpy/low_mutation.json"
+        }
+      ]
+    },
+    {
+      "group_id": "real-paper-02-pyngham",
+      "split": "development",
+      "scenario": "reproduction",
+      "study_mode": "reproducibility_readiness",
+      "difficulty": "standard",
+      "provenance": {
+        "kind": "open_access",
+        "license": "CC-BY-4.0",
+        "source_group_sha256": "BD58F50C795EB8432D157964D5D9A506CABE899765D13E2D242A8324F2B575BA",
+        "acquisition_date": "2026-09-07",
+        "description": "ReproEval-authored evidence packet paraphrased from an attributed JOSS paper and its software links; the external software was not executed.",
+        "citation": "Marcelino (2023). PyNGHam: A Python library of the NGHam protocol. Journal of Open Source Software. 10.21105/joss.04915.",
+        "paper_url": "https://joss.theoj.org/papers/10.21105/joss.04915.pdf",
+        "repository_url": "https://github.com/mgm8/pyngham",
+        "archive_url": "https://doi.org/10.5281/zenodo.7555428",
+        "paper_sha256": "25556A7620C512197DF4C3C22FEE2657DD885670025C9A26D92C1025D94F31D4",
+        "redistribution_policy": "The JOSS paper is CC BY 4.0. This repository stores an attributed paraphrased evidence packet, not the downloaded PDF or third-party software.",
+        "source_assets": [
+          {
+            "source_id": "paper-pdf",
+            "kind": "paper_pdf",
+            "media_type": "application/pdf",
+            "license": "CC-BY-4.0",
+            "description": "Published JOSS paper reviewed for the evidence register.",
+            "uri": "https://joss.theoj.org/papers/10.21105/joss.04915.pdf",
+            "sha256": "25556A7620C512197DF4C3C22FEE2657DD885670025C9A26D92C1025D94F31D4",
+            "acquisition_date": "2026-09-07"
+          },
+          {
+            "source_id": "journal-record",
+            "kind": "journal_record",
+            "media_type": "text/html",
+            "license": "CC-BY-4.0",
+            "description": "JOSS publication page containing citation, review, license, and software links.",
+            "uri": "https://joss.theoj.org/papers/10.21105/joss.04915",
+            "acquisition_date": "2026-09-07"
+          },
+          {
+            "source_id": "software-repository",
+            "kind": "software_repository",
+            "media_type": "text/html",
+            "license": "not-evaluated",
+            "description": "Moving public repository referenced by the journal record; not executed by ReproEval.",
+            "uri": "https://github.com/mgm8/pyngham",
+            "acquisition_date": "2026-09-07"
+          },
+          {
+            "source_id": "software-archive",
+            "kind": "software_archive",
+            "media_type": "text/html",
+            "license": "not-evaluated",
+            "description": "Persistent publication-time software archive referenced by the journal record.",
+            "uri": "https://doi.org/10.5281/zenodo.7555428",
+            "acquisition_date": "2026-09-07"
+          },
+          {
+            "source_id": "evidence-packet",
+            "kind": "evidence_packet",
+            "media_type": "text/markdown",
+            "license": "Apache-2.0 with attributed CC-BY-4.0 excerpts",
+            "description": "Repository-local evidence register derived from the reviewed paper PDF.",
+            "local_path": "groups/real-paper-02-pyngham/source_material.md",
+            "sha256": "04289E0416EE705D68CA386E3F761B61FFB94E151C452C99772B2641EB340A39",
+            "derived_from": [
+              "paper-pdf",
+              "journal-record"
+            ],
+            "acquisition_date": "2026-09-07"
+          }
+        ]
+      },
+      "reports": [
+        {
+          "report_id": "real-paper-02-pyngham-high",
+          "quality_tier": "high",
+          "case_path": "groups/real-paper-02-pyngham/high_case.json",
+          "report_sha256": "6DFDD142F2A0692AE80DE1B3D89EFC508F61F847B0C6E89966C902603AB499E3",
+          "label_source": "curator_draft",
+          "expected_error_codes": []
+        },
+        {
+          "report_id": "real-paper-02-pyngham-medium",
+          "quality_tier": "medium",
+          "case_path": "groups/real-paper-02-pyngham/medium_case.json",
+          "report_sha256": "45980CDEC14B6DE5F88091FAD3963C58925F3CA67E41C74806675D93E82F939A",
+          "label_source": "synthetic_mutation",
+          "expected_error_codes": [
+            "reasoning_gap",
+            "actionability_gap"
+          ],
+          "mutation_manifest_path": "groups/real-paper-02-pyngham/medium_mutation.json"
+        },
+        {
+          "report_id": "real-paper-02-pyngham-low",
+          "quality_tier": "low",
+          "case_path": "groups/real-paper-02-pyngham/low_case.json",
+          "report_sha256": "DE08F18D232FA89983C8168AA1ACE63077813B2EA75E0015B1E515B93F5444DF",
+          "label_source": "synthetic_mutation",
+          "expected_error_codes": [
+            "reasoning_gap",
+            "actionability_gap",
+            "fabricated_citation",
+            "unsupported_claim",
+            "numeric_error"
+          ],
+          "mutation_manifest_path": "groups/real-paper-02-pyngham/low_mutation.json"
+        }
+      ]
+    },
+    {
+      "group_id": "real-paper-03-differt2d",
+      "split": "validation",
+      "scenario": "reproduction",
+      "study_mode": "reproducibility_readiness",
+      "difficulty": "hard",
+      "provenance": {
+        "kind": "open_access",
+        "license": "CC-BY-4.0",
+        "source_group_sha256": "4A5F601068DD4E07F2C80C2EC854E0486873B64EAE762B8F2464828DEBDADADE",
+        "acquisition_date": "2026-09-07",
+        "description": "ReproEval-authored evidence packet paraphrased from an attributed JOSS paper and its software links; the external software was not executed.",
+        "citation": "Eertmans, Oestges, and Jacques (2024). DiffeRT2d: A Differentiable Ray Tracing Python Framework for Radio Propagation. Journal of Open Source Software. 10.21105/joss.06915.",
+        "paper_url": "https://joss.theoj.org/papers/10.21105/joss.06915.pdf",
+        "repository_url": "https://github.com/jeertmans/DiffeRT2d",
+        "archive_url": "https://doi.org/10.5281/zenodo.12600658",
+        "paper_sha256": "E47AD55BFAC6021A3C25D93363D1BBECBBC0DD3FCB561F5923EA79D86450B384",
+        "redistribution_policy": "The JOSS paper is CC BY 4.0. This repository stores an attributed paraphrased evidence packet, not the downloaded PDF or third-party software.",
+        "source_assets": [
+          {
+            "source_id": "paper-pdf",
+            "kind": "paper_pdf",
+            "media_type": "application/pdf",
+            "license": "CC-BY-4.0",
+            "description": "Published JOSS paper reviewed for the evidence register.",
+            "uri": "https://joss.theoj.org/papers/10.21105/joss.06915.pdf",
+            "sha256": "E47AD55BFAC6021A3C25D93363D1BBECBBC0DD3FCB561F5923EA79D86450B384",
+            "acquisition_date": "2026-09-07"
+          },
+          {
+            "source_id": "journal-record",
+            "kind": "journal_record",
+            "media_type": "text/html",
+            "license": "CC-BY-4.0",
+            "description": "JOSS publication page containing citation, review, license, and software links.",
+            "uri": "https://joss.theoj.org/papers/10.21105/joss.06915",
+            "acquisition_date": "2026-09-07"
+          },
+          {
+            "source_id": "software-repository",
+            "kind": "software_repository",
+            "media_type": "text/html",
+            "license": "not-evaluated",
+            "description": "Moving public repository referenced by the journal record; not executed by ReproEval.",
+            "uri": "https://github.com/jeertmans/DiffeRT2d",
+            "acquisition_date": "2026-09-07"
+          },
+          {
+            "source_id": "software-archive",
+            "kind": "software_archive",
+            "media_type": "text/html",
+            "license": "not-evaluated",
+            "description": "Persistent publication-time software archive referenced by the journal record.",
+            "uri": "https://doi.org/10.5281/zenodo.12600658",
+            "acquisition_date": "2026-09-07"
+          },
+          {
+            "source_id": "evidence-packet",
+            "kind": "evidence_packet",
+            "media_type": "text/markdown",
+            "license": "Apache-2.0 with attributed CC-BY-4.0 excerpts",
+            "description": "Repository-local evidence register derived from the reviewed paper PDF.",
+            "local_path": "groups/real-paper-03-differt2d/source_material.md",
+            "sha256": "61D036BEA8C4DD42ABCC5BFE2E829C6C35A540228C2E37899E8353872DDF13DF",
+            "derived_from": [
+              "paper-pdf",
+              "journal-record"
+            ],
+            "acquisition_date": "2026-09-07"
+          }
+        ]
+      },
+      "reports": [
+        {
+          "report_id": "real-paper-03-differt2d-high",
+          "quality_tier": "high",
+          "case_path": "groups/real-paper-03-differt2d/high_case.json",
+          "report_sha256": "FD88AE9DB6102155778B731F34657921F9F4267B00B960823B7920502DE5D013",
+          "label_source": "curator_draft",
+          "expected_error_codes": []
+        },
+        {
+          "report_id": "real-paper-03-differt2d-medium",
+          "quality_tier": "medium",
+          "case_path": "groups/real-paper-03-differt2d/medium_case.json",
+          "report_sha256": "44DED7E992B2640D11C4943F1C065FF368D1A662EA09799F04567E48933CE490",
+          "label_source": "synthetic_mutation",
+          "expected_error_codes": [
+            "reasoning_gap",
+            "actionability_gap"
+          ],
+          "mutation_manifest_path": "groups/real-paper-03-differt2d/medium_mutation.json"
+        },
+        {
+          "report_id": "real-paper-03-differt2d-low",
+          "quality_tier": "low",
+          "case_path": "groups/real-paper-03-differt2d/low_case.json",
+          "report_sha256": "104B246D878E940C11030190819541E4F959880CAF683610AAB4B065E2A11BDA",
+          "label_source": "synthetic_mutation",
+          "expected_error_codes": [
+            "reasoning_gap",
+            "actionability_gap",
+            "fabricated_citation",
+            "unsupported_claim",
+            "numeric_error"
+          ],
+          "mutation_manifest_path": "groups/real-paper-03-differt2d/low_mutation.json"
+        }
+      ]
+    },
+    {
+      "group_id": "real-paper-04-lyceanem",
+      "split": "validation",
+      "scenario": "reproduction",
+      "study_mode": "reproducibility_readiness",
+      "difficulty": "hard",
+      "provenance": {
+        "kind": "open_access",
+        "license": "CC-BY-4.0",
+        "source_group_sha256": "D15A39A31AAFD0974F9264E1A41611DE3462153D3D0FAC2144EF28F45AC32EE8",
+        "acquisition_date": "2026-09-07",
+        "description": "ReproEval-authored evidence packet paraphrased from an attributed JOSS paper and its software links; the external software was not executed.",
+        "citation": "Pelham (2023). LyceanEM: A python package for virtual prototyping of antenna arrays, time and frequency domain channel modelling. Journal of Open Source Software. 10.21105/joss.05234.",
+        "paper_url": "https://joss.theoj.org/papers/10.21105/joss.05234.pdf",
+        "repository_url": "https://github.com/LyceanEM/LyceanEM-Python",
+        "archive_url": "https://doi.org/10.5281/zenodo.8026567",
+        "paper_sha256": "8BD8D0C9CA6F701D1CB6AEC0312BBEFA11BBE063302605B3D1192089ABB6F539",
+        "redistribution_policy": "The JOSS paper is CC BY 4.0. This repository stores an attributed paraphrased evidence packet, not the downloaded PDF or third-party software.",
+        "source_assets": [
+          {
+            "source_id": "paper-pdf",
+            "kind": "paper_pdf",
+            "media_type": "application/pdf",
+            "license": "CC-BY-4.0",
+            "description": "Published JOSS paper reviewed for the evidence register.",
+            "uri": "https://joss.theoj.org/papers/10.21105/joss.05234.pdf",
+            "sha256": "8BD8D0C9CA6F701D1CB6AEC0312BBEFA11BBE063302605B3D1192089ABB6F539",
+            "acquisition_date": "2026-09-07"
+          },
+          {
+            "source_id": "journal-record",
+            "kind": "journal_record",
+            "media_type": "text/html",
+            "license": "CC-BY-4.0",
+            "description": "JOSS publication page containing citation, review, license, and software links.",
+            "uri": "https://joss.theoj.org/papers/10.21105/joss.05234",
+            "acquisition_date": "2026-09-07"
+          },
+          {
+            "source_id": "software-repository",
+            "kind": "software_repository",
+            "media_type": "text/html",
+            "license": "not-evaluated",
+            "description": "Moving public repository referenced by the journal record; not executed by ReproEval.",
+            "uri": "https://github.com/LyceanEM/LyceanEM-Python",
+            "acquisition_date": "2026-09-07"
+          },
+          {
+            "source_id": "software-archive",
+            "kind": "software_archive",
+            "media_type": "text/html",
+            "license": "not-evaluated",
+            "description": "Persistent publication-time software archive referenced by the journal record.",
+            "uri": "https://doi.org/10.5281/zenodo.8026567",
+            "acquisition_date": "2026-09-07"
+          },
+          {
+            "source_id": "evidence-packet",
+            "kind": "evidence_packet",
+            "media_type": "text/markdown",
+            "license": "Apache-2.0 with attributed CC-BY-4.0 excerpts",
+            "description": "Repository-local evidence register derived from the reviewed paper PDF.",
+            "local_path": "groups/real-paper-04-lyceanem/source_material.md",
+            "sha256": "6D9C989F315E6738A1D3A282811B39E1E7A030C7BEDA37283D678FF4A6407CCB",
+            "derived_from": [
+              "paper-pdf",
+              "journal-record"
+            ],
+            "acquisition_date": "2026-09-07"
+          }
+        ]
+      },
+      "reports": [
+        {
+          "report_id": "real-paper-04-lyceanem-high",
+          "quality_tier": "high",
+          "case_path": "groups/real-paper-04-lyceanem/high_case.json",
+          "report_sha256": "40E563F76751C58FB52500BF1E1B1FB3B3568670E843ECB1F134432B649F1D82",
+          "label_source": "curator_draft",
+          "expected_error_codes": []
+        },
+        {
+          "report_id": "real-paper-04-lyceanem-medium",
+          "quality_tier": "medium",
+          "case_path": "groups/real-paper-04-lyceanem/medium_case.json",
+          "report_sha256": "E0DCD27E8C73DD6559EA09098C463A88CF000EF6432DE87D8C3A86A595E01B35",
+          "label_source": "synthetic_mutation",
+          "expected_error_codes": [
+            "reasoning_gap",
+            "actionability_gap"
+          ],
+          "mutation_manifest_path": "groups/real-paper-04-lyceanem/medium_mutation.json"
+        },
+        {
+          "report_id": "real-paper-04-lyceanem-low",
+          "quality_tier": "low",
+          "case_path": "groups/real-paper-04-lyceanem/low_case.json",
+          "report_sha256": "6DEA96EBE5B76C0C49F7072F03389E8E436887B28710366A6D2024C3D43FFC9B",
+          "label_source": "synthetic_mutation",
+          "expected_error_codes": [
+            "reasoning_gap",
+            "actionability_gap",
+            "fabricated_citation",
+            "unsupported_claim",
+            "numeric_error"
+          ],
+          "mutation_manifest_path": "groups/real-paper-04-lyceanem/low_mutation.json"
+        }
+      ]
+    },
+    {
+      "group_id": "real-paper-05-itmlogic",
+      "split": "test",
+      "scenario": "reproduction",
+      "study_mode": "reproducibility_readiness",
+      "difficulty": "hard",
+      "provenance": {
+        "kind": "open_access",
+        "license": "CC-BY-4.0",
+        "source_group_sha256": "5FE2B56DDFFA1EC4B163C5EB544CD0DE8F90B9960E8BAAFF422602C2F6D6B7AE",
+        "acquisition_date": "2026-09-07",
+        "description": "ReproEval-authored evidence packet paraphrased from an attributed JOSS paper and its software links; the external software was not executed.",
+        "citation": "Oughton, Russell, Johnson, Yardim, and Kusuma (2020). itmlogic: The Irregular Terrain Model by Longley and Rice. Journal of Open Source Software. 10.21105/joss.02266.",
+        "paper_url": "https://joss.theoj.org/papers/10.21105/joss.02266.pdf",
+        "repository_url": "https://github.com/edwardoughton/itmlogic",
+        "archive_url": "https://doi.org/10.5281/zenodo.3931350",
+        "paper_sha256": "5840DAF288A56B46C3253E9E392BA35A1E9E08D3F6DE11E808C693F9E8B379C4",
+        "redistribution_policy": "The JOSS paper is CC BY 4.0. This repository stores an attributed paraphrased evidence packet, not the downloaded PDF or third-party software.",
+        "source_assets": [
+          {
+            "source_id": "paper-pdf",
+            "kind": "paper_pdf",
+            "media_type": "application/pdf",
+            "license": "CC-BY-4.0",
+            "description": "Published JOSS paper reviewed for the evidence register.",
+            "uri": "https://joss.theoj.org/papers/10.21105/joss.02266.pdf",
+            "sha256": "5840DAF288A56B46C3253E9E392BA35A1E9E08D3F6DE11E808C693F9E8B379C4",
+            "acquisition_date": "2026-09-07"
+          },
+          {
+            "source_id": "journal-record",
+            "kind": "journal_record",
+            "media_type": "text/html",
+            "license": "CC-BY-4.0",
+            "description": "JOSS publication page containing citation, review, license, and software links.",
+            "uri": "https://joss.theoj.org/papers/10.21105/joss.02266",
+            "acquisition_date": "2026-09-07"
+          },
+          {
+            "source_id": "software-repository",
+            "kind": "software_repository",
+            "media_type": "text/html",
+            "license": "not-evaluated",
+            "description": "Moving public repository referenced by the journal record; not executed by ReproEval.",
+            "uri": "https://github.com/edwardoughton/itmlogic",
+            "acquisition_date": "2026-09-07"
+          },
+          {
+            "source_id": "software-archive",
+            "kind": "software_archive",
+            "media_type": "text/html",
+            "license": "not-evaluated",
+            "description": "Persistent publication-time software archive referenced by the journal record.",
+            "uri": "https://doi.org/10.5281/zenodo.3931350",
+            "acquisition_date": "2026-09-07"
+          },
+          {
+            "source_id": "evidence-packet",
+            "kind": "evidence_packet",
+            "media_type": "text/markdown",
+            "license": "Apache-2.0 with attributed CC-BY-4.0 excerpts",
+            "description": "Repository-local evidence register derived from the reviewed paper PDF.",
+            "local_path": "groups/real-paper-05-itmlogic/source_material.md",
+            "sha256": "30218A5B236C013BB5EA4DC090A73232E2F3A9FDB6EB259CC021B4ADC29F68AA",
+            "derived_from": [
+              "paper-pdf",
+              "journal-record"
+            ],
+            "acquisition_date": "2026-09-07"
+          }
+        ]
+      },
+      "reports": [
+        {
+          "report_id": "real-paper-05-itmlogic-high",
+          "quality_tier": "high",
+          "case_path": "groups/real-paper-05-itmlogic/high_case.json",
+          "report_sha256": "8ED30705836E502E2E53559C62C9440E1B97F35A499869D55E5A52AFDDEF06C0",
+          "label_source": "curator_draft",
+          "expected_error_codes": []
+        },
+        {
+          "report_id": "real-paper-05-itmlogic-medium",
+          "quality_tier": "medium",
+          "case_path": "groups/real-paper-05-itmlogic/medium_case.json",
+          "report_sha256": "1D1E4BED194B91CF3A16B5CC9A8255D945B7DEA5B35D9D817EDE66FC16E2D9E9",
+          "label_source": "synthetic_mutation",
+          "expected_error_codes": [
+            "reasoning_gap",
+            "actionability_gap"
+          ],
+          "mutation_manifest_path": "groups/real-paper-05-itmlogic/medium_mutation.json"
+        },
+        {
+          "report_id": "real-paper-05-itmlogic-low",
+          "quality_tier": "low",
+          "case_path": "groups/real-paper-05-itmlogic/low_case.json",
+          "report_sha256": "568347856CCE082C631745A4350D1FAF4C5CF45285898041FB26078EB6904BF5",
+          "label_source": "synthetic_mutation",
+          "expected_error_codes": [
+            "reasoning_gap",
+            "actionability_gap",
+            "fabricated_citation",
+            "unsupported_claim",
+            "numeric_error"
+          ],
+          "mutation_manifest_path": "groups/real-paper-05-itmlogic/low_mutation.json"
+        }
+      ]
+    },
+    {
+      "group_id": "real-paper-06-cdcam",
+      "split": "test",
+      "scenario": "reproduction",
+      "study_mode": "reproducibility_readiness",
+      "difficulty": "hard",
+      "provenance": {
+        "kind": "open_access",
+        "license": "CC-BY-4.0",
+        "source_group_sha256": "E6B5C9263FA29C3A12B9DFC79AAE64F599BBF7A4D95A718C25175CAEDE3CC680",
+        "acquisition_date": "2026-09-07",
+        "description": "ReproEval-authored evidence packet paraphrased from an attributed JOSS paper and its software links; the external software was not executed.",
+        "citation": "Oughton and Russell (2020). cdcam: Cambridge Digital Communications Assessment Model. Journal of Open Source Software. 10.21105/joss.01911.",
+        "paper_url": "https://joss.theoj.org/papers/10.21105/joss.01911.pdf",
+        "repository_url": "https://github.com/nismod/cdcam",
+        "archive_url": "https://doi.org/10.5281/zenodo.3583132",
+        "paper_sha256": "1C06C332582C3D824B1BDD00BD40726975B5B5C0A3C59915A0D473F3DE2035D6",
+        "redistribution_policy": "The JOSS paper is CC BY 4.0. This repository stores an attributed paraphrased evidence packet, not the downloaded PDF or third-party software.",
+        "source_assets": [
+          {
+            "source_id": "paper-pdf",
+            "kind": "paper_pdf",
+            "media_type": "application/pdf",
+            "license": "CC-BY-4.0",
+            "description": "Published JOSS paper reviewed for the evidence register.",
+            "uri": "https://joss.theoj.org/papers/10.21105/joss.01911.pdf",
+            "sha256": "1C06C332582C3D824B1BDD00BD40726975B5B5C0A3C59915A0D473F3DE2035D6",
+            "acquisition_date": "2026-09-07"
+          },
+          {
+            "source_id": "journal-record",
+            "kind": "journal_record",
+            "media_type": "text/html",
+            "license": "CC-BY-4.0",
+            "description": "JOSS publication page containing citation, review, license, and software links.",
+            "uri": "https://joss.theoj.org/papers/10.21105/joss.01911",
+            "acquisition_date": "2026-09-07"
+          },
+          {
+            "source_id": "software-repository",
+            "kind": "software_repository",
+            "media_type": "text/html",
+            "license": "not-evaluated",
+            "description": "Moving public repository referenced by the journal record; not executed by ReproEval.",
+            "uri": "https://github.com/nismod/cdcam",
+            "acquisition_date": "2026-09-07"
+          },
+          {
+            "source_id": "software-archive",
+            "kind": "software_archive",
+            "media_type": "text/html",
+            "license": "not-evaluated",
+            "description": "Persistent publication-time software archive referenced by the journal record.",
+            "uri": "https://doi.org/10.5281/zenodo.3583132",
+            "acquisition_date": "2026-09-07"
+          },
+          {
+            "source_id": "evidence-packet",
+            "kind": "evidence_packet",
+            "media_type": "text/markdown",
+            "license": "Apache-2.0 with attributed CC-BY-4.0 excerpts",
+            "description": "Repository-local evidence register derived from the reviewed paper PDF.",
+            "local_path": "groups/real-paper-06-cdcam/source_material.md",
+            "sha256": "9E87A3E00A041E4E65AF577CBC2DA288F9729B2640C317D019F7F03E42E621DF",
+            "derived_from": [
+              "paper-pdf",
+              "journal-record"
+            ],
+            "acquisition_date": "2026-09-07"
+          }
+        ]
+      },
+      "reports": [
+        {
+          "report_id": "real-paper-06-cdcam-high",
+          "quality_tier": "high",
+          "case_path": "groups/real-paper-06-cdcam/high_case.json",
+          "report_sha256": "4F78EEE82A90601A606F54016295B44D2056B45C645D89C87581B510674E2C43",
+          "label_source": "curator_draft",
+          "expected_error_codes": []
+        },
+        {
+          "report_id": "real-paper-06-cdcam-medium",
+          "quality_tier": "medium",
+          "case_path": "groups/real-paper-06-cdcam/medium_case.json",
+          "report_sha256": "BB171F1952AD0BE1F99F2C2DB66A9C756FE05884CC60F9DE3FE1A3BF1F66931D",
+          "label_source": "synthetic_mutation",
+          "expected_error_codes": [
+            "reasoning_gap",
+            "actionability_gap"
+          ],
+          "mutation_manifest_path": "groups/real-paper-06-cdcam/medium_mutation.json"
+        },
+        {
+          "report_id": "real-paper-06-cdcam-low",
+          "quality_tier": "low",
+          "case_path": "groups/real-paper-06-cdcam/low_case.json",
+          "report_sha256": "A08A8EC8CBCFC6AC6320F4933B2974C2C78194E20E79DFCBF6D23C70067D8263",
+          "label_source": "synthetic_mutation",
+          "expected_error_codes": [
+            "reasoning_gap",
+            "actionability_gap",
+            "fabricated_citation",
+            "unsupported_claim",
+            "numeric_error"
+          ],
+          "mutation_manifest_path": "groups/real-paper-06-cdcam/low_mutation.json"
+        }
+      ]
+    }
+  ]
+}

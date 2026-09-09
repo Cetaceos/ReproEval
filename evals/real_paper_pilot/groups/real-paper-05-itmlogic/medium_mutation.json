@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "mutation_id": "real-paper-05-itmlogic-medium-mutation",
+  "parent_report_id": "real-paper-05-itmlogic-high",
+  "output_report_id": "real-paper-05-itmlogic-medium",
+  "parent_path": "groups/real-paper-05-itmlogic/high_report.md",
+  "output_path": "groups/real-paper-05-itmlogic/medium_report.md",
+  "parent_sha256": "8ED30705836E502E2E53559C62C9440E1B97F35A499869D55E5A52AFDDEF06C0",
+  "output_sha256": "1D1E4BED194B91CF3A16B5CC9A8255D945B7DEA5B35D9D817EDE66FC16E2D9E9",
+  "operations": [
+    {
+      "operation_id": "weaken-evidence-boundary",
+      "kind": "replace_once",
+      "target": "ReproEval did not execute the archived software, so there is insufficient evidence to claim numerical reproduction.",
+      "replacement": "There is insufficient evidence, but the paper appears reproducible.",
+      "expected_dimensions": [
+        "reasoning_consistency"
+      ],
+      "expected_error_codes": [
+        "reasoning_gap"
+      ]
+    },
+    {
+      "operation_id": "weaken-next-step",
+      "kind": "replace_once",
+      "target": "To test the central claim, run archived cross-implementation fixtures over area and point-to-point modes, including unit-boundary cases, and report numerical tolerances, recording the exact archive, dependencies, commands, outputs,\nand comparison tolerance.",
+      "replacement": "Run the software and inspect the results.",
+      "expected_dimensions": [
+        "clarity_actionability"
+      ],
+      "expected_error_codes": [
+        "actionability_gap"
+      ]
+    }
+  ]
+}

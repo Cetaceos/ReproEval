@@ -2,7 +2,7 @@
 
 这份矩阵是 PR checklist 的事实来源。状态只允许写成 `通过`、`待真实验证`、`不适用` 或 `未核验`，不能用历史 0.5.x 截图代替当前版本证据。
 
-| 项目声明 | 代码证据 | 自动化测试 | 真实 Hy3 | MCP Client | 当前状态 |
+| 项目声明 | 代码证据 | 自动化测试 | 在线 Hy3 API | MCP Client | 当前状态 |
 | --- | --- | --- | --- | --- | --- |
 | 10 个 Tool 可发现 | `src/hy3_reproscope_mcp/server.py`、`scripts/stdio_smoke.py` | `tests/test_server.py`、`tests/test_stdio.py` | 不适用 | CodeBuddy + VS Code 当前截图；CodeBuddy 有十步调用截图，VS Code 有 `repository_8246ee4f34e0` | 本地协议、两端发现与两端实际调用通过；VS Code 索引可机器校验 |
 | 论文五工具链 | `src/hy3_reproscope_mcp/tools.py`、`scripts/run_live_validation.py` | `tests/test_tools.py`、`tests/test_workflow_cases.py` | 最近在线候选 `3C940...` 真实链通过；最终 `76A3F8...` 未重复在线 Hy3 | 真实 run/artifact 见 `LIVE_VALIDATION_0_15_CN.md` | 功能与离线链通过；最终精确候选在线状态保持未核验 |
@@ -24,13 +24,13 @@
 - CAR=1.0 当前只表示预期拒答案例的 `1/1` 正确，不外推为领域 benchmark。
 - ISAC finding 固定 `affects_score=false`；当前仅有显式 Evidence Card 驱动的合成描述性校准 harness。公开论文候选清单仍需领域专家复核，尚未完成专家标注、真实 Calibration 或 Held-out 校准。
 - 仓库审计只读取和静态解析声明，不执行第三方代码、安装命令或数据下载命令。
-- 截图和录屏不得出现 API Key、Authorization Header、`.env` 内容、私有论文路径或私有 endpoint。最终 CodeBuddy
-  MP4 未包含凭据，但保留本机用户名和本地绝对路径；该边界已在客户端证据文档中公开说明。
+- 截图和录屏不得出现 API Key、Authorization Header、`.env` 内容、私有论文路径或私有 endpoint。历史 CodeBuddy
+  MP4 未包含凭据，但保留本机用户名和本地绝对路径；该原始文件未随当前仓库分发。
 
 当前 0.15.0 论文、迁移和 ISAC 链的 run ID、artifact content/payload hash、确定性指标和失败边界见
 [LIVE_VALIDATION_0_15_CN.md](LIVE_VALIDATION_0_15_CN.md)。两张当前客户端十工具发现截图位于
-`docs/assets/`；VS Code 当前调用索引为 `docs/CLIENT_VALIDATION_0_15_INDEX.json`。最终 CodeBuddy 演示为
-`docs/assets/demo-0.15.0-codebuddy-mcp.mp4`，截图 montage 仅用于双客户端 Tool 发现。
+`docs/assets/`；VS Code 当前调用索引为 `docs/CLIENT_VALIDATION_0_15_INDEX.json`。历史 CodeBuddy 原始录屏未随
+当前仓库分发；仓库中的截图 montage 仅用于双客户端 Tool 发现，不能替代完整交互演示。
 
 最近在线验证的 `3C940...` wheel 汇总覆盖 13 个成功 run 和 28 个成功 artifact；汇总 SHA-256 为
 `0FE83471A9B613F807193E275EA3A6B85C0F4159C0198F1521AB0C8EE80E619A`。一次空 completion 失败和旧 wheel

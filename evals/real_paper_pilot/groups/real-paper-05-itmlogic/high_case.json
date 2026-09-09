@@ -1,0 +1,75 @@
+{
+  "schema_version": "1.0",
+  "case_id": "real-paper-05-itmlogic-high-case",
+  "scenario": "reproduction",
+  "report_path": "high_report.md",
+  "sources": [
+    {
+      "source_id": "evidence",
+      "locators": [
+        "E01",
+        "E02",
+        "E03",
+        "E04",
+        "E05"
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "itmlogic-paper-claim",
+      "marker": "The paper-backed claim is",
+      "required_source_ids": [
+        "evidence"
+      ]
+    },
+    {
+      "claim_id": "itmlogic-numeric-claim",
+      "marker": "The registered numeric fact is",
+      "required_source_ids": [
+        "evidence"
+      ]
+    }
+  ],
+  "numeric_expectations": [
+    {
+      "fact_id": "itmlogic-registered-fact",
+      "label": "The registered numeric fact is",
+      "expected": "600",
+      "absolute_tolerance": "0",
+      "critical": true,
+      "unit": "terrain-profile points"
+    }
+  ],
+  "required_sections": [
+    {
+      "section_id": "summary",
+      "heading": "Executive summary"
+    },
+    {
+      "section_id": "evidence",
+      "heading": "Experimental evidence"
+    },
+    {
+      "section_id": "limitations",
+      "heading": "Evidence and limitations"
+    },
+    {
+      "section_id": "next",
+      "heading": "Next steps"
+    }
+  ],
+  "uncertainty": {
+    "required": true,
+    "accepted_phrases": [
+      "insufficient evidence"
+    ]
+  },
+  "artifacts": [
+    {
+      "artifact_id": "itmlogic-source",
+      "path": "source_material.md",
+      "sha256": "30218A5B236C013BB5EA4DC090A73232E2F3A9FDB6EB259CC021B4ADC29F68AA"
+    }
+  ]
+}

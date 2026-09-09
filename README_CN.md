@@ -15,7 +15,7 @@ Hy3 ReproEval 是一个面向开放式科研报告的 Hy3 多工具应用与可�
 - 合成示例、离线评测集、在线验证门禁和 400 余项自动化测试；
 - 对原有 `hy3_reproscope_mcp` 模块和 `hy3-reproscope-mcp` 命令的兼容。
 
-版本化七维 Rubric、确定性校验器、受限 Hy3 语义 Judge、盲化重复比较、可复现数据协议、可恢复批量 Judge、组内 Benchmark、重复运行稳定性分析、人工盲审工作包、去标识化标注校验、一致性分析和裁决共识聚合已经实现。仓库同时提供可确定性生成的 12 组 P0 合成数据集候选，用于协议实验。模型判断不能覆盖本地引用、数值、工件或硬性分数上限结论。真实专家标签和冻结测试集结果仍属于后续验证工作，详见[项目方案](docs/PROJECT_PROPOSAL_CN.md)。
+版本化七维 Rubric、确定性校验器、受限 Hy3 语义 Judge、盲化重复比较、可复现数据协议、可恢复批量 Judge、组内 Benchmark、重复运行稳定性分析、人工标注数据结构、一致性分析和裁决共识聚合已经实现。盲审工作包同时提供匿名报告、匿名源材料、来源哈希和固定行号，并在回收时校验副本完整性与源证据引用；质量档位、Mutation、预期错误和系统分数不进入标注者目录。仓库提供 12 组 P0 合成协议数据，并新增 6 组来源可核验的开放获取真实论文 Pilot。真实 Pilot 尚未执行第三方软件；当前已完成冻结输入上的三轮在线 `hy3` Judge、validation/test 全部 12 份报告的双人盲评和 4 项第三人裁决，最终 `consensus_ready=true`，脱敏共识结果已公开。另行生成的高档候选保持未签核实验支线，不进入当前 Dataset。详见[项目方案](docs/PROJECT_PROPOSAL_CN.md)。
 
 ## 架构
 
@@ -64,7 +64,7 @@ Linux / macOS：
 HY3_API_PROVIDER=tokenhub
 HY3_BASE_URL=https://tokenhub.tencentmaas.com/v1
 HY3_API_KEY=replace-with-your-key
-HY3_MODEL=hy3-preview
+HY3_MODEL=hy3
 REPROSCOPE_ALLOWED_ROOTS=.
 REPROSCOPE_WORKSPACE=.reproeval/reproscope
 ```
@@ -85,7 +85,7 @@ hy3-reproscope-mcp
 
 ## Agent Skill
 
-仓库提供 [`reproeval-research-audit`](skills/reproeval-research-audit) Agent Skill，将自然语言任务路由到两条完整 MCP 流程，并保持工件血缘、证据不足状态和安全边界。Skill 不替代 MCP Server，也不保存任何凭据。
+仓库提供 [`reproeval-research-audit`](skills/reproeval-research-audit) Agent Skill，将自然语言任务路由到两条 ReproScope MCP 工作流，并保持工件血缘、证据不足状态和安全边界。Skill 不替代 MCP Server，也不保存任何凭据；当前 ReproEval 质量评估命令仍通过 CLI 使用。
 
 从源码仓库将 Skill 安装到支持 Agent Skills 的客户端后，可通过 `$reproeval-research-audit` 调用。安装方法、编排行为和验证方式见 [SKILL_ADAPTER.md](docs/SKILL_ADAPTER.md)。
 
@@ -168,7 +168,60 @@ hy3-reproeval benchmark-dataset \
 
 验证器要求同一来源组使用同一评测契约，阻止登记的同一来源指纹跨数据集划分复用，限制路径范围，并要求本地可检查错误与声明标签严格闭合。对抗报告还必须逐项登记攻击类型、目标维度和预期错误，并与 Mutation 操作闭合。语义类标签仍需后续 Hy3 Judge 或人工实验验证。两个公开样例均为合成开发组，只用于验证协议，不是 held-out Benchmark。详见 [DATASET_PROTOCOL.md](docs/DATASET_PROTOCOL.md) 和 [ADVERSARIAL_PROTOCOL.md](docs/ADVERSARIAL_PROTOCOL.md)。
 
-### P0 合成数据集候选
+### 真实论文 Pilot
+
+仓库内的真实论文 Pilot 包含 6 篇 CC BY 4.0 的 JOSS 论文和对应软件归档，按 2/2/2 划分
+development、validation、test，共形成 18 份高/中/低候选报告，其中 4 组为难例：
+
+```bash
+hy3-reproeval build-real-paper-pilot --output evals/real_paper_pilot --check
+hy3-reproeval validate-dataset --manifest evals/real_paper_pilot/dataset.json
+```
+
+该 Pilot 只审查复现条件，不声称已经安装或运行第三方软件。Dataset 1.2 登记 30 个来源资产；每篇论文的
+证据包包含 5 条带 PDF 页码、章节和短摘录的 Evidence ID。论文 PDF 不进入仓库，但可在私有缓存中对
+6 份 PDF 哈希和 30 条摘录执行复验：
+
+```bash
+hy3-reproeval verify-real-paper-sources --source-dir .reproeval/source_cache
+```
+
+高档报告使用 `curator_draft`，在完成真实人工复核前不是专家真值。可使用 Hy3 重新生成带完整血缘的候选，
+再由评审者填写默认状态为 `pending` 的签核表：
+
+```bash
+hy3-reproeval generate-real-paper-references \
+  --manifest evals/real_paper_pilot/dataset.json \
+  --output-dir .reproeval/real-paper-reference-candidates
+
+hy3-reproeval validate-reference-reviews \
+  --manifest evals/real_paper_pilot/dataset.json \
+  --bundle-dir .reproeval/real-paper-reference-candidates \
+  --require-approved
+```
+
+详见 [真实论文 Pilot](docs/REAL_PAPER_PILOT.md)和[高档报告生成与复核手册](docs/REFERENCE_GENERATION_REVIEW_CN.md)。
+
+仓库跟踪的[真实论文 Pilot Judge 聚合结果](results/real_paper_judge)来自同一 Freeze 上的三轮 TokenHub
+`hy3` 调用，共 54 条成功记录。公开包不包含原始请求、响应或凭据：
+
+```bash
+hy3-reproeval verify-results-export --bundle results/real_paper_judge
+hy3-reproeval verify-results-figures \
+  --figures results/real_paper_judge_figures \
+  --source-bundle results/real_paper_judge
+hy3-reproeval verify-human-consensus-results \
+  --bundle results/real_paper_human_consensus
+```
+
+三轮组内排序均为 100%，但 Run 1 产生了一个未登记的 `reasoning_gap`。双人盲评覆盖全部 12 份
+validation/test 报告，二次加权 Kappa 为 `0.964225`；三轮系统—最终共识 Spearman 为 `0.988483`、`1.0`
+和 `0.988483`，平均绝对误差为 `14.541667–15.791667`，说明排序能力强于绝对分数校准。4 个
+`factual_accuracy` 错误码分歧已完成第三人裁决，12/12 份目标报告形成最终人工共识。[脱敏公开包](results/real_paper_human_consensus)包含
+逐报告、逐维度以及逐轮系统—人工对照 CSV，不含评审者身份、Bundle ID、评语或原始模型响应。详见[三轮 Judge 实验](docs/REAL_PAPER_JUDGE_EXPERIMENT_CN.md)
+和[人工验证报告](docs/REAL_PAPER_HUMAN_VALIDATION_CN.md)。
+
+### P0 合成协议数据集
 
 仓库内的 P0 候选集包含 12 个相互隔离的合成来源组，development、validation、test 各 4 组，
 共 44 份报告和 8 份对抗报告，并覆盖已登记的全部 7 类攻击。无需 API Key 即可按规范字节复验并校验：
@@ -178,7 +231,7 @@ hy3-reproeval build-p0-dataset --output evals/p0_dataset --check
 hy3-reproeval validate-dataset --manifest evals/p0_dataset/dataset.json
 ```
 
-其中的生成标签用于验证协议和 P0 结构门槛，不是专家真值或 held-out 性能结果。详见
+其中的生成标签只用于回归、Mutation 和对抗协议验证，不是专家真值或 held-out 性能结果。详见
 [P0_DATASET.md](docs/P0_DATASET.md)。
 
 ### P1 技术迁移泛化数据集
@@ -289,7 +342,7 @@ hy3-reproeval export-benchmark-results \
 导出器会先根据 Benchmark 输入重新计算 Stability，结果不一致或输出目录非空时直接拒绝写入。详见
 [RESULT_EXPORT.md](docs/RESULT_EXPORT.md)。
 
-仓库跟踪的 [P1 技术迁移 Judge 结果包](results/p1_transfer_judge)记录了合成迁移数据集上的三次真实 Hy3 运行，不公开模型原始响应。可在本地执行完整性校验：
+仓库跟踪的 [P1 技术迁移 Judge 结果包](results/p1_transfer_judge)记录了通过腾讯云 TokenHub 对合成迁移报告执行的三轮在线 Hy3 Judge 调用，不公开模型原始响应。该结果只验证当前合成评测协议，不代表真实技术方案的迁移效果。可在本地执行完整性校验：
 
 ```bash
 hy3-reproeval verify-results-export --bundle results/p1_transfer_judge
@@ -312,7 +365,7 @@ hy3-reproeval verify-results-figures \
 
 ### Annotation Bundle 校验
 
-采集独立专家标签前，先从同一冻结数据集为每位专家生成单独随机排序的盲审工作包：
+以下命令生成一份随机化的盲审工作包。每个 item 包含带固定行号的候选报告和已登记源材料；`assignment.json` 记录源材料原始哈希与编号副本哈希，便于交付前后核验：
 
 ```bash
 hy3-reproeval prepare-annotation-packet \
@@ -324,7 +377,7 @@ hy3-reproeval prepare-annotation-packet \
   --bundle-id p1-independent-bundle-a
 ```
 
-只向专家发送生成的 `annotator/` 目录，`coordinator_manifest.json` 必须由组织者私下保留。收回填写后的目录，再通过 `finalize-annotation-packet` 验签并生成严格 Bundle。完整双人流程和信任边界见 [ANNOTATION_PACKET.md](docs/ANNOTATION_PACKET.md)。
+只向专家发送生成的 `annotator/` 目录，`coordinator_manifest.json` 必须由组织者私下保留。事实准确性、证据可追溯性和数值一致性若标为 `assessed`，必须同时引用报告行和源材料行。收回填写后的目录，再通过 `finalize-annotation-packet` 验签并生成严格 Bundle。完整双人流程和信任边界见 [ANNOTATION_PACKET.md](docs/ANNOTATION_PACKET.md)。
 
 以下命令无需 API Key，可校验公开的合成协议样例：
 
@@ -350,7 +403,29 @@ hy3-reproeval analyze-annotations \
 
 结果包含二次加权 Cohen's Kappa、精确一致率、±1 分一致率、平均绝对分差、逐维和逐标注者对指标，以及状态冲突或分差超过 1 分时生成的裁决清单；清单不会自动解决争议。系统-人工比较要求每份报告至少有两个人工有效总分，并且只有在 Dataset、Rubric、报告清单、数据划分和内容哈希完全一致时才输出 Spearman 相关系数与 MAE。不可定义的统计量保持 `null`；`agreement_ready=true` 只说明覆盖条件满足，不证明专家身份或标签质量。
 
-重复标注和裁决 Bundle 通过 `parent_annotation_bundle_ids` 声明血缘。重复轮次引用同一标注者的一份独立 Bundle，只输出重复稳定性，不计为多人一致性；裁决轮次引用至少两份独立 Bundle，每份被裁决报告必须出现在至少两个父级中，并由完成 Rubric 培训、对系统分数盲化且无利益冲突的不同裁决者完成。提交完整血缘集合后生成共识：
+重复标注和裁决 Bundle 通过 `parent_annotation_bundle_ids` 声明血缘。裁决工作包只包含程序生成的争议报告和维度，并以匿名方式展示两位原评审者的评分及证据轨迹；回收验签时会绑定父 Bundle 的 SHA-256。第三位裁决者必须不同于两位原评审者、完成 Rubric 培训且对系统分数盲化：
+
+```bash
+hy3-reproeval prepare-adjudication-packet \
+  --manifest path/to/frozen_dataset.json \
+  --dataset-freeze .reproeval/dataset-freeze.json \
+  --bundle private_annotations/annotator-01.json \
+  --bundle private_annotations/annotator-02.json \
+  --output-dir private_annotations/adjudicator-03 \
+  --assignment-id adjudication-03 \
+  --adjudicator-id adjudicator-03 \
+  --bundle-id adjudication-bundle-03
+
+hy3-reproeval finalize-adjudication-packet \
+  --manifest path/to/frozen_dataset.json \
+  --dataset-freeze .reproeval/dataset-freeze.json \
+  --bundle private_annotations/annotator-01.json \
+  --bundle private_annotations/annotator-02.json \
+  --packet-dir private_annotations/adjudicator-03 \
+  --output private_annotations/adjudication-03.json
+```
+
+重复轮次引用同一标注者的一份独立 Bundle，只输出重复稳定性，不计为多人一致性。第三人裁决完成后，提交完整血缘集合生成共识：
 
 ```bash
 hy3-reproeval finalize-annotations \
@@ -405,9 +480,11 @@ docs/PROJECT_PROPOSAL_CN.md 实战阶段设计和交付计划
 docs/EVALUATION_CORE.md     确定性评估器契约和能力边界
 docs/DATASET_PROTOCOL.md    数据集、划分、来源与变异协议
 docs/DATASET_FREEZE.md      实验输入冻结、复核与 P0 门槛
+docs/REAL_PAPER_PILOT.md    真实开放获取论文 Pilot、来源与实验边界
+docs/REAL_PAPER_JUDGE_EXPERIMENT_CN.md 真实论文 Pilot 三轮 Hy3 Judge 结果与边界
 docs/P0_DATASET.md          规范化 P0 合成数据集清单与结论边界
 docs/P1_TRANSFER_DATASET.md 规范化 P1 技术迁移泛化集清单与结论边界
-docs/P1_JUDGE_EXPERIMENT_CN.md P1 真实 Hy3 结果、归因与失败模式
+docs/P1_JUDGE_EXPERIMENT_CN.md P1 合成输入在线 Hy3 评测、归因与失败模式
 docs/SKILL_ADAPTER.md        Agent Skill 安装与编排契约
 docs/DELIVERY_STATUS_CN.md   最终任务书逐项完成状态与倒排计划
 docs/RESULT_FIGURES.md       确定性 SVG 生成与验签协议
@@ -419,8 +496,10 @@ docs/STABILITY_PROTOCOL.md  冻结重复 Benchmark 稳定性分析协议
 docs/RESULT_EXPORT.md       已验证的 Markdown/CSV Benchmark 审查包
 docs/ANNOTATION_PACKET.md   人工盲审工作包生成、回收与验签流程
 docs/ANNOTATION_PROTOCOL.md 去标识化标注和就绪条件
+docs/REAL_PILOT_REVIEW_GUIDE_CN.md 真实论文 Pilot 双人盲评操作手册
+docs/REFERENCE_GENERATION_REVIEW_CN.md Hy3 高档候选生成与人工签核门禁
 docs/reproscope/             ReproScope 验证证据与历史材料
-results/                     带 SHA-256 manifest 的公开聚合结果包
+results/                     带 SHA-256 manifest 的模型结果、图表和脱敏人工共识包
 skills/                      面向两条 MCP 流程的可复用 Agent Skill
 ```
 

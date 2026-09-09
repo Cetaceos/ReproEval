@@ -2,6 +2,72 @@
 
 All notable ReproEval changes are documented in this file.
 
+## 0.38.0 - 2026-09-07
+
+### Added
+
+- Dataset schema 1.2 source inventories that bind paper PDFs, journal records, software repositories, release
+  archives, and local evidence packets through typed provenance and SHA-256 fingerprints.
+- `verify-real-paper-sources` for checking all six cached open-access PDFs, page counts, hashes, and 30 registered
+  evidence excerpts without committing copyrighted PDF bytes.
+- A source-bounded Hy3 workflow that generates one traceable high-tier candidate per real-paper group and records
+  prompt, response, Dataset, source, and output fingerprints in a private review bundle.
+- `validate-reference-reviews` and explicit review forms that keep every generated candidate pending until a named
+  human reviewer completes the evidence, numerical, limitation, wording, and scientific-boundary checklist.
+- A three-run TokenHub `hy3` Judge experiment over the frozen real-paper Pilot, with 54 completed calls and a
+  public aggregate result bundle that excludes raw requests, responses, records, and credentials.
+- Human-response import compatibility for canonical `L000001` line labels, the `lines` source-reference alias,
+  longer expertise declarations, and up to 16 evidence lines without changing finalized integer-only Bundles.
+- Two independently completed blind-review Bundles for all 12 validation/test reports, human-human agreement
+  analysis, three system-human comparisons, and a fail-closed four-item adjudication queue.
+- A third-reviewer packet workflow that exports only queued disputes with anonymous parent evidence traces,
+  verifies all frozen copies on return, and binds adjudication output to both parent Bundle hashes.
+- Completed third-reviewer resolution of all four queued factual-accuracy disputes, yielding 12/12 final consensus
+  reports with `consensus_ready=true` and an updated system-consensus calibration analysis.
+- Added a closed, de-identified human-consensus export with report, dimension, and per-run system-human tables,
+  plus CLI verification and CI coverage for the real-paper Dataset and all published Pilot result bundles.
+
+### Scientific boundary
+
+- Generated candidates are not Dataset labels, expert ground truth, or independent reproduction results.
+- The real-paper Dataset still contains curator drafts; blind report scoring does not promote separately generated
+  Hy3 reference candidates, whose six sign-off forms remain pending.
+- Human provenance and expertise remain self-attested even though all queued disputes are now resolved; consensus
+  does not establish external expert identity, successful software reproduction, or scientific ground truth.
+
+## 0.37.0 - 2026-09-07
+
+### Added
+
+- A six-group real-paper Pilot grounded in attributed CC BY JOSS papers and publication-time software archives,
+  with balanced development, validation, and test splits and four declared hard cases.
+- Dataset schema fields for open-access publication provenance, paper PDF hashes, study mode, and case difficulty.
+- `build-real-paper-pilot` for deterministic materialization and byte verification of the 18-report Pilot.
+
+### Scientific boundary
+
+- Real-paper cases are explicitly classified as reproducibility-readiness reviews because ReproEval has not run the
+  third-party software or generated independent measurements.
+- High-tier reports use `curator_draft`; validation and Benchmark output warn that these tiers remain construction
+  hypotheses until blinded human review is complete.
+
+## 0.36.0 - 2026-09-06
+
+### Added
+
+- Annotation packet schema `1.1`, with a de-identified source-material inventory for every blind-review item.
+- Canonical `L000001 | ...` identifiers for report and source copies, raw/copy SHA-256 fingerprints, and
+  machine-readable source-line references in finalized human Annotation Bundles.
+- Tamper tests for report copies, source copies, private source mappings, assignments, and out-of-range source
+  evidence.
+
+### Security
+
+- Reviewer directories retain neutral item and source IDs and exclude quality tiers, Mutation metadata, expected
+  errors, system scores, and private Dataset mappings.
+- Finalization reconstructs packet files from the frozen Dataset and fails closed on changed source bytes,
+  fingerprints, paths, line counts, or evidence references.
+
 ## 0.35.0 - 2026-09-03
 
 ### Added

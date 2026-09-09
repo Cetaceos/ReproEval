@@ -1,0 +1,75 @@
+{
+  "schema_version": "1.0",
+  "case_id": "real-paper-01-opticommpy-low-case",
+  "scenario": "reproduction",
+  "report_path": "low_report.md",
+  "sources": [
+    {
+      "source_id": "evidence",
+      "locators": [
+        "E01",
+        "E02",
+        "E03",
+        "E04",
+        "E05"
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "opticommpy-paper-claim",
+      "marker": "The paper-backed claim is",
+      "required_source_ids": [
+        "evidence"
+      ]
+    },
+    {
+      "claim_id": "opticommpy-numeric-claim",
+      "marker": "The registered numeric fact is",
+      "required_source_ids": [
+        "evidence"
+      ]
+    }
+  ],
+  "numeric_expectations": [
+    {
+      "fact_id": "opticommpy-registered-fact",
+      "label": "The registered numeric fact is",
+      "expected": "5",
+      "absolute_tolerance": "0",
+      "critical": true,
+      "unit": "subpackages"
+    }
+  ],
+  "required_sections": [
+    {
+      "section_id": "summary",
+      "heading": "Executive summary"
+    },
+    {
+      "section_id": "evidence",
+      "heading": "Experimental evidence"
+    },
+    {
+      "section_id": "limitations",
+      "heading": "Evidence and limitations"
+    },
+    {
+      "section_id": "next",
+      "heading": "Next steps"
+    }
+  ],
+  "uncertainty": {
+    "required": true,
+    "accepted_phrases": [
+      "insufficient evidence"
+    ]
+  },
+  "artifacts": [
+    {
+      "artifact_id": "opticommpy-source",
+      "path": "source_material.md",
+      "sha256": "348E532AD5D96A816FDF0D009B5DBB443575D558B008E328DFB0AC8E2D1817DF"
+    }
+  ]
+}

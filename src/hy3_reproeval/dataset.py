@@ -23,6 +23,7 @@ from .validators import LoadedEvaluationCase, load_evaluation_case
 MAX_DATASET_MANIFEST_BYTES = 4 * 1024 * 1024
 MAX_MUTATION_MANIFEST_BYTES = 2 * 1024 * 1024
 MAX_MUTATION_REPORT_BYTES = 4 * 1024 * 1024
+MAX_SOURCE_ASSET_BYTES = 64 * 1024 * 1024
 
 _SEMANTIC_ONLY_ERRORS = {
     ErrorCode.REASONING_GAP,
@@ -59,6 +60,54 @@ class ProvenanceKind(StrEnum):
     OPEN_ACCESS = "open_access"
 
 
+class SourceAssetKind(StrEnum):
+    PAPER_PDF = "paper_pdf"
+    JOURNAL_RECORD = "journal_record"
+    SOFTWARE_REPOSITORY = "software_repository"
+    SOFTWARE_ARCHIVE = "software_archive"
+    EVIDENCE_PACKET = "evidence_packet"
+
+
+class StudyMode(StrEnum):
+    CONSTRUCTED_PROTOCOL = "constructed_protocol"
+    REPRODUCIBILITY_READINESS = "reproducibility_readiness"
+    RESULT_REPRODUCTION = "result_reproduction"
+
+
+class DatasetDifficulty(StrEnum):
+    STANDARD = "standard"
+    HARD = "hard"
+
+
+class SourceAssetRecord(StrictModel):
+    source_id: str = Field(min_length=1, pattern=r"^[A-Za-z0-9][A-Za-z0-9_.:-]*$")
+    kind: SourceAssetKind
+    media_type: str = Field(min_length=1, max_length=200)
+    license: str = Field(min_length=1, max_length=200)
+    acquisition_date: str = Field(pattern=r"^[0-9]{4}-[0-9]{2}-[0-9]{2}$")
+    description: str = Field(min_length=1, max_length=1000)
+    uri: str | None = Field(default=None, pattern=r"^https://")
+    local_path: str | None = Field(default=None, min_length=1)
+    sha256: str | None = Field(default=None, pattern=r"^[A-F0-9]{64}$")
+    derived_from: list[str] = Field(default_factory=list)
+
+    @model_validator(mode="after")
+    def validate_asset(self) -> SourceAssetRecord:
+        if self.uri is None and self.local_path is None:
+            raise ValueError("source asset requires an HTTPS URI or a local path")
+        if self.local_path is not None and self.sha256 is None:
+            raise ValueError("local source asset requires a SHA-256")
+        if self.kind is SourceAssetKind.PAPER_PDF and (self.uri is None or self.sha256 is None):
+            raise ValueError("paper PDF source requires an HTTPS URI and SHA-256")
+        if self.kind is SourceAssetKind.EVIDENCE_PACKET and (self.local_path is None or not self.derived_from):
+            raise ValueError("evidence packet requires a local path, SHA-256, and derived_from source IDs")
+        if len(self.derived_from) != len(set(self.derived_from)):
+            raise ValueError("source asset derived_from IDs must be unique")
+        if self.source_id in self.derived_from:
+            raise ValueError("source asset cannot derive from itself")
+        return self
+
+
 class MutationKind(StrEnum):
     REPLACE_ONCE = "replace_once"
     DELETE_ONCE = "delete_once"
@@ -71,6 +120,36 @@ class ProvenanceRecord(StrictModel):
     source_group_sha256: str = Field(pattern=r"^[A-F0-9]{64}$")
     acquisition_date: str = Field(pattern=r"^[0-9]{4}-[0-9]{2}-[0-9]{2}$")
     description: str = Field(min_length=1, max_length=1000)
+    citation: str | None = Field(default=None, min_length=1, max_length=2000)
+    paper_url: str | None = Field(default=None, pattern=r"^https://")
+    repository_url: str | None = Field(default=None, pattern=r"^https://")
+    archive_url: str | None = Field(default=None, pattern=r"^https://")
+    paper_sha256: str | None = Field(default=None, pattern=r"^[A-F0-9]{64}$")
+    redistribution_policy: str | None = Field(default=None, min_length=1, max_length=1000)
+    source_assets: list[SourceAssetRecord] = Field(default_factory=list)
+
+    @model_validator(mode="after")
+    def validate_open_access_provenance(self) -> ProvenanceRecord:
+        if self.kind is ProvenanceKind.OPEN_ACCESS:
+            required = {
+                "citation": self.citation,
+                "paper_url": self.paper_url,
+                "paper_sha256": self.paper_sha256,
+                "redistribution_policy": self.redistribution_policy,
+            }
+            missing = sorted(name for name, value in required.items() if value is None)
+            if missing:
+                raise ValueError("open-access provenance requires: " + ", ".join(missing))
+        source_ids = [asset.source_id for asset in self.source_assets]
+        if len(source_ids) != len(set(source_ids)):
+            raise ValueError("source asset IDs must be unique within a provenance record")
+        known = set(source_ids)
+        unknown_parents = sorted(
+            parent for asset in self.source_assets for parent in asset.derived_from if parent not in known
+        )
+        if unknown_parents:
+            raise ValueError("source assets derive from unknown IDs: " + ", ".join(unknown_parents))
+        return self
 
 
 class MutationOperation(StrictModel):
@@ -153,7 +232,7 @@ class DatasetReportEntry(StrictModel):
     quality_tier: QualityTier
     case_path: str = Field(min_length=1)
     report_sha256: str = Field(pattern=r"^[A-F0-9]{64}$")
-    label_source: Literal["reference_revision", "synthetic_mutation", "human_reviewed"]
+    label_source: Literal["curator_draft", "reference_revision", "synthetic_mutation", "human_reviewed"]
     mutation_manifest_path: str | None = None
     judge_record_path: str | None = None
     judge_record_sha256: str | None = Field(default=None, pattern=r"^[A-F0-9]{64}$")
@@ -192,6 +271,8 @@ class DatasetGroup(StrictModel):
     group_id: str = Field(min_length=1, pattern=r"^[A-Za-z0-9][A-Za-z0-9_.:-]*$")
     split: DatasetSplit
     scenario: Scenario
+    study_mode: StudyMode = StudyMode.CONSTRUCTED_PROTOCOL
+    difficulty: DatasetDifficulty = DatasetDifficulty.STANDARD
     provenance: ProvenanceRecord
     reports: list[DatasetReportEntry] = Field(min_length=3)
 
@@ -211,7 +292,7 @@ class DatasetGroup(StrictModel):
 
 
 class DatasetManifest(StrictModel):
-    schema_version: Literal["1.0"] = "1.0"
+    schema_version: Literal["1.0", "1.1", "1.2"] = "1.0"
     dataset_id: str = Field(min_length=1, pattern=r"^[A-Za-z0-9][A-Za-z0-9_.:-]*$")
     dataset_version: str = Field(min_length=1)
     description: str = Field(min_length=1, max_length=2000)
@@ -269,6 +350,13 @@ class DatasetValidationResult(StrictModel):
     scenario_counts: dict[Scenario, int]
     deterministic_error_counts: dict[ErrorCode, int]
     human_reviewed_report_count: int = Field(ge=0)
+    curator_draft_report_count: int = Field(default=0, ge=0)
+    open_access_group_count: int = Field(default=0, ge=0)
+    result_reproduction_group_count: int = Field(default=0, ge=0)
+    reproducibility_readiness_group_count: int = Field(default=0, ge=0)
+    hard_group_count: int = Field(default=0, ge=0)
+    source_asset_count: int = Field(default=0, ge=0)
+    locally_verified_source_count: int = Field(default=0, ge=0)
     adversarial_report_count: int = Field(default=0, ge=0)
     attack_instance_count: int = Field(default=0, ge=0)
     attack_type_counts: dict[AdversarialAttackType, int] = Field(default_factory=dict)
@@ -316,10 +404,13 @@ def validate_dataset_manifest(path: str | Path) -> DatasetValidationResult:
     deterministic_error_counts: Counter[ErrorCode] = Counter()
     attack_type_counts: Counter[AdversarialAttackType] = Counter()
     human_reviewed = 0
+    curator_drafts = 0
     rubric = load_public_rubric()
     rubric_sha256 = _rubric_sha256(rubric)
 
     for group in manifest.groups:
+        if manifest.schema_version == "1.2":
+            _validate_source_inventory(root, group)
         loaded_reports = _load_group_reports(root, group)
         _validate_group_contract(group, loaded_reports)
         by_id = {item.entry.report_id: item for item in loaded_reports}
@@ -328,6 +419,8 @@ def validate_dataset_manifest(path: str | Path) -> DatasetValidationResult:
                 attack_type_counts.update(attack.attack_type for attack in item.entry.adversarial_spec.attacks)
             if item.entry.label_source == "human_reviewed":
                 human_reviewed += 1
+            if item.entry.label_source == "curator_draft":
+                curator_drafts += 1
             actual_errors = _validate_expected_errors(item)
             deterministic_error_counts.update(actual_errors)
             if item.entry.judge_record_path is not None:
@@ -351,7 +444,7 @@ def validate_dataset_manifest(path: str | Path) -> DatasetValidationResult:
     split_counts = Counter(group.split for group in manifest.groups)
     tier_counts = Counter(report.quality_tier for group in manifest.groups for report in group.reports)
     scenario_counts = Counter(group.scenario for group in manifest.groups)
-    warnings = _dataset_warnings(manifest, split_counts, tier_counts, human_reviewed)
+    warnings = _dataset_warnings(manifest, split_counts, tier_counts, human_reviewed, curator_drafts)
     return DatasetValidationResult(
         engine_version=__version__,
         dataset_id=manifest.dataset_id,
@@ -366,6 +459,19 @@ def validate_dataset_manifest(path: str | Path) -> DatasetValidationResult:
         scenario_counts=dict(scenario_counts),
         deterministic_error_counts=dict(deterministic_error_counts),
         human_reviewed_report_count=human_reviewed,
+        curator_draft_report_count=curator_drafts,
+        open_access_group_count=sum(group.provenance.kind is ProvenanceKind.OPEN_ACCESS for group in manifest.groups),
+        result_reproduction_group_count=sum(
+            group.study_mode is StudyMode.RESULT_REPRODUCTION for group in manifest.groups
+        ),
+        reproducibility_readiness_group_count=sum(
+            group.study_mode is StudyMode.REPRODUCIBILITY_READINESS for group in manifest.groups
+        ),
+        hard_group_count=sum(group.difficulty is DatasetDifficulty.HARD for group in manifest.groups),
+        source_asset_count=sum(len(group.provenance.source_assets) for group in manifest.groups),
+        locally_verified_source_count=sum(
+            asset.local_path is not None for group in manifest.groups for asset in group.provenance.source_assets
+        ),
         adversarial_report_count=tier_counts[QualityTier.ADVERSARIAL],
         attack_instance_count=sum(attack_type_counts.values()),
         attack_type_counts=dict(attack_type_counts),
@@ -426,6 +532,40 @@ def _load_group_reports(root: Path, group: DatasetGroup) -> list[_LoadedReport]:
             raise EvaluationInputError(f"report '{entry.report_id}' SHA-256 does not match its dataset entry")
         loaded_reports.append(_LoadedReport(entry=entry, loaded_case=loaded_case))
     return loaded_reports
+
+
+def _validate_source_inventory(root: Path, group: DatasetGroup) -> None:
+    assets = group.provenance.source_assets
+    if not assets:
+        raise EvaluationInputError(f"Dataset 1.2 group '{group.group_id}' has no registered source assets")
+    if group.provenance.kind is ProvenanceKind.OPEN_ACCESS:
+        kinds = {asset.kind for asset in assets}
+        required = {SourceAssetKind.PAPER_PDF, SourceAssetKind.EVIDENCE_PACKET}
+        if not required.issubset(kinds):
+            missing = ", ".join(sorted(kind.value for kind in required - kinds))
+            raise EvaluationInputError(f"open-access group '{group.group_id}' is missing source assets: {missing}")
+        paper_assets = [asset for asset in assets if asset.kind is SourceAssetKind.PAPER_PDF]
+        if len(paper_assets) != 1:
+            raise EvaluationInputError(f"open-access group '{group.group_id}' requires exactly one paper PDF")
+        paper = paper_assets[0]
+        if paper.uri != group.provenance.paper_url or paper.sha256 != group.provenance.paper_sha256:
+            raise EvaluationInputError(f"open-access group '{group.group_id}' paper source disagrees with provenance")
+
+    for asset in assets:
+        if asset.local_path is None:
+            continue
+        path = _resolve_registered_path(root, asset.local_path, "source asset")
+        payload = _read_limited(path, MAX_SOURCE_ASSET_BYTES, "source asset")
+        if _sha256(payload) != asset.sha256:
+            raise EvaluationInputError(
+                f"source asset '{asset.source_id}' SHA-256 does not match in group '{group.group_id}'"
+            )
+
+    inventory_sha256 = _canonical_sha256(
+        [asset.model_dump(mode="json", exclude_none=True, exclude_defaults=True) for asset in assets]
+    )
+    if inventory_sha256 != group.provenance.source_group_sha256:
+        raise EvaluationInputError(f"source inventory SHA-256 does not match in group '{group.group_id}'")
 
 
 def _validate_group_contract(group: DatasetGroup, reports: list[_LoadedReport]) -> None:
@@ -511,6 +651,7 @@ def _dataset_warnings(
     split_counts: Counter[DatasetSplit],
     tier_counts: Counter[QualityTier],
     human_reviewed: int,
+    curator_drafts: int,
 ) -> list[str]:
     warnings: list[str] = []
     missing_splits = [split.value for split in DatasetSplit if split_counts[split] == 0]
@@ -523,6 +664,11 @@ def _dataset_warnings(
         warnings.append("Dataset is below the reproduction P0 target of 8 adversarial reports.")
     if human_reviewed == 0:
         warnings.append("Dataset contains no human-reviewed report labels.")
+    if curator_drafts:
+        warnings.append(
+            f"Dataset contains {curator_drafts} curator-draft reference report(s); "
+            "these are construction hypotheses, not human ground truth."
+        )
     return warnings
 
 

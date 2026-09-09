@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0",
+  "engine_version": "0.38.0",
+  "dataset_id": "reproeval-real-paper-pilot",
+  "dataset_version": "0.2.0",
+  "source_export_manifest_sha256": "266DDCEFF6B734B753CF98E3B2123C027D2F470F61CDF62F4D71BEB9DF2DBAD8",
+  "figures": [
+    {
+      "path": "dimension_stability.svg",
+      "bytes": 4231,
+      "sha256": "AD242814B7CEEA33D36175A6F37873EAE5EC3E0F64C43ACA2E737A176075AA0E"
+    },
+    {
+      "path": "score_by_tier.svg",
+      "bytes": 2680,
+      "sha256": "CA18862A5697BEBD831B9F5AED3462F00F83DB122EDA669F4234BA878CA8CE47"
+    }
+  ]
+}

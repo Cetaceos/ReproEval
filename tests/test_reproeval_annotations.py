@@ -289,3 +289,31 @@ def test_adjudication_bundle_rejects_unqualified_adjudicator_profile(tmp_path: P
 
     with pytest.raises(EvaluationInputError, match="trained, system-score-blind, and conflict-free"):
         validate_annotation_bundles(manifest_path, paths)
+
+
+def test_adjudication_parent_hashes_fail_closed_when_parent_changes(tmp_path: Path) -> None:
+    manifest_path, manifest = _validation_dataset(tmp_path)
+    first_payload = _human_bundle(manifest_path, manifest, annotator_id="annotator-a", bundle_id="bundle-a")
+    second_payload = _human_bundle(manifest_path, manifest, annotator_id="annotator-b", bundle_id="bundle-b")
+    first_path = _write_bundle(tmp_path / "bundle-a.json", first_payload)
+    second_path = _write_bundle(tmp_path / "bundle-b.json", second_payload)
+    adjudication_payload = json.loads(json.dumps(first_payload))
+    adjudication_payload.update(
+        annotation_bundle_id="bundle-adjudication",
+        annotation_round="adjudication",
+        parent_annotation_bundle_ids=["bundle-a", "bundle-b"],
+        parent_annotation_bundle_sha256={
+            "bundle-a": hashlib.sha256(first_path.read_bytes()).hexdigest().upper(),
+            "bundle-b": hashlib.sha256(second_path.read_bytes()).hexdigest().upper(),
+        },
+    )
+    adjudication_payload["annotator"]["annotator_id"] = "adjudicator-c"
+    adjudication_path = _write_bundle(tmp_path / "bundle-adjudication.json", adjudication_payload)
+    paths = [first_path, second_path, adjudication_path]
+
+    assert validate_annotation_bundles(manifest_path, paths).bundle_count == 3
+    first_payload["annotator"]["expertise_description"] += " Changed after adjudication."
+    _write_bundle(first_path, first_payload)
+
+    with pytest.raises(EvaluationInputError, match="parent fingerprint changed"):
+        validate_annotation_bundles(manifest_path, paths)

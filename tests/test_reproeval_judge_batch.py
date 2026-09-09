@@ -10,6 +10,7 @@ from hy3_reproeval.judge_batch import (
     JUDGE_RECORD_INDEX_NAME,
     JUDGE_RECORD_LOCK_NAME,
     JudgeRecordIndex,
+    _resolve_runtime,
     generate_dataset_judge_records,
     validate_judge_record_index,
 )
@@ -54,6 +55,19 @@ class FailIfCalledJudgeClient(FakeBatchJudgeClient):
 
 def _public_manifest() -> Path:
     return Path(__file__).resolve().parents[1] / "examples" / "dataset" / "sample_dataset.json"
+
+
+def test_runtime_overrides_change_the_owned_client_settings() -> None:
+    client, model, provider, settings = _resolve_runtime(
+        None,
+        model="hy3-override",
+        provider="self_hosted",
+    )
+
+    assert client is None
+    assert settings is not None
+    assert settings.hy3_model == model == "hy3-override"
+    assert settings.hy3_api_provider == provider == "self_hosted"
 
 
 async def test_batch_generation_writes_complete_lf_index_and_records(tmp_path: Path) -> None:

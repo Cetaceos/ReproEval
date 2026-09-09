@@ -21,6 +21,7 @@ FORBIDDEN_PARTS = {
 }
 REQUIRED_PACKAGE_DATA = {
     "hy3_reproeval": {
+        "data/adjudicator_guide_cn.md",
         "data/rubric.yaml",
     },
     "hy3_reproscope_mcp": {
@@ -32,10 +33,15 @@ REQUIRED_PACKAGE_DATA = {
 }
 REQUIRED_SDIST_DOCS = {
     "docs/ADVERSARIAL_PROTOCOL.md",
+    "docs/ANNOTATION_PACKET.md",
     "docs/ANNOTATION_PROTOCOL.md",
     "docs/DATASET_FREEZE.md",
     "docs/JUDGE_BATCH.md",
     "docs/P0_DATASET.md",
+    "docs/REAL_PAPER_HUMAN_VALIDATION_CN.md",
+    "docs/REAL_PAPER_PILOT.md",
+    "docs/REAL_PAPER_JUDGE_EXPERIMENT_CN.md",
+    "docs/REFERENCE_GENERATION_REVIEW_CN.md",
     "docs/STABILITY_PROTOCOL.md",
     "docs/PROJECT_PROPOSAL_CN.md",
     "docs/reproscope/RELEASE_EVIDENCE_0.15_CN.md",
@@ -48,6 +54,10 @@ REQUIRED_SDIST_FILES = {
     "examples/dataset/adversarial_report.md",
     "examples/dataset/sample_adversarial_dataset.json",
     "evals/p0_dataset/dataset.json",
+    "evals/real_paper_pilot/dataset.json",
+    "results/real_paper_judge/export_manifest.json",
+    "results/real_paper_judge_figures/figure_manifest.json",
+    "results/real_paper_human_consensus/export_manifest.json",
     "requirements.lock",
 }
 FORBIDDEN_SDIST_PATHS = {

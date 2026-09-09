@@ -202,7 +202,7 @@
   rejection, and zero-denominator uncertainty.
 - Ignore non-finite values in deterministic CSV/JSON/JSONL statistics and reject non-finite model fields.
 - Mark relative delta and difference severity as unknown when the reported paper value is zero.
-- Add repeatable stdio entrypoint smoke checks and an explicit opt-in real Hy3 workflow validator.
+- Add repeatable stdio entrypoint smoke checks and an explicit opt-in live Hy3 API workflow validator.
 - Document the 0.4.0 TokenHub validation, current client evidence, and public Rhino-Bird MCP PR research.
 
 ## 0.4.0 - 2026-07-19

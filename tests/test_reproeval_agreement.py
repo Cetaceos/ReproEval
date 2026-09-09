@@ -327,6 +327,7 @@ def test_parent_bound_adjudication_resolves_consensus(tmp_path: Path) -> None:
     assert result.adjudication_resolved_item_count == 1
     assert result.unresolved_adjudication_item_count == 0
     assert result.used_adjudication_bundle_ids == ["bundle-adjudication"]
+    assert not any("require adjudication" in warning for warning in result.warnings)
     medium = next(report for report in result.reports if report.report_id == "sample-report-medium-v1")
     factual = next(item for item in medium.dimensions if item.dimension is DimensionId.FACTUAL_ACCURACY)
     assert factual.source is ConsensusSource.ADJUDICATION
