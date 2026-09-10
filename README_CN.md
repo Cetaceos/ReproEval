@@ -202,6 +202,17 @@ hy3-reproeval validate-reference-reviews \
 
 详见 [真实论文 Pilot](docs/REAL_PAPER_PILOT.md)和[高档报告生成与复核手册](docs/REFERENCE_GENERATION_REVIEW_CN.md)。
 
+### DiffeRT2d 实际结果复现案例
+
+独立案例使用上游锁文件和专用 Python 3.11.8 环境，实际执行 DiffeRT2d v0.3.4 发布归档中的 JOSS
+Figure 2 程序。登记运行在 JAX CPU 后端耗时 30.160 秒，生成 300 x 300 功率网格；本次 PNG 与归档
+参考图在文件字节和 1313 x 1710 x 4 像素上均完全一致。公开证据包不包含第三方源码、本机路径、
+虚拟环境或凭据，保留环境版本、数值摘要、日志、复现 PNG 和哈希血缘。
+
+该结果只证明固定 Figure 2 程序在所记录环境下复现了归档产物，不代表整篇论文或无线传播准确性
+已经得到独立验证。详见[案例协议与结果](case_studies/differt2d_v0_3_4)和
+[中文证据协议](docs/DIFFERT2D_REPRODUCTION_PROTOCOL_CN.md)。
+
 仓库跟踪的[真实论文 Pilot Judge 聚合结果](results/real_paper_judge)来自同一 Freeze 上的三轮 TokenHub
 `hy3` 调用，共 54 条成功记录。公开包不包含原始请求、响应或凭据：
 

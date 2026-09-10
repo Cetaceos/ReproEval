@@ -1,0 +1,82 @@
+{
+  "case_id": "differt2d-v0.3.4-figure2",
+  "claim_boundary": "This exact result applies only to the archived JOSS Figure 2 program under the recorded environment; it is not an independent validation of the full paper or radio-propagation accuracy.",
+  "duration_seconds": 30.16,
+  "execution": {
+    "credentials_forwarded": false,
+    "entrypoint_allowlisted": true,
+    "exit_code": 0,
+    "network_isolation": "not_enforced_by_the_windows_runner",
+    "network_required": false,
+    "timed_out": false,
+    "timeout_seconds": 1800
+  },
+  "finished_at": "2026-09-09T13:27:27.982019+00:00",
+  "manifest_payload_sha256": "0C3DDD51E5B2E0D041EFE9BE033EE005FB7638C19DD5DCB0209090981199A921",
+  "omitted_private_artifacts": [
+    "the downloaded third-party archive and extracted source",
+    "local absolute paths and the dedicated environment",
+    "the compressed numerical NPZ and generated PDF"
+  ],
+  "outcome": "exact",
+  "published_files": [
+    {
+      "path": "environment.json",
+      "sha256": "B4095EAE4F426251FD76E79946E678223AFAFE2FCE6430BA18AC762A4FA0C890",
+      "size_bytes": 856
+    },
+    {
+      "path": "metrics.json",
+      "sha256": "588FA532F7D517C58CE9BF45A9F7F88F3A92979CAE4B9FA4BF9E151B72E6283D",
+      "size_bytes": 2535
+    },
+    {
+      "path": "ris_power_map_reproduced.png",
+      "sha256": "D9DA4C4DDBBEDAB3B8F009FE1CE6EA18989A9F885E784804CB5454BE2C88FCE1",
+      "size_bytes": 99365
+    },
+    {
+      "path": "stderr.txt",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "size_bytes": 0
+    },
+    {
+      "path": "stdout.txt",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "size_bytes": 0
+    }
+  ],
+  "run_id": "differt2d-v0.3.4-20260909T132657Z-f61fa9f7",
+  "schema_version": "1.0",
+  "source": {
+    "archive_filename": "DiffeRT2d-v0.3.4.zip",
+    "archive_md5": "A4497F4CCABA5CE5D8F867EC5B4D176C",
+    "archive_sha256": "F61FA9F76F3614449480BFF9314D9F1DB7FF9414C9BC526AEF0473ED4DA6BABE",
+    "archive_size_bytes": 30520081,
+    "entrypoint": {
+      "path": "jeertmans-DiffeRT2d-744a27e/papers/joss/plot_ris_power_map.py",
+      "sha256": "E9F5BDE138A6C64841E6970CCC28958A2B6B47F253216A69F18A439EF242F7A1"
+    },
+    "lockfile": {
+      "path": "jeertmans-DiffeRT2d-744a27e/requirements.lock",
+      "sha256": "372759137EE67F16CA776D5BC960D7D9344DBB745D4AC47D16F345B3C396F97A"
+    },
+    "reference_image": {
+      "path": "jeertmans-DiffeRT2d-744a27e/papers/joss/static/ris_power_map.png",
+      "sha256": "D9DA4C4DDBBEDAB3B8F009FE1CE6EA18989A9F885E784804CB5454BE2C88FCE1"
+    },
+    "skipped_internal_symlinks": [
+      {
+        "path": "jeertmans-DiffeRT2d-744a27e/docs/source/_static/logo_light_transparent.png",
+        "resolved_target": "jeertmans-DiffeRT2d-744a27e/static/logo_light_transparent.png"
+      },
+      {
+        "path": "jeertmans-DiffeRT2d-744a27e/tests/example.geojson",
+        "resolved_target": "jeertmans-DiffeRT2d-744a27e/examples/example.geojson"
+      }
+    ]
+  },
+  "source_run_manifest_sha256": "66004797F10DF0AF9339A619DAAC177E44075EE4BCA879D00D9DCB47A9134118",
+  "started_at": "2026-09-09T13:26:57.821830+00:00",
+  "status": "succeeded"
+}

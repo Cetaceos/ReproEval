@@ -208,6 +208,22 @@ hy3-reproeval validate-reference-reviews \
 See [REAL_PAPER_PILOT.md](docs/REAL_PAPER_PILOT.md) and the
 [Chinese generation/review runbook](docs/REFERENCE_GENERATION_REVIEW_CN.md).
 
+### DiffeRT2d result-reproduction case
+
+One separate case now executes the archived DiffeRT2d v0.3.4 JOSS Figure 2
+program in a dedicated Python 3.11.8 environment with the upstream lockfile.
+The registered run completed on the JAX CPU backend in 30.160 seconds, produced
+a 300 x 300 power grid, and generated a PNG that is byte- and pixel-identical
+to the archived reference. The public evidence bundle omits third-party source,
+local paths, environments, and credentials while retaining version metadata,
+numerical summaries, logs, the reproduced PNG, and hash-bound provenance.
+
+This result establishes only that the fixed Figure 2 program reproduced its
+archived artifact under the recorded environment. It does not independently
+validate the full paper or radio-propagation accuracy. See the
+[case protocol and result](case_studies/differt2d_v0_3_4) and the
+[Chinese evidence protocol](docs/DIFFERT2D_REPRODUCTION_PROTOCOL_CN.md).
+
 The tracked [real-paper Pilot aggregate result bundle](results/real_paper_judge) comes from three TokenHub `hy3`
 runs over the same Freeze, totaling 54 successful Judge records. It excludes raw requests, responses, and credentials:
 

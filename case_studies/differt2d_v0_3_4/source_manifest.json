@@ -1,0 +1,43 @@
+{
+  "schema_version": "1.0",
+  "case_id": "differt2d-v0.3.4-figure2",
+  "title": "DiffeRT2d v0.3.4 JOSS Figure 2 reproduction",
+  "paper": {
+    "title": "DiffeRT2d: A Differentiable Ray Tracing Python Framework for Radio Propagation",
+    "doi": "10.21105/joss.06915",
+    "url": "https://joss.theoj.org/papers/10.21105/joss.06915"
+  },
+  "software": {
+    "repository_url": "https://github.com/jeertmans/DiffeRT2d",
+    "release_tag": "v0.3.4",
+    "release_url": "https://github.com/jeertmans/DiffeRT2d/tree/v0.3.4",
+    "archive_doi": "10.5281/zenodo.12600658",
+    "archive_url": "https://zenodo.org/records/12600658",
+    "download_url": "https://zenodo.org/api/records/12600658/files/jeertmans/DiffeRT2d-v0.3.4.zip/content",
+    "license": "MIT"
+  },
+  "archive": {
+    "filename": "DiffeRT2d-v0.3.4.zip",
+    "size_bytes": 30520081,
+    "md5_from_zenodo": "A4497F4CCABA5CE5D8F867EC5B4D176C",
+    "sha256_observed_2026_09_09": "F61FA9F76F3614449480BFF9314D9F1DB7FF9414C9BC526AEF0473ED4DA6BABE",
+    "zip_root": "jeertmans-DiffeRT2d-744a27e"
+  },
+  "entrypoint": {
+    "path": "papers/joss/plot_ris_power_map.py",
+    "size_bytes": 1448,
+    "sha256": "E9F5BDE138A6C64841E6970CCC28958A2B6B47F253216A69F18A439EF242F7A1"
+  },
+  "upstream_reference": {
+    "path": "papers/joss/static/ris_power_map.png",
+    "size_bytes": 99365,
+    "sha256": "D9DA4C4DDBBEDAB3B8F009FE1CE6EA18989A9F885E784804CB5454BE2C88FCE1"
+  },
+  "environment": {
+    "upstream_python_version_file": "3.11.8",
+    "supported_python_min": "3.9",
+    "supported_python_max_tested": "3.12",
+    "lockfile": "requirements.lock",
+    "lockfile_sha256": "372759137EE67F16CA776D5BC960D7D9344DBB745D4AC47D16F345B3C396F97A"
+  }
+}

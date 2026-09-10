@@ -56,6 +56,7 @@ include = [
   "/src",
   "/scripts",
   "/tests",
+  "/case_studies",
   "/.env.example",
   "/.mcp.json",
   "/examples",

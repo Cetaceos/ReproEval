@@ -1,0 +1,40 @@
+{
+  "case_id": "differt2d-v0.3.4-figure2",
+  "fixed_environment": {
+    "JAX_PLATFORM_NAME": "cpu",
+    "MPLBACKEND": "Agg",
+    "PYTHONNOUSERSITE": "1",
+    "XLA_PYTHON_CLIENT_PREALLOCATE": "false"
+  },
+  "jax": {
+    "backend": "cpu",
+    "devices": [
+      "TFRT_CPU_0"
+    ],
+    "probe_error": null
+  },
+  "packages": {
+    "DiffeRT2d": "0.3.4",
+    "beartype": "0.18.5",
+    "differt-core": "0.0.17",
+    "equinox": "0.11.4",
+    "jax": "0.4.28",
+    "jaxlib": "0.4.28",
+    "jaxtyping": "0.2.28",
+    "matplotlib": "3.8.4",
+    "numpy": "2.0.0",
+    "optax": "0.2.2"
+  },
+  "platform": {
+    "machine": "",
+    "release": "10",
+    "system": "Windows"
+  },
+  "python": {
+    "executable": "<dedicated-python-path-omitted>",
+    "implementation": "CPython",
+    "supported_by_protocol": true,
+    "version": "3.11.8"
+  },
+  "schema_version": "1.0"
+}

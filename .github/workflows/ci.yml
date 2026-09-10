@@ -56,10 +56,10 @@ jobs:
           python -m pip install -e . --no-deps
 
       - name: Lint
-        run: python -m ruff check src tests scripts
+        run: python -m ruff check src tests scripts case_studies
 
       - name: Check formatting
-        run: python -m ruff format --check src tests scripts
+        run: python -m ruff format --check src tests scripts case_studies
 
       - name: Verify lockfile metadata
         run: python scripts/verify_lockfile.py requirements.lock
@@ -92,6 +92,9 @@ jobs:
           python -m hy3_reproeval verify-results-export --bundle results/real_paper_judge
           python -m hy3_reproeval verify-results-figures --figures results/real_paper_judge_figures --source-bundle results/real_paper_judge
           python -m hy3_reproeval verify-human-consensus-results --bundle results/real_paper_human_consensus
+
+      - name: Verify published DiffeRT2d reproduction evidence
+        run: python -m case_studies.differt2d_v0_3_4.scripts.run_reproduction verify-public --evidence-dir case_studies/differt2d_v0_3_4/evidence
 
       - name: Run deterministic offline evaluations
         run: |

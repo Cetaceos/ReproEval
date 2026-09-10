@@ -1,0 +1,113 @@
+{
+  "case_id": "differt2d-v0.3.4-figure2",
+  "entrypoint": "papers/joss/plot_ris_power_map.py",
+  "entrypoint_sha256": "E9F5BDE138A6C64841E6970CCC28958A2B6B47F253216A69F18A439EF242F7A1",
+  "grid": {
+    "x": {
+      "dtype": "float32",
+      "element_count": 90000,
+      "finite_count": 90000,
+      "finite_ratio": 1.0,
+      "max": 1.0,
+      "mean": 0.5,
+      "min": 0.0,
+      "nan_count": 0,
+      "negative_infinity_count": 0,
+      "positive_infinity_count": 0,
+      "quantiles": {
+        "q01": 0.00999996718019247,
+        "q50": 0.5,
+        "q99": 0.9899926781654358
+      },
+      "shape": [
+        300,
+        300
+      ],
+      "std": 0.2896389961242676
+    },
+    "y": {
+      "dtype": "float32",
+      "element_count": 90000,
+      "finite_count": 90000,
+      "finite_ratio": 1.0,
+      "max": 1.0,
+      "mean": 0.5000000596046448,
+      "min": 0.0,
+      "nan_count": 0,
+      "negative_infinity_count": 0,
+      "positive_infinity_count": 0,
+      "quantiles": {
+        "q01": 0.00999996718019247,
+        "q50": 0.5,
+        "q99": 0.9899926781654358
+      },
+      "shape": [
+        300,
+        300
+      ],
+      "std": 0.2896389961242676
+    }
+  },
+  "image_comparison": {
+    "generated_shape": [
+      1313,
+      1710,
+      4
+    ],
+    "normalized_mean_absolute_error": 0.0,
+    "normalized_root_mean_squared_error": 0.0,
+    "pixel_exact": true,
+    "reference_shape": [
+      1313,
+      1710,
+      4
+    ],
+    "shape_matches": true,
+    "visual_threshold": 0.01
+  },
+  "power_db": {
+    "dtype": "float32",
+    "element_count": 90000,
+    "finite_count": 87635,
+    "finite_ratio": 0.9737222222222223,
+    "max": -9.260479927062988,
+    "mean": -17.293092727661133,
+    "min": -28.14864730834961,
+    "nan_count": 0,
+    "negative_infinity_count": 2365,
+    "positive_infinity_count": 0,
+    "quantiles": {
+      "q01": -25.56382942199707,
+      "q50": -16.335737228393555,
+      "q99": -9.90490436553955
+    },
+    "shape": [
+      300,
+      300
+    ],
+    "std": 3.998713970184326
+  },
+  "power_linear": {
+    "dtype": "float32",
+    "element_count": 90000,
+    "finite_count": 90000,
+    "finite_ratio": 1.0,
+    "max": 11.856376647949219,
+    "mean": 2.589402675628662,
+    "min": 0.0,
+    "nan_count": 0,
+    "negative_infinity_count": 0,
+    "positive_infinity_count": 0,
+    "quantiles": {
+      "q01": 0.0,
+      "q50": 2.278454065322876,
+      "q99": 10.195530891418457
+    },
+    "shape": [
+      300,
+      300
+    ],
+    "std": 2.148549795150757
+  },
+  "schema_version": "1.0"
+}

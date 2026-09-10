@@ -1,6 +1,6 @@
 # ReproEval 最终交付状态
 
-> 核对日期：2026-09-09
+> 核对日期：2026-09-10
 >
 > 任务：犀牛鸟实战任务一“开放式场景：AI 应用与评判标准设计”
 >
@@ -8,7 +8,7 @@
 
 ## 1. 当前结论
 
-应用层、评估方法、分档数据以及判别力和重复稳定性实验已经形成可运行的工程链路。仓库已加入 6 组开放获取真实论文 Pilot，并完成 Dataset 1.2 来源清单、PDF 哈希与 30 条论文证据摘录核验。真实 Pilot 已在同一 Freeze 上完成三轮、共 54 次 `hy3` Judge 调用并公开聚合结果。12 份 validation/test 报告的双人盲评、4 项第三人裁决和最终共识均已完成，二次加权 Kappa 为 `0.964225`，三轮系统—最终共识 Spearman 为 `0.988483`、`1.0` 和 `0.988483`，`consensus_ready=true`。逐报告、逐维度和逐轮系统—人工结果已形成脱敏公开包并纳入 CI。Hy3 高档候选生成与签核保留为独立实验支线：6 份候选均为 `pending`，不进入 Dataset `0.2.0`，也不作为本轮人工真值。最终演示仍是终稿前的阻塞项。第三方软件尚未执行。
+应用层、评估方法、分档数据以及判别力和重复稳定性实验已经形成可运行的工程链路。仓库已加入 6 组开放获取真实论文 Pilot，并完成 Dataset 1.2 来源清单、PDF 哈希与 30 条论文证据摘录核验。真实 Pilot 已在同一 Freeze 上完成三轮、共 54 次 `hy3` Judge 调用并公开聚合结果。12 份 validation/test 报告的双人盲评、4 项第三人裁决和最终共识均已完成，二次加权 Kappa 为 `0.964225`，三轮系统—最终共识 Spearman 为 `0.988483`、`1.0` 和 `0.988483`，`consensus_ready=true`。逐报告、逐维度和逐轮系统—人工结果已形成脱敏公开包并纳入 CI。Hy3 高档候选生成与签核保留为独立实验支线：6 份候选均为 `pending`，不进入 Dataset `0.2.0`，也不作为本轮人工真值。6 组真实论文 Pilot 本身未执行对应第三方软件；独立 DiffeRT2d v0.3.4 案例已经执行其 JOSS Figure 2 固定入口并形成可校验公开证据。最终演示仍是终稿前的阻塞项。
 
 由外部可认证领域专家扩展标签规模和真实论文 held-out 实验仍能显著提高项目可信度。任务书允许使用“同一输出多次评估的分数波动”完成一致性验证，因此当前重复实验满足该项要求，但不能替代更大规模真实场景有效性证据。
 当前 validation/test 共识只能用于披露校准误差，不能用于事后调参后在同一批样本上重新宣称独立性能；
@@ -33,6 +33,7 @@
 | 对抗性验证 | 已完成任务书鼓励项 | P0 含 8 份 adversarial report、7 类攻击、Mutation 闭合和确定性检测指标 | 未开展 P1/真实 Pilot 在线对抗实验，不外推为真实攻击鲁棒性 |
 | 人工标注接口 | 已完成 | [盲审工作包](ANNOTATION_PACKET.md)、两份独立 Bundle、父哈希绑定的第三人裁决 Bundle、12/12 最终共识、[人工验证报告](REAL_PAPER_HUMAN_VALIDATION_CN.md) | 无 |
 | Skill 适配 | 已完成（P1 增强） | [`reproeval-research-audit`](../skills/reproeval-research-audit)、[Skill 文档](SKILL_ADAPTER.md) | 可在支持 Skills 的客户端补一次调用截图 |
+| 实际结果复现案例 | 已完成一个受限案例 | [DiffeRT2d v0.3.4 Figure 2](../case_studies/differt2d_v0_3_4) 已实际执行并得到像素与文件字节一致的公开证据 | 只证明固定 Figure 2 程序的工件复现，不外推到整篇论文或真实物理测量 |
 | 2 分钟以内演示 | 待完成，阻塞最终提交 | 旧 ReproScope 客户端证据不能完整代表当前 ReproEval | 录制当前版本的应用调用与评测结果 |
 
 ## 3. 已公开的核心实验
@@ -90,7 +91,12 @@ hy3-reproeval verify-human-consensus-results --bundle results/real_paper_human_c
 
 ### 4.3 真实材料泛化与候选支线
 
-`evals/real_paper_pilot` 已登记 6 篇 CC BY 4.0 的 JOSS 论文、期刊记录、论文哈希、软件仓库、发表时归档和本地证据包，共 30 个来源资产及 30 条可回查论文证据。PDF 原文只保存在被忽略的私有缓存中，验证命令会重算哈希并逐页检查证据摘录。所有组均标记为 `reproducibility_readiness`，因为尚未执行第三方软件；仓库内 6 份高档报告仍标记为 `curator_draft`，不能作为专家真值。私有目录已用 Prompt `reproeval-reference-generation-1.1` 完成 6 份 TokenHub `hy3` 候选并通过重算血缘验证；它们仍全部等待签核，因此本轮明确将该流程保留为实验性后续研究，不以候选替换当前报告。若未来采用签核候选，必须显式升级 Dataset、重建 Mutation、重新冻结并运行新的 Judge 和人工实验，不能与 `0.2.0` 结果混用。
+`evals/real_paper_pilot` 已登记 6 篇 CC BY 4.0 的 JOSS 论文、期刊记录、论文哈希、软件仓库、发表时归档和本地证据包，共 30 个来源资产及 30 条可回查论文证据。PDF 原文只保存在被忽略的私有缓存中，验证命令会重算哈希并逐页检查证据摘录。冻结 Pilot 的所有组仍标记为 `reproducibility_readiness`，不登记第三方软件执行结果；仓库内 6 份高档报告仍标记为 `curator_draft`，不能作为专家真值。私有目录已用 Prompt `reproeval-reference-generation-1.1` 完成 6 份 TokenHub `hy3` 候选并通过重算血缘验证；它们仍全部等待签核，因此本轮明确将该流程保留为实验性后续研究，不以候选替换当前报告。若未来采用签核候选，必须显式升级 Dataset、重建 Mutation、重新冻结并运行新的 Judge 和人工实验，不能与 `0.2.0` 结果混用。
+
+独立的 `case_studies/differt2d_v0_3_4` 案例已使用 Python 3.11.8 和上游锁定依赖实际执行
+DiffeRT2d v0.3.4 JOSS Figure 2 程序。登记运行退出码为 0，300 x 300 功率网格生成完成，输出 PNG
+与归档参考图字节及像素完全相同；公开证据包通过 SHA-256 复验。该结果不回写冻结 Pilot，也不扩展为
+整篇论文或传播模型准确性已经得到独立验证。
 
 ## 5. 9 月 11 日前建议顺序
 
@@ -101,6 +107,7 @@ hy3-reproeval verify-human-consensus-results --bundle results/real_paper_human_c
 | 9 月 8–9 日 | 组织双人盲评 validation/test | 已完成：两份 Bundle 验签、12/12 双人覆盖和一致性分析；生成 4 项裁决队列 |
 | 9 月 9 日 | 完成第三人裁决和案例分析 | 已完成：回收包仅修改 responses，4/4 争议解决，12/12 共识报告，`consensus_ready=true` |
 | 9 月 9 日 | 公开脱敏人工结果并补 CI 门禁 | 已完成：12 份报告、84 条维度结果、36 条系统对照和 9 条逐档校准结果均由闭合 manifest 保护；真实 Pilot 三类结果进入 CI |
+| 9 月 9 日 | 完成 DiffeRT2d 实际结果复现 | 已完成：来源与环境冻结、固定入口执行、8 项私有证据、5 项公开证据和防篡改验证；结果为 exact |
 | 9 月 10 日 | 录制演示并在干净环境完成发行验收 | 两分钟内，无密钥；Python 3.11–3.13 CI 绿色 |
 | 9 月 11 日 | 提交最终仓库链接和材料 | GitHub CI 绿色，提交内容与仓库版本一致 |
 
@@ -110,8 +117,8 @@ hy3-reproeval verify-human-consensus-results --bundle results/real_paper_human_c
 python -m pip install --require-hashes -r requirements.lock
 python -m pip install -e . --no-deps
 python -m pytest
-python -m ruff check src tests scripts
-python -m ruff format --check src tests scripts
+python -m ruff check src tests scripts case_studies
+python -m ruff format --check src tests scripts case_studies
 python -m hy3_reproeval build-p0-dataset --output evals/p0_dataset --check
 python -m hy3_reproeval build-p1-transfer-dataset --output evals/p1_transfer_dataset --check
 python -m hy3_reproeval build-real-paper-pilot --output evals/real_paper_pilot --check
@@ -120,6 +127,7 @@ python -m hy3_reproeval validate-dataset --manifest evals/real_paper_pilot/datas
 python -m hy3_reproeval verify-real-paper-sources --source-dir .reproeval/source_cache
 python -m hy3_reproeval verify-results-export --bundle results/p1_transfer_judge
 python -m hy3_reproeval verify-results-export --bundle results/real_paper_judge
+python case_studies/differt2d_v0_3_4/scripts/run_reproduction.py verify-public --evidence-dir case_studies/differt2d_v0_3_4/evidence
 python -m hy3_reproeval verify-human-consensus-results --bundle results/real_paper_human_consensus
 python -m hy3_reproeval verify-results-figures --figures results/real_paper_judge_figures --source-bundle results/real_paper_judge
 python -m hy3_reproeval verify-results-figures --figures results/p1_transfer_judge_figures --source-bundle results/p1_transfer_judge

@@ -1,0 +1,58 @@
+{
+  "schema_version": "1.0",
+  "protocol_id": "differt2d-v0.3.4-figure2-protocol-1.0",
+  "case_id": "differt2d-v0.3.4-figure2",
+  "study_mode": "result_reproduction",
+  "target": {
+    "paper_artifact": "JOSS Figure 2 RIS received-power map",
+    "official_entrypoint": "papers/joss/plot_ris_power_map.py",
+    "claim_scope": "Re-execute the archived Figure 2 program and compare its numerical and rendered artifacts with the archived reference image.",
+    "excluded_claims": [
+      "independent validation of the full DiffeRT2d paper",
+      "validation of radio-propagation accuracy against measurements",
+      "reproduction of every figure, benchmark, or software claim"
+    ]
+  },
+  "fixed_parameters": {
+    "scene": "Scene.square_scene",
+    "ris_xys": [[0.5, 0.3], [0.5, 0.7]],
+    "ris_phi_radians": "pi/4",
+    "prng_seed": 1234,
+    "grid_n": 300,
+    "path_class": "MinPath",
+    "path_order": 1,
+    "path_steps": 1000,
+    "reduce_all": true,
+    "plot_vmin_db": -50,
+    "plot_vmax_db": 5
+  },
+  "execution_policy": {
+    "entrypoint_allowlist": ["papers/joss/plot_ris_power_map.py"],
+    "archive_hash_required": true,
+    "entrypoint_hash_required": true,
+    "credentials_forwarded": false,
+    "network_required": false,
+    "network_isolation": "not_enforced_by_the_windows_runner",
+    "python_versions": ["3.11", "3.12"],
+    "jax_platform": "cpu",
+    "matplotlib_backend": "Agg",
+    "timeout_seconds": 1800
+  },
+  "required_evidence": [
+    "run_manifest.json",
+    "environment.json",
+    "metrics.json",
+    "logs/stdout.txt",
+    "logs/stderr.txt",
+    "artifacts/ris_power_map.png",
+    "artifacts/ris_power_map.pdf",
+    "artifacts/reference_ris_power_map.png",
+    "artifacts/figure2_arrays.npz"
+  ],
+  "outcome_rules": {
+    "exact": "The process exits successfully, all required artifacts pass hash verification, the numerical grid is 300 by 300, and generated and archived PNG pixel arrays are identical.",
+    "visually_consistent": "All exact gates except pixel identity pass, image shapes match, and normalized pixel mean absolute error is at most 0.01.",
+    "artifact_divergence": "Execution succeeds and artifacts are complete, but the image comparison exceeds the declared visual threshold or shapes differ.",
+    "failed": "Source, environment, execution, required-artifact, or evidence-integrity validation fails."
+  }
+}

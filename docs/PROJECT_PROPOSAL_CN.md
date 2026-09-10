@@ -69,20 +69,19 @@ flowchart TB
 | Judge 层 | 判断开放式语义质量 | Hy3 结构化 Rubric Judge、重复评测、错误分类 |
 | 聚合层 | 汇总评分并应用硬性约束 | 固定权重、覆盖率、拒答门槛、关键错误上限 |
 | 人工层 | 提供独立参照 | 双人盲评、分歧记录、裁决标签 |
-| 接入层 | 面向用户调用 | Python CLI、MCP Server，条件允许时补充 Skill 适配 |
+| 接入层 | 面向用户调用 | 10 个 ReproScope MCP Tool、`hy3-reproeval` CLI、工作流 Skill |
 | 评测层 | 验证评估方法有效性 | 分档排序、一致性、稳定性、对抗性和失败模式分析 |
 
-### 3.2 计划提供的高层工具
+### 3.2 对外接口边界
 
-| Tool | 功能 | 核心实现 |
-| --- | --- | --- |
-| `generate_reproduction_report` | 生成论文复现审查报告 | Hy3 + 本地统计与证据校验 |
-| `generate_transfer_report` | 生成技术方案迁移报告 | Hy3 + 条件化规则 |
-| `evaluate_report` | 对单份报告进行七维评估 | Validators + Hy3 Judge |
-| `compare_report_quality` | 对多份报告进行盲化比较与排序 | 成对比较 + 固定聚合 |
-| `explain_evaluation` | 输出扣分证据、错误类别和改进建议 | 本地结果解释 |
+项目不再额外包装一组与现有能力重复的高层 MCP Tool。应用生成阶段继续使用 10 个可组合、可追溯的
+ReproScope MCP Tool，覆盖主张提取、结果比较、可靠性评分、证据图、报告生成、方案迁移和只读仓库审计。
+工作流 Skill 只负责选择并编排这些 MCP Tool，不绕过 MCP 传输层调用内部处理程序。
 
-批量 Benchmark 通过 CLI 和 Python API 执行，避免在 MCP 会话中运行长耗时任务。
+质量评估阶段统一通过 `hy3-reproeval` CLI 和 Python API 执行：`evaluate-report` 负责单报告七维评估，
+`compare-reports` 负责盲化重复比较，`benchmark-dataset` 和 `run-judge-experiment` 负责冻结数据集上的批量
+实验，结果解释由评估 JSON、公开结果表和分析报告共同承载。该边界避免在交互式 MCP 会话中启动长耗时、
+可恢复或需要私有 Judge Record 的实验，也避免把本地 CLI 执行误称为 MCP 客户端调用。
 
 ## 4. 重点技术方案
 
