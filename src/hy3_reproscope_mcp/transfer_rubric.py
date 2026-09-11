@@ -1,3 +1,4 @@
+# ruff: noqa: RUF001
 """Fixed rubric and deterministic aggregation for transfer assessments."""
 
 from __future__ import annotations
@@ -58,7 +59,11 @@ def transfer_rubric_payload() -> list[dict[str, str | float]]:
     ]
 
 
-def normalize_transfer_assessment(result: TransferAssessmentResult) -> None:
+def normalize_transfer_assessment(
+    result: TransferAssessmentResult,
+    *,
+    output_language: str = "en",
+) -> None:
     """Apply fixed dimensions and weights, then calculate a conservative local verdict."""
 
     supplied: dict[TransferDimension, TransferDimensionScore] = {}
@@ -79,8 +84,12 @@ def normalize_transfer_assessment(result: TransferAssessmentResult) -> None:
                 name=name,
                 score=None,
                 assessment_status=DimensionAssessmentStatus.INSUFFICIENT_EVIDENCE,
-                rationale="No evidence-grounded assessment was returned for this fixed transfer dimension.",
-                evidence_gaps=["dimension assessment missing"],
+                rationale=_message(
+                    output_language,
+                    en="No evidence-grounded assessment was returned for this fixed transfer dimension.",
+                    zh="该固定迁移评估维度没有返回有证据支持的判断。",
+                ),
+                evidence_gaps=[_message(output_language, en="dimension assessment missing", zh="缺少该维度的评估")],
             )
         elif dimension.assessment_status is DimensionAssessmentStatus.INSUFFICIENT_EVIDENCE:
             dimension.score = None
@@ -121,7 +130,11 @@ def normalize_transfer_assessment(result: TransferAssessmentResult) -> None:
         result.warnings.append(
             ToolWarning(
                 code="TRANSFER_SCORE_NORMALIZED",
-                message="Overall transfer score and feasibility band were recalculated from the fixed local rubric.",
+                message=_message(
+                    output_language,
+                    en="Overall transfer score and feasibility band were recalculated from the fixed local rubric.",
+                    zh="迁移总分和可行性等级已根据固定量表在本地重新计算。",
+                ),
             )
         )
     result.overall_score = score
@@ -136,18 +149,30 @@ def normalize_transfer_assessment(result: TransferAssessmentResult) -> None:
         [
             ToolWarning(
                 code="CONDITIONAL_TRANSFER_ASSESSMENT",
-                message=(
-                    "This assessment is conditional on the supplied target context and must be validated with "
-                    "representative measurements before an engineering decision."
+                message=_message(
+                    output_language,
+                    en=(
+                        "This assessment is conditional on the supplied target context and must be validated with "
+                        "representative measurements before an engineering decision."
+                    ),
+                    zh="该评估以提供的目标环境为前提；在形成工程决策前，仍需使用代表性测量结果验证。",
                 ),
             ),
             ToolWarning(
                 code="NO_TARGET_PERFORMANCE_PREDICTION",
-                message="No point performance prediction is provided without target-context measurements.",
+                message=_message(
+                    output_language,
+                    en="No point performance prediction is provided without target-context measurements.",
+                    zh="缺少目标环境测量结果时，不提供具体性能预测。",
+                ),
             ),
             ToolWarning(
                 code="LICENSE_SIGNALS_NOT_LEGAL_ADVICE",
-                message="License and provenance signals are screening evidence, not a legal conclusion.",
+                message=_message(
+                    output_language,
+                    en="License and provenance signals are screening evidence, not a legal conclusion.",
+                    zh="许可证和来源信息仅用于初步检查，不构成法律结论。",
+                ),
             ),
         ]
     )
@@ -155,9 +180,16 @@ def normalize_transfer_assessment(result: TransferAssessmentResult) -> None:
         result.warnings.append(
             ToolWarning(
                 code="TRANSFER_RUBRIC_PARTIAL_COVERAGE",
-                message=(
-                    f"Only {result.rubric_coverage:.0%} of the fixed transfer rubric had enough evidence to score; "
-                    "unassessed dimensions were excluded rather than treated as zero."
+                message=_message(
+                    output_language,
+                    en=(
+                        f"Only {result.rubric_coverage:.0%} of the fixed transfer rubric had enough evidence to "
+                        "score; unassessed dimensions were excluded rather than treated as zero."
+                    ),
+                    zh=(
+                        f"固定迁移量表中只有 {result.rubric_coverage:.0%} 的维度具有足够证据可评分；"
+                        "未评估维度已排除，而不是按零分处理。"
+                    ),
                 ),
             )
         )
@@ -165,9 +197,13 @@ def normalize_transfer_assessment(result: TransferAssessmentResult) -> None:
         result.warnings.append(
             ToolWarning(
                 code="TRANSFER_BLOCKERS_PRESENT",
-                message=(
-                    "At least one source assumption, dependency, or resource requirement is unsatisfied in the "
-                    "target context; a promising verdict is not allowed until the blocker is resolved."
+                message=_message(
+                    output_language,
+                    en=(
+                        "At least one source assumption, dependency, or resource requirement is unsatisfied in the "
+                        "target context; a promising verdict is not allowed until the blocker is resolved."
+                    ),
+                    zh="目标环境中至少有一项源方案前提、依赖或资源要求未满足；问题解决前不能判为较可行。",
                 ),
             )
         )
@@ -175,18 +211,48 @@ def normalize_transfer_assessment(result: TransferAssessmentResult) -> None:
         result.warnings.append(
             ToolWarning(
                 code="TRANSFER_DIMENSION_MISSING",
-                message="Missing transfer dimensions were marked as insufficient evidence: "
-                + ", ".join(dimension.value for dimension in missing_dimensions),
+                message=_message(
+                    output_language,
+                    en="Missing transfer dimensions were marked as insufficient evidence: ",
+                    zh="以下缺失的迁移评估维度已标记为证据不足：",
+                )
+                + ", ".join(_dimension_label(dimension, output_language) for dimension in missing_dimensions),
             )
         )
     if duplicate_dimensions:
         result.warnings.append(
             ToolWarning(
                 code="TRANSFER_DIMENSION_DUPLICATED",
-                message="Only the first assessment was kept for duplicated transfer dimensions: "
-                + ", ".join(dimension.value for dimension in sorted(duplicate_dimensions, key=str)),
+                message=_message(
+                    output_language,
+                    en="Only the first assessment was kept for duplicated transfer dimensions: ",
+                    zh="以下重复迁移维度仅保留第一项评估：",
+                )
+                + ", ".join(
+                    _dimension_label(dimension, output_language) for dimension in sorted(duplicate_dimensions, key=str)
+                ),
             )
         )
+
+
+_TRANSFER_DIMENSION_LABELS_ZH = {
+    TransferDimension.EVIDENCE_RELIABILITY: "源方案证据可靠性",
+    TransferDimension.ASSUMPTION_COMPATIBILITY: "前提条件兼容性",
+    TransferDimension.DEPENDENCY_FEASIBILITY: "依赖可行性",
+    TransferDimension.RESOURCE_FEASIBILITY: "资源可行性",
+    TransferDimension.ADAPTATION_MANAGEABILITY: "改造可控性",
+    TransferDimension.VALIDATION_READINESS: "验证准备度",
+}
+
+
+def _dimension_label(dimension: TransferDimension, output_language: str) -> str:
+    if output_language == "zh-CN":
+        return _TRANSFER_DIMENSION_LABELS_ZH[dimension]
+    return dimension.value
+
+
+def _message(output_language: str, *, en: str, zh: str) -> str:
+    return zh if output_language == "zh-CN" else en
 
 
 def transfer_feasibility_band(score: float) -> TransferFeasibilityBand:

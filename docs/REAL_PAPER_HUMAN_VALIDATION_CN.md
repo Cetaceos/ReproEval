@@ -1,6 +1,6 @@
 # 真实论文 Pilot 人工验证报告
 
-## 范围与血缘
+## 范围与数据溯源
 
 本轮人工验证基于 `reproeval-real-paper-pilot` Dataset `0.2.0` 的同一冻结输入：
 
@@ -88,7 +88,7 @@ assignment、协调者映射、Rubric 和 Dataset Freeze；只有 `responses.jso
 ## 脱敏公开结果
 
 仓库内的 `results/real_paper_human_consensus` 提供 12 份报告的最终共识、84 条逐维结果、三轮共
-36 条系统—人工对照以及 9 条逐轮分档校准结果。公开包删除评审者身份、Bundle ID、评语、私有路径和模型原始响应，并使用闭合
+36 条系统—人工对照以及 9 条逐轮分档校准结果。公开包删除评审者身份、Bundle ID、评语、私有路径和模型原始响应，并使用完整
 清单及 SHA-256 防止文件被替换或额外混入：
 
 ```bash
@@ -106,4 +106,4 @@ hy3-reproeval verify-human-consensus-results \
 - 本 Pilot 没有执行论文软件、复现实验结果或验证论文结论，不能写成论文已复现。
 - 评测规模仅为 4 个 validation/test 来源组和 12 份报告，同模板 Mutation 会降低样本独立性。
 - 三位评审者的身份、专业背景、独立性和盲化状态仍是自我声明，不构成外部资质认证。
-- 高档 Hy3 候选的签核是独立流程；本轮盲评不会自动把候选复核表从 `pending` 改为 `approved`。
+- 高档 Hy3 候选的人工审核是独立流程；本轮盲评不会自动把候选复核表从 `pending` 改为 `approved`。

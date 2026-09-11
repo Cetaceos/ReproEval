@@ -12,6 +12,7 @@
         "HY3_REASONING_EFFORT": "high",
         "HY3_MAX_TOKENS": "16000",
         "HY3_TIMEOUT_SECONDS": "300",
+        "REPROSCOPE_OUTPUT_LANGUAGE": "zh-CN",
         "REPROSCOPE_ALLOWED_ROOTS": "C:/path/to/ReproEval",
         "REPROSCOPE_WORKSPACE": "C:/path/to/ReproEval/.reproeval/reproscope"
       },

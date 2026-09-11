@@ -242,10 +242,12 @@ async def test_transfer_workflow_writes_lineage_validated_report(tmp_path) -> No
         '[project]\nname = "sample"\nversion = "0.1.0"\ndependencies = ["torch>=2"]\n',
         encoding="utf-8",
     )
+    assessment_payload = _assessment_payload()
+    assessment_payload["target_context_summary"] = "Target context " + "requires bounded graph labels. " * 20
     fake = FakeHy3Client(
         {
             SolutionProfileResult: _profile_payload(),
-            TransferAssessmentResult: _assessment_payload(),
+            TransferAssessmentResult: assessment_payload,
         }
     )
     app = AppContext(settings=_settings(tmp_path), hy3_client=fake)
@@ -308,6 +310,10 @@ async def test_transfer_workflow_writes_lineage_validated_report(tmp_path) -> No
     )
     assert any("LOCKFILE_NOT_FOUND" in gap for gap in dependency_dimension.evidence_gaps)
     assert graph.graph_validated is True
+    context_node = next(node for node in graph.nodes if node.node_id == "project-context:1")
+    assert len(context_node.label) <= 500
+    assert context_node.label.endswith("...")
+    assert assessment.target_context_summary == assessment_payload["target_context_summary"]
     serialized_keys = list(graph.model_dump(mode="json"))
     assert serialized_keys.index("graph_validated") < serialized_keys.index("nodes")
     assert graph.model_dump(mode="json")["graph_validated"] is True

@@ -31,6 +31,7 @@ private_annotations/
 
 # IDE and operating system files
 .idea/
+.workbuddy/
 .vscode/*.local.json
 .DS_Store
 Thumbs.db

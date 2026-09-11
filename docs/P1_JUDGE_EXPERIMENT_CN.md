@@ -67,7 +67,7 @@ validation 和 test 分别包含 2 个来源组、6 份报告；三次运行中�
 
 三次运行分别产生 3、4、4 个未登记错误，全部是高档报告上的 `reasoning_gap`。五份高档报告在 15 次“报告 × 运行”观察中有 11 次出现该标记。不同运行对具体报告的判断并不完全一致，这也是总分波动仅集中在 `reasoning_consistency` 的原因。
 
-这些错误只能称为“相对合成登记标签的未登记错误”，不能在没有人工复核时称为误报。它提示两种可能：高档参考报告的论证链仍不够完整，或当前 Judge 对推理闭合的阈值偏严。后续应由盲化专家标注区分这两种解释。
+这些错误只能称为“相对合成登记标签的未登记错误”，不能在没有人工复核时称为误报。它提示两种可能：高档参考报告的论证链仍不够完整，或当前 Judge 对推理链完整性的要求偏严。后续应由盲化专家标注区分这两种解释。
 
 ### 5.2 中档报告得分偏高
 
@@ -93,7 +93,7 @@ validation 和 test 分别包含 2 个来源组、6 份报告；三次运行中�
 validation/test 报告，再计算人工一致性、系统-人工 Spearman 和 MAE，并对 `reasoning_gap` 分歧进行
 独立裁决。当前任务的人工有效性验证由真实论文 Pilot 承担，P1 人工标注不作为本轮验收门槛。
 
-## 7. 可复核工件
+## 7. 可复核结果文件
 
 公开结果位于 [`results/p1_transfer_judge`](../results/p1_transfer_judge)，包含运行级、报告级和维度级 CSV、Markdown 摘要以及 SHA-256 manifest。可执行：
 
@@ -104,4 +104,4 @@ hy3-reproeval verify-results-figures \
   --source-bundle results/p1_transfer_judge
 ```
 
-公开结果不包含 API Key 或原始 Hy3 响应；manifest 保留 Dataset、Freeze、Rubric、Benchmark 和 Judge Record Index 的指纹，用于确认公开汇总对应同一条冻结实验血缘。
+公开结果不包含 API Key 或原始 Hy3 响应；manifest 保留 Dataset、Freeze、Rubric、Benchmark 和 Judge Record Index 的指纹，用于确认公开汇总来自同一组冻结实验输入。

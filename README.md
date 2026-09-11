@@ -65,9 +65,13 @@ HY3_API_PROVIDER=tokenhub
 HY3_BASE_URL=https://tokenhub.tencentmaas.com/v1
 HY3_API_KEY=replace-with-your-key
 HY3_MODEL=hy3
+REPROSCOPE_OUTPUT_LANGUAGE=en
 REPROSCOPE_ALLOWED_ROOTS=.
 REPROSCOPE_WORKSPACE=.reproeval/reproscope
 ```
+
+Set `REPROSCOPE_OUTPUT_LANGUAGE=zh-CN` for Simplified Chinese Hy3 narratives and Markdown reports. JSON field names,
+enum values, IDs, citations, units, and code identifiers remain unchanged for tool-to-tool compatibility.
 
 Start the MCP server over stdio:
 

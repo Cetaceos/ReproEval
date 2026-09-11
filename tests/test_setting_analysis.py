@@ -193,3 +193,17 @@ def test_seed_count_phrase_is_not_treated_as_an_explicit_seed_value(tmp_path) ->
     assert seed_check.status.value == "missing_in_paper"
     assert seed_check.paper_values == []
     assert set(seed_check.reproduction_values) == {"1", "2"}
+
+
+def test_optimizer_extraction_rejects_word_fragments_and_finds_prefix_name(tmp_path) -> None:
+    paper, reproduction = _bundles(
+        tmp_path,
+        "The optimization example uses an Adam optimizer from Optax. Optimizers are otherwise not compared.",
+        "No optimizer setting was recorded for this figure.",
+    )
+
+    optimizer_check = next(check for check in build_setting_checks(paper, reproduction) if check.setting == "optimizer")
+
+    assert optimizer_check.paper_values == ["Adam"]
+    assert optimizer_check.reproduction_values == []
+    assert optimizer_check.status.value == "missing_in_reproduction"

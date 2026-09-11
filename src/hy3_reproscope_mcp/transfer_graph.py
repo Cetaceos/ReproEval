@@ -33,6 +33,18 @@ _PROFILE_ENTITY_TYPES = {
     EvidenceGraphNodeType.RESOURCE,
 }
 
+_NODE_LABEL_MAX_LENGTH = 500
+
+
+def _node_label(value: object) -> str:
+    """Normalize display-only graph labels while preserving full parent artifacts."""
+
+    normalized = " ".join(str(value).split())
+    if len(normalized) <= _NODE_LABEL_MAX_LENGTH:
+        return normalized
+    return normalized[: _NODE_LABEL_MAX_LENGTH - 3].rstrip() + "..."
+
+
 _ALLOWED_EDGE_ENDPOINTS: dict[
     EvidenceGraphEdgeType,
     set[tuple[EvidenceGraphNodeType, EvidenceGraphNodeType]],
@@ -107,7 +119,7 @@ def build_transfer_graph(
             EvidenceGraphNode(
                 node_id=node_id,
                 node_type=EvidenceGraphNodeType.ARTIFACT,
-                label=source.source_path,
+                label=_node_label(source.source_path),
                 evidence_kind=EvidenceKind.OBSERVED,
                 source_references=[source],
                 properties={
@@ -124,7 +136,7 @@ def build_transfer_graph(
         EvidenceGraphNode(
             node_id=context_node_id,
             node_type=EvidenceGraphNodeType.PROJECT_CONTEXT,
-            label=assessment.target_context_summary,
+            label=_node_label(assessment.target_context_summary),
             evidence_kind=EvidenceKind.OBSERVED if target_references else EvidenceKind.UNKNOWN,
             source_references=target_references,
             properties={"assessment_run_id": assessment.run_id},
@@ -261,7 +273,7 @@ def build_transfer_graph(
             EvidenceGraphNode(
                 node_id=node_id,
                 node_type=EvidenceGraphNodeType.EVIDENCE_GAP,
-                label=gap.item,
+                label=_node_label(gap.item),
                 evidence_kind=EvidenceKind.INFERRED if references else EvidenceKind.UNKNOWN,
                 source_references=references,
                 properties={"impact": gap.impact, "severity": gap.severity.value},
@@ -293,7 +305,7 @@ def build_transfer_graph(
             EvidenceGraphNode(
                 node_id=node_id,
                 node_type=EvidenceGraphNodeType.ADAPTATION,
-                label=adaptation.change,
+                label=_node_label(adaptation.change),
                 evidence_kind=EvidenceKind.INFERRED,
                 source_references=references,
                 properties={
@@ -349,7 +361,7 @@ def build_transfer_graph(
             EvidenceGraphNode(
                 node_id=node_id,
                 node_type=EvidenceGraphNodeType.RISK,
-                label=risk.description,
+                label=_node_label(risk.description),
                 evidence_kind=EvidenceKind.INFERRED,
                 source_references=references,
                 properties={
@@ -386,7 +398,7 @@ def build_transfer_graph(
             EvidenceGraphNode(
                 node_id=node_id,
                 node_type=EvidenceGraphNodeType.VALIDATION_STEP,
-                label=step.objective,
+                label=_node_label(step.objective),
                 evidence_kind=EvidenceKind.INFERRED,
                 source_references=references,
                 properties={
@@ -566,7 +578,7 @@ def _add_profile_nodes(
             EvidenceGraphNode(
                 node_id=node_id,
                 node_type=node_type,
-                label=str(getattr(item, label_attribute)),
+                label=_node_label(getattr(item, label_attribute)),
                 evidence_kind=EvidenceKind.OBSERVED if references else EvidenceKind.UNKNOWN,
                 source_references=references,
                 properties={id_attribute: item_id},

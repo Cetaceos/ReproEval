@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import csv
 import hashlib
 import json
 import stat
@@ -64,13 +65,32 @@ def test_committed_public_evidence_matches_protocol_and_locked_environment() -> 
     serialized = (evidence / "public_evidence_manifest.json").read_text(encoding="utf-8")
 
     assert verification["outcome"] == "exact"
-    assert verification["published_file_count"] == 5
+    assert verification["published_file_count"] == 6
     assert environment["python"]["version"] == "3.11.8"
     assert environment["python"]["executable"] == "<dedicated-python-path-omitted>"
     assert environment["packages"] == capture.EXPECTED_PACKAGES
     assert "HY3_API_KEY" not in serialized
     assert "E:" not in serialized
     assert "C:" not in serialized
+
+    with (evidence / "figure2_summary.csv").open(encoding="utf-8", newline="") as stream:
+        rows = list(csv.DictReader(stream))
+    assert len(rows) == 1
+    assert rows[0]["case_id"] == runner.CASE_ID
+    assert rows[0]["power_grid_rows"] == "300"
+    assert rows[0]["power_grid_columns"] == "300"
+    assert rows[0]["pixel_mae"] == "0.0"
+    assert rows[0]["pixel_exact"] == "True"
+
+
+def test_flat_summary_is_derived_from_verified_metrics(tmp_path: Path) -> None:
+    evidence = Path(__file__).resolve().parents[1] / "case_studies" / "differt2d_v0_3_4" / "evidence"
+    metrics = json.loads((evidence / "metrics.json").read_text(encoding="utf-8"))
+    output = tmp_path / "figure2_summary.csv"
+
+    runner._write_result_summary_csv(output, metrics, duration_seconds=30.16)
+
+    assert output.read_bytes() == (evidence / "figure2_summary.csv").read_bytes()
 
 
 def test_inspect_and_safe_extract_verified_archive(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:

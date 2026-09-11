@@ -57,6 +57,8 @@ def test_unit_scale_resolution(value, scale) -> None:
         ("snr_db", MetricScale.DECIBEL),
         ("snr_linear", MetricScale.LINEAR),
         ("latency_ms", MetricScale.LINEAR),
+        ("power_grid_rows", MetricScale.LINEAR),
+        ("power_grid_columns", MetricScale.LINEAR),
     ],
 )
 def test_column_name_scale_resolution(name, scale) -> None:

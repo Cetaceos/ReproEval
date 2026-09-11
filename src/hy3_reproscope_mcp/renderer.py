@@ -11,7 +11,9 @@ from .models import (
     EvidenceCitation,
     ExtractClaimsResult,
     ReliabilityScoreResult,
+    ToolWarning,
 )
+from .report_localization import localize_report
 
 
 def render_markdown_report(
@@ -22,6 +24,7 @@ def render_markdown_report(
     score: ReliabilityScoreResult,
     graph: BuildEvidenceGraphResult | None = None,
     artifact_inventory: list[ArtifactAuditEntry],
+    language: str = "en",
 ) -> str:
     lines = [
         f"# {_inline(title)}",
@@ -511,9 +514,9 @@ def render_markdown_report(
         lines.append(f"Experiment group filters: `{_inline(rendered_filters)}`.")
     if all_warnings:
         lines.extend(["", "Warnings:"])
-        for warning in all_warnings:
+        for warning in _deduplicate_warnings(all_warnings):
             lines.append(f"- `{warning.code}`: {_inline(warning.message)}")
-    return "\n".join(lines)
+    return localize_report("\n".join(lines), language=language)
 
 
 def _append_isac_profile(lines: list[str], claims: ExtractClaimsResult) -> None:
@@ -670,3 +673,14 @@ def _inline(value: str) -> str:
 
 def _bullets(items: list[str]) -> list[str]:
     return [f"- {_inline(item)}" for item in items] or ["- None recorded."]
+
+
+def _deduplicate_warnings(warnings: list[ToolWarning]) -> list[ToolWarning]:
+    unique: list[ToolWarning] = []
+    seen_codes: set[str] = set()
+    for warning in warnings:
+        if warning.code in seen_codes:
+            continue
+        seen_codes.add(warning.code)
+        unique.append(warning)
+    return unique

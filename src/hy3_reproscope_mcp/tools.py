@@ -560,6 +560,7 @@ async def _extract_solution_profile(
         ),
         payload=payload,
         response_model=SolutionProfileResult,
+        output_language=app_context.settings.reproscope_output_language,
     )
     result = await app_context.get_hy3_client().complete_structured(messages, SolutionProfileResult)
     result.run_id = run_id
@@ -676,6 +677,7 @@ async def _assess_transfer(
         ),
         payload=payload,
         response_model=TransferAssessmentResult,
+        output_language=app_context.settings.reproscope_output_language,
     )
     result = await app_context.get_hy3_client().complete_structured(messages, TransferAssessmentResult)
     result.run_id = run_id
@@ -692,7 +694,10 @@ async def _assess_transfer(
         result,
         solution_bundle.citation_references() | target_bundle.citation_references(),
     )
-    normalize_transfer_assessment(result)
+    normalize_transfer_assessment(
+        result,
+        output_language=app_context.settings.reproscope_output_language,
+    )
     result.warnings.extend([*solution_bundle.warnings, *target_bundle.warnings])
     if repository_audit is not None:
         _attach_repository_audit_to_transfer(result, repository_audit)
@@ -1070,6 +1075,7 @@ def _render_transfer_report(
         assessment=assessment,
         graph=graph,
         artifact_inventory=artifact_inventory,
+        language=app_context.settings.reproscope_output_language,
     )
     report_artifact = workspace.write_text_artifact(
         run_id,
@@ -1175,6 +1181,7 @@ async def _extract_claims(
         ),
         payload=payload,
         response_model=ExtractClaimsResult,
+        output_language=app_context.settings.reproscope_output_language,
     )
     result = await app_context.get_hy3_client().complete_structured(messages, ExtractClaimsResult)
     result.run_id = run_id
@@ -1494,6 +1501,7 @@ async def _compare_results(
         ),
         payload=payload,
         response_model=CompareReproductionResult,
+        output_language=app_context.settings.reproscope_output_language,
     )
     result = await app_context.get_hy3_client().complete_structured(messages, CompareReproductionResult)
     result.run_id = run_id
@@ -1741,6 +1749,7 @@ async def _score_paper(
         ),
         payload=payload,
         response_model=ReliabilityScoreResult,
+        output_language=app_context.settings.reproscope_output_language,
     )
     result = await app_context.get_hy3_client().complete_structured(messages, ReliabilityScoreResult)
     result.run_id = run_id
@@ -1762,7 +1771,11 @@ async def _score_paper(
     if reproduction_bundle:
         citation_references.update(reproduction_bundle.citation_references())
     _sanitize_citations(result, citation_references)
-    normalize_score(result, has_reproduction=bool(reproduction_bundle))
+    normalize_score(
+        result,
+        has_reproduction=bool(reproduction_bundle),
+        output_language=app_context.settings.reproscope_output_language,
+    )
     if reproduction_bundle:
         result.warnings.extend([*paper_bundle.warnings, *reproduction_bundle.warnings])
     else:
@@ -1868,6 +1881,7 @@ def _render_report(
         score=score,
         graph=graph,
         artifact_inventory=artifact_inventory,
+        language=app_context.settings.reproscope_output_language,
     )
     report_artifact = workspace.write_text_artifact(
         run_id,

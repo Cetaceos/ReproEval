@@ -2,8 +2,8 @@
 
 本流程用于真实论文 Pilot 的高档参考候选。它不会直接改写 Dataset，也不会把 Hy3 输出自动标为人工真值。
 
-当前 Dataset `0.2.0` 的六份候选复核表均保持 `pending`。本次实验不采用这些候选，也不把候选签核
-列为当前 Dataset 的完成门槛；该流程作为后续独立研究支线保留。未来若完成签核并采用候选，必须发布
+当前 Dataset `0.2.0` 的六份候选复核表均保持 `pending`。本次实验不采用这些候选，也不把候选人工审核
+列为当前 Dataset 的完成门槛；该流程作为后续独立研究支线保留。未来若完成审核并采用候选，必须发布
 新的 Dataset 版本、重建 Mutation、重新冻结并重新执行 Judge 与人工实验。
 
 ## 1. 前置门禁
@@ -70,7 +70,7 @@ hy3-reproeval validate-reference-reviews `
 
 ## 4. 真实性边界
 
-- Codex、Hy3 或单元测试不能代替真实人工签核。
+- Codex、Hy3 或单元测试不能代替真实人工审核。
 - `approved` 是评审者的协议声明，不是身份认证或同行评审证明。
 - 真实论文来源不等于真实复现实验；当前 `study_mode` 仍是 `reproducibility_readiness`。
 - 私有 API 响应、评审身份和 PDF 缓存位于 `.reproeval/`，不应提交到 Git。

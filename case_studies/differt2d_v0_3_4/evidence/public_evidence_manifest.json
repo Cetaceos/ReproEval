@@ -12,7 +12,7 @@
     "timeout_seconds": 1800
   },
   "finished_at": "2026-09-09T13:27:27.982019+00:00",
-  "manifest_payload_sha256": "0C3DDD51E5B2E0D041EFE9BE033EE005FB7638C19DD5DCB0209090981199A921",
+  "manifest_payload_sha256": "0479F249BC2F57E7AFCD0C43114D4902D0D091160858B74F03C931DCC9FD5B1F",
   "omitted_private_artifacts": [
     "the downloaded third-party archive and extracted source",
     "local absolute paths and the dedicated environment",
@@ -24,6 +24,11 @@
       "path": "environment.json",
       "sha256": "B4095EAE4F426251FD76E79946E678223AFAFE2FCE6430BA18AC762A4FA0C890",
       "size_bytes": 856
+    },
+    {
+      "path": "figure2_summary.csv",
+      "sha256": "4F02EF719EC9E206EF054095E28D7C53FA3A7D8F2C03788FACD6CFD41FDA7EC8",
+      "size_bytes": 284
     },
     {
       "path": "metrics.json",

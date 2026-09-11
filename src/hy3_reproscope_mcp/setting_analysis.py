@@ -74,7 +74,10 @@ SETTING_RULES = (
     SettingRule(
         name="optimizer",
         aliases=("optimizer", "optimiser", "optim"),
-        patterns=(r"\b(?:optimizer|optimiser|optim)\s*(?:=|:|is)?\s*([a-z][a-z0-9_.+-]*)\b",),
+        patterns=(
+            r"\b(?:optimizer|optimiser|optim)\b\s*(?:=|:|is)?\s*([a-z][a-z0-9_.+-]*)\b",
+            r"\b(?:uses?|using|with)\s+(?:an?\s+)?([a-z][a-z0-9_.+-]*)\s+(?:optimizer|optimiser)\b",
+        ),
         value_kind="identifier",
         severity=DifferenceSeverity.CRITICAL,
         likely_effect="A different optimizer changes the training algorithm and weakens direct comparability.",
@@ -110,6 +113,26 @@ SETTING_RULES = (
 
 _RULE_BY_NAME = {rule.name: rule for rule in SETTING_RULES}
 _RULE_BY_ALIAS = {alias: rule for rule in SETTING_RULES for alias in rule.aliases}
+_IDENTIFIER_STOPWORDS = {
+    "a",
+    "an",
+    "choice",
+    "configuration",
+    "details",
+    "from",
+    "implementation",
+    "method",
+    "no",
+    "parameter",
+    "setting",
+    "that",
+    "the",
+    "this",
+    "type",
+    "used",
+    "uses",
+    "version",
+}
 
 
 def build_setting_checks(
@@ -371,7 +394,10 @@ def _normalize_value(rule: SettingRule, raw_value: str) -> str | None:
         if rule.value_kind == "integer" and numeric != numeric.to_integral_value():
             return None
         return format(numeric.normalize(), "f")
-    return re.sub(r"[^a-z0-9]+", "", rendered.casefold())
+    normalized = re.sub(r"[^a-z0-9]+", "", rendered.casefold())
+    if normalized in _IDENTIFIER_STOPWORDS:
+        return None
+    return normalized
 
 
 def _normalize_key(value: str) -> str:

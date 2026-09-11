@@ -13,6 +13,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from .errors import MissingCredentialError
 
 Hy3APIProvider = Literal["auto", "tokenhub", "self_hosted"]
+OutputLanguage = Literal["en", "zh-CN"]
 
 _TOKENHUB_HOSTS = {
     "tokenhub.tencentmaas.com",
@@ -78,6 +79,10 @@ class Settings(BaseSettings):
     reproscope_log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"] = Field(
         default="INFO",
         validation_alias="REPROSCOPE_LOG_LEVEL",
+    )
+    reproscope_output_language: OutputLanguage = Field(
+        default="en",
+        validation_alias="REPROSCOPE_OUTPUT_LANGUAGE",
     )
 
     @field_validator("hy3_base_url")

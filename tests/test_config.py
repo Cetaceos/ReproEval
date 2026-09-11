@@ -19,6 +19,7 @@ def test_settings_use_documented_defaults(monkeypatch: pytest.MonkeyPatch) -> No
         "HY3_MAX_RETRIES",
         "HY3_MAX_TOKENS",
         "REPROSCOPE_WORKSPACE",
+        "REPROSCOPE_OUTPUT_LANGUAGE",
     ):
         monkeypatch.delenv(name, raising=False)
 
@@ -34,6 +35,13 @@ def test_settings_use_documented_defaults(monkeypatch: pytest.MonkeyPatch) -> No
     assert settings.hy3_max_retries == 2
     assert settings.hy3_max_tokens == 16000
     assert str(settings.reproscope_workspace) == ".hy3-reproscope"
+    assert settings.reproscope_output_language == "en"
+
+
+def test_settings_accept_simplified_chinese_output() -> None:
+    settings = Settings(REPROSCOPE_OUTPUT_LANGUAGE="zh-CN")
+
+    assert settings.reproscope_output_language == "zh-CN"
 
 
 def test_settings_read_environment_and_hide_secret(monkeypatch: pytest.MonkeyPatch) -> None:

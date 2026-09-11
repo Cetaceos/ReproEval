@@ -2,6 +2,15 @@
 
 All notable ReproEval changes are documented in this file.
 
+## Unreleased
+
+- Add configurable `en`/`zh-CN` output for Hy3 narratives and deterministic Markdown reports, with terminology
+  adapted for clear Chinese engineering documentation while preserving structured schema tokens.
+- Export a hash-bound flat CSV view for the registered DiffeRT2d Figure 2 run and recognize row/column count metrics as linear values for deterministic comparison.
+- Bound display-only transfer graph labels while retaining the complete model text in validated parent artifacts.
+- Reject optimizer word fragments during deterministic setting extraction and derive empty score-summary sections from normalized rubric evidence.
+- Require the final WorkBuddy guide and real-material transfer demo inputs in source-distribution checks.
+
 ## 0.38.0 - 2026-09-07
 
 ### Added

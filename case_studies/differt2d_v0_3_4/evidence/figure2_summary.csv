@@ -1,0 +1,2 @@
+case_id,observation_id,power_grid_rows,power_grid_columns,power_linear_finite_ratio,power_db_finite_ratio,power_db_negative_infinity_count,pixel_mae,pixel_rmse,pixel_exact,duration_seconds
+differt2d-v0.3.4-figure2,registered_run,300,300,1.0,0.9737222222222223,2365,0.0,0.0,True,30.16

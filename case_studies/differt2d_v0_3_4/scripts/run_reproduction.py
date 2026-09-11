@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import argparse
+import csv
 import hashlib
+import io
 import json
 import os
 import posixpath
@@ -55,6 +57,34 @@ def _write_text(path: Path, value: str) -> None:
 
 def _write_json(path: Path, payload: dict[str, Any]) -> None:
     _write_text(path, json.dumps(payload, indent=2, sort_keys=True) + "\n")
+
+
+def _write_result_summary_csv(
+    path: Path,
+    metrics: dict[str, Any],
+    *,
+    duration_seconds: float,
+) -> None:
+    power_shape = metrics["power_linear"]["shape"]
+    image = metrics["image_comparison"]
+    row = {
+        "case_id": metrics["case_id"],
+        "observation_id": "registered_run",
+        "power_grid_rows": power_shape[0],
+        "power_grid_columns": power_shape[1],
+        "power_linear_finite_ratio": metrics["power_linear"]["finite_ratio"],
+        "power_db_finite_ratio": metrics["power_db"]["finite_ratio"],
+        "power_db_negative_infinity_count": metrics["power_db"]["negative_infinity_count"],
+        "pixel_mae": image["normalized_mean_absolute_error"],
+        "pixel_rmse": image["normalized_root_mean_squared_error"],
+        "pixel_exact": image["pixel_exact"],
+        "duration_seconds": duration_seconds,
+    }
+    stream = io.StringIO(newline="")
+    writer = csv.DictWriter(stream, fieldnames=list(row))
+    writer.writeheader()
+    writer.writerow(row)
+    _write_text(path, stream.getvalue())
 
 
 def _internal_symlink_target(bundle: zipfile.ZipFile, member: zipfile.ZipInfo) -> str:
@@ -395,7 +425,13 @@ def export_public_evidence(run_dir: Path, output_dir: Path) -> Path:
     environment["python"]["executable"] = "<dedicated-python-path-omitted>"
     _write_json(environment_path, environment)
     metrics_path = output_dir / "metrics.json"
-    _write_json(metrics_path, json.loads(metrics_path.read_text(encoding="utf-8")))
+    metrics = json.loads(metrics_path.read_text(encoding="utf-8"))
+    _write_json(metrics_path, metrics)
+    _write_result_summary_csv(
+        output_dir / "figure2_summary.csv",
+        metrics,
+        duration_seconds=source_manifest["duration_seconds"],
+    )
     for log_name in ("stdout.txt", "stderr.txt"):
         log_path = output_dir / log_name
         _write_text(log_path, log_path.read_text(encoding="utf-8"))

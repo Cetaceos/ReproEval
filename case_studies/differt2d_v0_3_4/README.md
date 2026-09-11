@@ -93,4 +93,7 @@ After verify succeeds, export the portable subset:
 The committed evidence bundle excludes the downloaded archive, extracted
 third-party source, dedicated environment, absolute interpreter path, NPZ, and
 PDF. It retains the environment versions, numerical summary, logs, reproduced
-PNG, artifact hashes, and the original private run-manifest hash.
+PNG, artifact hashes, and the original private run-manifest hash. The exported
+figure2_summary.csv is a flat view derived from the verified metrics and run
+duration so MCP clients can request deterministic numeric aggregation without
+flattening nested JSON themselves.

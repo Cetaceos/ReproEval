@@ -29,11 +29,20 @@ def build_structured_messages(
     instructions: str,
     payload: Mapping[str, Any],
     response_model: type[BaseModel],
+    output_language: str = "en",
 ) -> list[dict[str, str]]:
     schema = response_model.model_json_schema()
+    language_instruction = (
+        "Write all user-facing narrative string values in natural Simplified Chinese. Keep JSON field names, "
+        "schema enum values, IDs, citations, units, software names, and code identifiers unchanged. Prefer clear "
+        "Chinese engineering terms such as 数据溯源关系, 过程可追溯, 上游结果文件, and 输入输出链路校验; "
+        "avoid literal translations such as 工件血缘."
+        if output_language == "zh-CN"
+        else "Write user-facing narrative string values in English."
+    )
     user_payload = {
         "task": task,
-        "instructions": instructions,
+        "instructions": f"{instructions} {language_instruction}",
         "input": payload,
         "response_json_schema": schema,
     }

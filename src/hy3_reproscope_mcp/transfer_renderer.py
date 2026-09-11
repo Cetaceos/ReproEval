@@ -5,6 +5,7 @@ from __future__ import annotations
 from collections.abc import Iterable
 
 from .models import ArtifactAuditEntry, EvidenceCitation, SourceReference, ToolWarning
+from .report_localization import localize_report
 from .transfer_models import BuildTransferGraphResult, SolutionProfileResult, TransferAssessmentResult
 
 
@@ -15,6 +16,7 @@ def render_transfer_markdown_report(
     assessment: TransferAssessmentResult,
     artifact_inventory: list[ArtifactAuditEntry],
     graph: BuildTransferGraphResult | None = None,
+    language: str = "en",
 ) -> str:
     lines = [
         f"# {_inline(title)}",
@@ -252,7 +254,7 @@ def render_transfer_markdown_report(
     _append_source_inventory(lines, assessment.sources)
     _append_audit_trail(lines, profile, assessment, artifact_inventory)
     _append_warnings(lines, [*profile.warnings, *assessment.warnings])
-    return "\n".join(lines)
+    return localize_report("\n".join(lines), language=language)
 
 
 def _append_source_inventory(lines: list[str], sources: list[SourceReference]) -> None:
@@ -304,7 +306,11 @@ def _append_warnings(lines: list[str], warnings: list[ToolWarning]) -> None:
     if not warnings:
         return
     lines.extend(["", "Warnings:"])
+    seen_codes: set[str] = set()
     for warning in warnings:
+        if warning.code in seen_codes:
+            continue
+        seen_codes.add(warning.code)
         lines.append(f"- `{warning.code}`: {_inline(warning.message)}")
 
 

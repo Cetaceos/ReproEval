@@ -272,6 +272,8 @@ def scale_from_name(name: str | None) -> MetricScale:
             "_mhz",
             "_ghz",
             "_watts",
+            "_rows",
+            "_columns",
         )
     ):
         return MetricScale.LINEAR

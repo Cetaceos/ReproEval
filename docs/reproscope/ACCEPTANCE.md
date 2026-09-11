@@ -1,9 +1,13 @@
 # MCP Client Acceptance
 
+> Historical note: this document preserves the migrated ReproScope 0.15.0 client evidence and must not be read as
+> acceptance evidence for the current ReproEval 0.38.0 release candidate. The current WorkBuddy recording procedure
+> and pass criteria are defined in [WORKBUDDY_FINAL_DEMO_CN.md](../WORKBUDDY_FINAL_DEMO_CN.md).
+
 Do not mark a client as passed until the exact packaged server, endpoint configuration, and demo inputs have been
 tested. Never capture an API key in screenshots or recordings.
 
-## Current Matrix
+## Historical 0.15.0 Matrix
 
 | Client or path | Tool discovery | Live Hy3 call | Artifact written | Status |
 | --- | --- | --- | --- | --- |
@@ -36,10 +40,10 @@ Group-filter regressions cover CSV, JSON, and JSONL. `examples/sample_mixed_resu
 without filters, aggregation is blocked; with `{"dataset":"Dataset-A","split":"test","method":"proposed"}`, the selected
 accuracy mean is `0.88` with `sample_count=2`. Pass the same filters to scoring.
 
-The latest sanitized historical TokenHub record is in [LIVE_VALIDATION_0_5_CN.md](LIVE_VALIDATION_0_5_CN.md); the
-[0.4.0 record](LIVE_VALIDATION_CN.md) is an earlier immutable snapshot. These records distinguish direct API
-validation from user-reported CodeBuddy validation and do not treat a GUI-client configuration file as proof of a
-client run. Neither record proves current 0.15.0 behavior.
+The latest sanitized migrated TokenHub record is in
+[LIVE_VALIDATION_0_15_CN.md](LIVE_VALIDATION_0_15_CN.md). It distinguishes direct API validation from user-reported
+client validation and does not treat a GUI-client configuration file as proof of a client run. It does not prove
+current 0.38.0 behavior.
 
 The two-client evidence record is in [CLIENT_VALIDATION_CN.md](CLIENT_VALIDATION_CN.md). The current screenshots prove
 0.15.0 ten-tool discovery in both clients. CodeBuddy additionally has user-provided current-version pipeline evidence;
