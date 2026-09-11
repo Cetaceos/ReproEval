@@ -7,6 +7,11 @@
 1. 使用真实 DiffeRT2d 论文和真实 Figure 2 执行证据完成论文复现审查；
 2. 将 DiffeRT2d 作为真实开源源方案，评估其迁移到三维 UAV-BS ISAC 研究流程的条件、风险和验证路径。
 
+最终归档视频：[WorkBuddy 双主线演示（MP4）](assets/reproeval-workbuddy-final-demo.mp4)。该版本为 1080p
+无声完整过程版，时长 2 分 50 秒，SHA-256 为
+`8B592D01577DF05161C8671D7F5D4D966F799181F569DA29561499A44188F010`。它覆盖下述核心证据，但超过
+本手册原定的两分钟精简目标。
+
 论文主线使用 `auto` Profile。DiffeRT2d 不包含通信与感知联合目标，因此正确结果应保持 `generic`，
 不能为了展示 ISAC Profile 而强制误分类。可另用公开合成材料快速展示 `isac_phy` 扩展，但必须明确其
 输入性质，且不能将其作为真实论文结论。

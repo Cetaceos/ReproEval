@@ -36,6 +36,15 @@ research sources + reproduction results
 
 Hy3 handles semantic extraction and evidence reasoning. Local Python recalculates numerical results, validates schemas and citations, enforces artifact lineage, and applies deterministic aggregation rules. Model output cannot overwrite locally recomputed facts.
 
+## Final Demo
+
+[Watch the WorkBuddy dual-workflow demo (MP4)](docs/assets/reproeval-workbuddy-final-demo.mp4)
+
+The video shows discovery of all 10 MCP tools, the DiffeRT2d reproducibility-review workflow, the conditional
+technology-transfer workflow, both Markdown reports, run IDs, result paths, evidence graphs, and the human-evaluation
+summary. The archived 1080p silent version is 2 minutes 50 seconds long; it preserves the complete walkthrough and
+therefore exceeds the proposal's original two-minute edit target.
+
 ## Quick Start
 
 Requirements: Python 3.11 or newer and a Hy3-compatible API endpoint.

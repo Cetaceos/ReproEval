@@ -36,6 +36,14 @@ Hy3 语义提取 + Python 本地校验
 
 Hy3 负责语义提取和证据关系判断；本地 Python 负责数值重算、Schema 与引用校验、输入输出关系校验和固定规则聚合。模型输出不能覆盖本地重新计算的事实。
 
+## 最终演示
+
+[观看 WorkBuddy 双主线演示（MP4）](docs/assets/reproeval-workbuddy-final-demo.mp4)
+
+视频展示 MCP Server 的 10 个 Tool、DiffeRT2d 论文复现证据审查、技术方案迁移评估、两类 Markdown
+报告、`run_id`、结果文件路径、证据关系图和人工评测摘要。归档文件为 1080p 无声版本，时长
+2 分 50 秒；它保留完整展示过程，因此超过项目方案原定的两分钟精简目标。
+
 ## 快速开始
 
 要求 Python 3.11 或更高版本，以及可用的 Hy3 兼容接口。
