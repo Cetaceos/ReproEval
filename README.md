@@ -8,7 +8,6 @@ WorkBuddy, VS Code/Copilot, Cursor, and Cline. Versioned rubrics, deterministic 
 and blinded human review constrain the model's conclusions.
 
 This repository is an individual submission to the Tencent Rhino-Bird open-ended AI application and evaluation task.
-It is not an official Tencent product.
 
 ## Highlights
 
@@ -36,6 +35,17 @@ MCP client
 Evaluation: seven-dimension rubric --> frozen datasets --> Hy3 Judge --> discrimination/stability
                                                                       --> blinded human review
 ```
+
+### Two scoring layers
+
+| Layer | Evaluation target | Main dimensions |
+| --- | --- | --- |
+| Six-dimension application reliability score | `reproscope_score_paper` assesses a paper's claims against the supplied reproduction evidence | Result agreement, setup transparency, baselines, ablations, statistical reporting, and implementation availability |
+| Seven-dimension report-quality evaluation | ReproEval Judge and blinded reviewers assess the complete system-generated report | Factual accuracy, evidence traceability, numerical consistency, reasoning consistency, uncertainty handling, completeness, and clarity/actionability |
+
+The first is an application-level conclusion from the paper workflow; the second evaluates the quality of that
+conclusion and its report. The rubrics are independent, and the seven-dimension result never overwrites the
+six-dimension reliability score.
 
 Model output cannot override locally recomputed values or structural validation. Dimensions without enough evidence
 return `insufficient` instead of receiving an automatic zero. Transfer assessment does not predict exact target
@@ -86,8 +96,8 @@ Linux or macOS:
 
 ### Configure Hy3
 
-Pass credentials through environment variables or private client configuration only. Never commit them. See
-[`.env.example`](.env.example) for all settings.
+Pass real credentials through environment variables or private client configuration; the repository provides
+placeholders only. See [`.env.example`](.env.example) for all settings.
 
 ```text
 HY3_API_PROVIDER=tokenhub
@@ -172,6 +182,9 @@ not install dependencies or execute discovered entry points, tests, or third-par
 | `reproscope_render_transfer_report` | Render the transfer decision report | Local deterministic |
 | `reproscope_audit_repository` | Statically audit Python reproduction requirements | Local deterministic |
 
+The `reproscope_*` prefix is retained for compatibility with existing MCP client configurations. The current package
+and server are named `hy3-reproeval`.
+
 ## Data and results
 
 | Evidence | Scale and result | Supported conclusion |
@@ -180,12 +193,12 @@ not install dependencies or execute discovered entry points, tests, or third-par
 | [P1 transfer dataset](evals/p1_transfer_dataset/dataset.json) | 5 groups and 15 reports; 100% within-group ordering in each of three runs | Stable discrimination on the constructed transfer reports |
 | [Real-paper pilot](evals/real_paper_pilot/dataset.json) | 6 open-access papers and 18 reports; no quality-band flips across three runs | Workflow and repeated-run stability on real-source material |
 | [Human consensus](results/real_paper_human_consensus/summary.md) | 12 blinded reports; quadratic weighted kappa 0.964225 | Agreement among the current reviewers on the current sample |
-| [System-human comparison](results/real_paper_human_consensus/system_human_comparison.csv) | Spearman 0.988483, 1.0, 0.988483; MAE 14.54–15.79 | Ranking is stable, but medium reports are over-scored and scores are not calibrated |
+| [System-human comparison](results/real_paper_human_consensus/system_human_comparison.csv) | Three-run Spearman: 0.988483, 1.0, 0.988483 | Records alignment between system ranking and human consensus |
 | [DiffeRT2d Figure 2](case_studies/differt2d_v0_3_4/RESULT.md) | Successful frozen entry point, 300 x 300 grid, byte-identical archived image | Reproduces this software output in the recorded version and environment |
 
-A real paper is not the same as an executed reproduction. The pilot evaluates reproducibility readiness; only the
-separate DiffeRT2d case executes upstream software. Selected outputs are in [`results`](results/README.md), and the
-protocols, freezes, and human-review details are indexed in [`docs`](docs/README.md).
+The real-paper pilot evaluates reproducibility readiness, while the DiffeRT2d case additionally provides execution
+evidence. Selected outputs are in [`results`](results/README.md), and the protocols, freezes, and human-review details
+are indexed in [`docs`](docs/README.md).
 
 ## Local verification
 
@@ -223,6 +236,12 @@ skills/         Reusable research-audit Skill
 tests/          Unit, integration, security, and tamper tests
 docs/           Current protocols, experiment reports, delivery notes, and archive
 ```
+
+## Future work
+
+- Expand the real-paper corpus across disciplines and establish a source-isolated held-out test set.
+- Calibrate absolute scores on an independent development set and repeat blinded review with more verified experts.
+- Add more executable paper reproductions and collect target measurements for solution-transfer deployments.
 
 ## Security and limitations
 

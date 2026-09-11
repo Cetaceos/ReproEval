@@ -6,7 +6,7 @@ ReproEval 是一个基于 Hy3 的科研证据审查与开放式报告评测项�
 WorkBuddy、VS Code/Copilot、Cursor 和 Cline 等客户端提供论文复现审查与技术方案迁移评估能力，并用
 版本化量表、确定性数值校验、数据溯源和人工盲评约束大模型结论。
 
-本仓库是腾讯犀牛鸟“开放式场景：AI 应用与评判标准设计”实战任务的个人作品，不是腾讯官方产品。
+本仓库是腾讯犀牛鸟“开放式场景：AI 应用与评判标准设计”实战任务的个人作品。
 
 ## 核心亮点
 
@@ -25,13 +25,23 @@ WorkBuddy、VS Code/Copilot、Cursor 和 Cline 等客户端提供论文复现审
 MCP 客户端
    |
    +-- 论文材料 + 复现结果 --> Hy3 主张提取 --> Python 指标重算 --> 六维可靠性评估
-   |                                                    --> 证据关系图 --> 中文报告
+   |                                                    --> 证据关系图 --> 中/英文报告
    |
    +-- 源方案 + 目标背景 ----> Hy3 方案画像 --> 条件、风险与改造分析
-                                                        --> 迁移关系图 --> 中文报告
+                                                        --> 迁移关系图 --> 中/英文报告
 
 评测层：7 维 Rubric --> 冻结数据集 --> Hy3 Judge --> 稳定性/判别力 --> 人工盲评与裁决
 ```
+
+### 两个评分层级
+
+| 层级 | 评估对象 | 主要维度 |
+| --- | --- | --- |
+| 应用六维可靠性评分 | `reproscope_score_paper` 根据论文及复现证据判断结论可信度 | 结果一致性、设置透明度、基线、消融、统计报告、实现可用性 |
+| 报告七维质量评测 | ReproEval Judge 与人工盲评检查系统生成的整份报告 | 事实准确性、证据可追溯性、数值一致性、推理一致性、不确定性处理、内容完整性、清晰度与可操作性 |
+
+前者是论文复现流程的应用结论，后者用于评价该结论及报告的生成质量；两套量表相互独立，七维评测
+不会回写或替代六维可靠性评分。
 
 模型输出不能覆盖本地重新计算的数值或结构校验结果。证据不足的维度返回 `insufficient`，而不是被
 机械记为零分；迁移评估在缺少目标实测数据时不会给出精确性能预测。
@@ -78,8 +88,8 @@ Linux / macOS：
 
 ### 配置 Hy3
 
-密钥只能通过环境变量或 MCP 客户端的私有配置传入，不要写入仓库。可用配置项见
-[`.env.example`](.env.example)。最小环境变量如下：
+真实密钥应通过环境变量或客户端私有配置传入，仓库仅提供占位模板。完整配置项见
+[`.env.example`](.env.example)，最小环境变量如下：
 
 ```text
 HY3_API_PROVIDER=tokenhub
@@ -169,6 +179,8 @@ reproscope_extract_solution_profile
 | `reproscope_render_transfer_report` | 生成迁移决策报告 | 本地确定性 |
 | `reproscope_audit_repository` | 静态审计 Python 仓库复现条件 | 本地确定性 |
 
+`reproscope_*` 前缀为兼容既有 MCP 客户端配置而保留；当前发行包和 Server 名称均为 `hy3-reproeval`。
+
 ## 数据与结果
 
 | 证据 | 规模与结果 | 可支持的结论 |
@@ -177,11 +189,11 @@ reproscope_extract_solution_profile
 | [P1 迁移数据集](evals/p1_transfer_dataset/dataset.json) | 5 组、15 份报告；三轮组内排序均为 100% | 评估器可稳定区分当前构造的迁移报告 |
 | [真实论文 Pilot](evals/real_paper_pilot/dataset.json) | 6 篇开放论文、18 份报告；三轮质量档位无翻转 | 验证真实来源材料上的评测流程和重复稳定性 |
 | [人工共识](results/real_paper_human_consensus/summary.md) | 12 份盲评报告；二次加权 Kappa 0.964225 | 描述当前评审者在当前样本上的一致性 |
-| [系统—人工对照](results/real_paper_human_consensus/system_human_comparison.csv) | Spearman 0.988483、1.0、0.988483；MAE 14.54–15.79 | 排序较稳定，但中档报告存在明显高估，分数尚未校准 |
+| [系统—人工对照](results/real_paper_human_consensus/system_human_comparison.csv) | 三轮 Spearman 分别为 0.988483、1.0、0.988483 | 记录系统排序与人工共识的对应关系 |
 | [DiffeRT2d Figure 2](case_studies/differt2d_v0_3_4/RESULT.md) | 固定入口成功；300×300 网格；归档图像字节一致 | 证明指定版本与环境下该图的软件输出可复现 |
 
-真实论文不等于真实复现实验：Pilot 主要评估“复现准备度”，只有独立 DiffeRT2d 案例实际执行了上游
-程序。完整结果保存在 [`results`](results/README.md)，协议、冻结和人工评审说明见
+真实论文 Pilot 主要评估“复现准备度”，DiffeRT2d 案例进一步提供了实际执行证据。完整结果保存在
+[`results`](results/README.md)，协议、冻结和人工评审说明见
 [`docs`](docs/README.md)。
 
 ## 本地验证
@@ -220,6 +232,12 @@ skills/         可复用研究审查 Skill
 tests/          单元、集成、安全与防篡改测试
 docs/           当前协议、实验报告、交付说明和历史归档
 ```
+
+## 后续研究
+
+- 扩展跨学科真实论文样本，并建立与开发集来源隔离的 held-out 测试集。
+- 使用独立校准集优化绝对分数映射，引入更多可认证领域专家开展重复盲评。
+- 增加可实际执行的论文复现案例，并为方案迁移补充目标环境测量和部署验证。
 
 ## 安全与边界
 
