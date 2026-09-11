@@ -10,8 +10,8 @@
 
 | 客户端 | 当前证据 | 可证明的范围 |
 | --- | --- | --- |
-| CodeBuddy | [十工具发现截图](../assets/codebuddy-0.15.0-tool-discovery.png)、用户提供的十步调用截图，以及未随当前仓库分发的历史录屏 | 0.15.0 工具发现、客户端顺序调用、输入输出关系校验失败和迁移报告成功生成；仓库内没有可复核的原始 MP4 |
-| Visual Studio Code 1.131.0 | [十工具发现截图](../assets/vscode-0.15.0-tool-discovery.png) 和 [机器可校验证据](../CLIENT_VALIDATION_0_15_INDEX.json) | 0.15.0 工具发现，以及前一构建 wheel 的一次真实静态审计 Tool 调用；当前精确 wheel GUI 待复核 |
+| CodeBuddy | [十工具发现截图](../../assets/archive/reproscope-0.15/codebuddy-0.15.0-tool-discovery.png)、用户提供的十步调用截图，以及未随当前仓库分发的历史录屏 | 0.15.0 工具发现、客户端顺序调用、输入输出关系校验失败和迁移报告成功生成；仓库内没有可复核的原始 MP4 |
+| Visual Studio Code 1.131.0 | [十工具发现截图](../../assets/archive/reproscope-0.15/vscode-0.15.0-tool-discovery.png) 和 [机器可校验证据](CLIENT_VALIDATION_0_15_INDEX.json) | 0.15.0 工具发现，以及前一构建 wheel 的一次真实静态审计 Tool 调用；当前精确 wheel GUI 待复核 |
 
 两张截图没有 API key、Authorization header、`.env` 内容、用户名或私有 endpoint。2026-08-01 的 VS Code 调用使用
 Python 3.13.5 和运行时代码等价的前一构建 wheel `61F776...`，生成 completed run `repository_8246ee4f34e0`：Schema 1.21、
@@ -21,7 +21,7 @@ content hash 为 `8f271a...`，payload hash 为 `34342b...`；run manifest 文�
 
 合成论文、迁移和 ISAC 示例的在线调用 run ID、artifact hash 和结果见
 [LIVE_VALIDATION_0_15_CN.md](LIVE_VALIDATION_0_15_CN.md)。最小截图 montage 位于
-[demo-0.15.0-client-discovery-montage.gif](../assets/demo-0.15.0-client-discovery-montage.gif)，它不是完整交互录屏。
+[demo-0.15.0-client-discovery-montage.gif](../../assets/archive/reproscope-0.15/demo-0.15.0-client-discovery-montage.gif)，它不是完整交互录屏。
 
 CodeBuddy 历史演示为原始 MP4，时长 74.66 秒，SHA-256 为
 `43BA80B1CEE67E8F32F29B88035017F4FB17DE3DF951C473641F963C227CE20C`。录屏未显示 API key、Authorization header、
@@ -31,7 +31,7 @@ CodeBuddy 历史演示为原始 MP4，时长 74.66 秒，SHA-256 为
 不单独证明论文链重新执行或模型质量。该原始录屏未随当前仓库分发，不能作为仓库内可复核的最终演示链接。
 
 脱敏客户端证据可用
-`python scripts/validate_client_evidence.py docs/CLIENT_VALIDATION_0_15_INDEX.json` 校验。该门禁只接受 Schema 1.21、
+`python scripts/validate_client_evidence.py docs/archive/reproscope-0.15/CLIENT_VALIDATION_0_15_INDEX.json` 校验。该门禁只接受 Schema 1.21、
 0.15.0、十工具、completed run、相对 artifact 路径和 SHA-256 哈希；它不会把截图或客户端文本冒充为模型质量证明。
 
 ## 0.5.0 历史客户端证据
@@ -94,7 +94,6 @@ VS Code 成功发现并启用全部五个 Tool：
 - `reproscope_build_evidence_graph`
 - `reproscope_render_report`
 
-![VS Code MCP Tool discovery](../assets/vscode-tool-discovery.png)
 
 ## 4. 在线比较调用（合成输入）
 
@@ -119,7 +118,6 @@ reproscope_compare_results
 | latency 样本数 | 5 |
 | latency 严重度 | `unknown`，论文未报告该指标 |
 
-![VS Code comparison result](../assets/vscode-compare-results.png)
 
 ## 5. 本地结果文件复核
 

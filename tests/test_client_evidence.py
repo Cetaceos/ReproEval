@@ -35,7 +35,7 @@ def _payload() -> dict[str, object]:
                 ],
             }
         ],
-        "screenshot_ref": "docs/assets/vscode-0.15.0-tool-discovery.png",
+        "screenshot_ref": "docs/assets/archive/reproscope-0.15/vscode-0.15.0-tool-discovery.png",
         "secrets_redacted": True,
     }
 
@@ -47,7 +47,7 @@ def test_client_evidence_requires_canonical_ten_tool_order() -> None:
 
 
 def test_checked_in_vscode_evidence_is_current_and_machine_validated() -> None:
-    path = PROJECT_ROOT / "docs" / "CLIENT_VALIDATION_0_15_INDEX.json"
+    path = PROJECT_ROOT / "docs" / "archive" / "reproscope-0.15" / "CLIENT_VALIDATION_0_15_INDEX.json"
     evidence = validate_client_evidence(json.loads(path.read_text(encoding="utf-8")))
 
     assert evidence.client == "visual_studio_code"

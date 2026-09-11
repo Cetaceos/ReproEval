@@ -43,7 +43,7 @@ def main() -> None:
     fixture_paths = (
         [path.resolve() for path in args.fixture]
         if args.fixture
-        else [(project_root / "evals" / name).resolve() for name in DEFAULT_FIXTURES]
+        else [(project_root / "evals" / "regression" / "transfer" / name).resolve() for name in DEFAULT_FIXTURES]
     )
 
     if args.workspace is not None:

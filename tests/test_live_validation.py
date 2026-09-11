@@ -76,7 +76,7 @@ def test_isac_live_summary_uses_activation_source_and_manifest(tmp_path) -> None
 
 
 def test_public_isac_candidate_manifest_is_not_expert_ground_truth() -> None:
-    path = Path(__file__).resolve().parents[1] / "evals" / "isac_public_candidate_cases.json"
+    path = Path(__file__).resolve().parents[1] / "evals" / "regression" / "isac" / "isac_public_candidate_cases.json"
     payload = json.loads(path.read_text(encoding="utf-8"))
 
     assert payload["annotation_status"] == "public_candidate_review_pending_expert_adjudication"
@@ -89,7 +89,9 @@ def test_public_isac_candidate_manifest_is_not_expert_ground_truth() -> None:
 
 
 def test_sanitized_live_validation_index_is_current_and_credential_free() -> None:
-    path = Path(__file__).resolve().parents[1] / "docs" / "LIVE_VALIDATION_0_15_INDEX.json"
+    path = (
+        Path(__file__).resolve().parents[1] / "docs" / "archive" / "reproscope-0.15" / "LIVE_VALIDATION_0_15_INDEX.json"
+    )
     payload = json.loads(path.read_text(encoding="utf-8"))
 
     assert payload["package_version"] == "0.15.0"

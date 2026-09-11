@@ -13,7 +13,7 @@ from hy3_reproscope_mcp.transfer_evaluation import (
 @pytest.mark.asyncio
 async def test_transfer_offline_evaluation_replays_complete_workflow(tmp_path) -> None:
     project_root = Path(__file__).resolve().parents[1]
-    fixture = project_root / "evals" / "synthetic_transfer.json"
+    fixture = project_root / "evals" / "regression" / "transfer" / "synthetic_transfer.json"
 
     result = await run_transfer_offline_evaluation(
         project_root=project_root,
@@ -34,8 +34,8 @@ async def test_transfer_offline_evaluation_replays_complete_workflow(tmp_path) -
 async def test_transfer_offline_suite_measures_correct_abstention(tmp_path) -> None:
     project_root = Path(__file__).resolve().parents[1]
     fixture_paths = [
-        project_root / "evals" / "synthetic_transfer.json",
-        project_root / "evals" / "synthetic_transfer_insufficient_evidence.json",
+        project_root / "evals" / "regression" / "transfer" / "synthetic_transfer.json",
+        project_root / "evals" / "regression" / "transfer" / "synthetic_transfer_insufficient_evidence.json",
     ]
 
     result = await run_transfer_offline_evaluation_suite(
@@ -55,7 +55,7 @@ async def test_transfer_offline_suite_measures_correct_abstention(tmp_path) -> N
 @pytest.mark.asyncio
 async def test_transfer_offline_suite_rejects_duplicate_case_ids(tmp_path) -> None:
     project_root = Path(__file__).resolve().parents[1]
-    fixture = project_root / "evals" / "synthetic_transfer.json"
+    fixture = project_root / "evals" / "regression" / "transfer" / "synthetic_transfer.json"
 
     with pytest.raises(ValueError, match="Duplicate transfer evaluation case_id"):
         await run_transfer_offline_evaluation_suite(

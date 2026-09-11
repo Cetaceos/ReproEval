@@ -26,7 +26,9 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 
 def test_synthetic_calibration_fixture_reports_descriptive_metrics() -> None:
-    payload = json.loads((PROJECT_ROOT / "evals" / "synthetic_isac_calibration.json").read_text(encoding="utf-8"))
+    payload = json.loads(
+        (PROJECT_ROOT / "evals" / "regression" / "isac" / "synthetic_isac_calibration.json").read_text(encoding="utf-8")
+    )
     report = evaluate_isac_calibration(load_calibration_cases(payload))
 
     assert report.evaluation_kind == "descriptive_calibration"
@@ -55,7 +57,9 @@ def test_synthetic_calibration_fixture_reports_descriptive_metrics() -> None:
 
 def test_checked_in_calibration_case_schema_matches_model() -> None:
     checked_in_schema = json.loads(
-        (PROJECT_ROOT / "evals" / "isac_calibration_case.schema.json").read_text(encoding="utf-8")
+        (PROJECT_ROOT / "evals" / "regression" / "schemas" / "isac_calibration_case.schema.json").read_text(
+            encoding="utf-8"
+        )
     )
     assert checked_in_schema == ISACCalibrationCase.model_json_schema()
 
@@ -238,7 +242,11 @@ def test_calibration_fixture_requires_profile_version() -> None:
 
 
 def test_public_candidate_records_keep_source_integrity_without_becoming_labels() -> None:
-    payload = json.loads((PROJECT_ROOT / "evals" / "isac_public_candidate_cases.json").read_text(encoding="utf-8"))
+    payload = json.loads(
+        (PROJECT_ROOT / "evals" / "regression" / "isac" / "isac_public_candidate_cases.json").read_text(
+            encoding="utf-8"
+        )
+    )
 
     assert payload["benchmark_status"] == "not_eligible_without_two_expert_adjudication"
     assert payload["review_protocol"]["split_frozen"] is False
@@ -258,7 +266,9 @@ def test_public_candidate_records_keep_source_integrity_without_becoming_labels(
 
 
 def test_calibration_fixture_rejects_wrong_profile_version() -> None:
-    payload = json.loads((PROJECT_ROOT / "evals" / "synthetic_isac_calibration.json").read_text(encoding="utf-8"))
+    payload = json.loads(
+        (PROJECT_ROOT / "evals" / "regression" / "isac" / "synthetic_isac_calibration.json").read_text(encoding="utf-8")
+    )
     payload["profile_version"] = "0.0.0"
 
     with pytest.raises(ValueError, match="does not match expected profile"):

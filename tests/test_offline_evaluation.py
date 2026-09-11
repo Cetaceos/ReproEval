@@ -16,7 +16,7 @@ from hy3_reproscope_mcp.evaluation import (
 @pytest.mark.asyncio
 async def test_offline_evaluation_replays_complete_workflow(tmp_path) -> None:
     project_root = Path(__file__).resolve().parents[1]
-    repository_fixture = project_root / "evals" / "synthetic_reproduction.json"
+    repository_fixture = project_root / "evals" / "regression" / "paper" / "synthetic_reproduction.json"
 
     result = await run_offline_evaluation(
         project_root=project_root,
@@ -37,8 +37,8 @@ async def test_offline_evaluation_replays_complete_workflow(tmp_path) -> None:
 async def test_offline_evaluation_suite_measures_correct_abstention(tmp_path) -> None:
     project_root = Path(__file__).resolve().parents[1]
     fixture_paths = [
-        project_root / "evals" / "synthetic_reproduction.json",
-        project_root / "evals" / "synthetic_insufficient_evidence.json",
+        project_root / "evals" / "regression" / "paper" / "synthetic_reproduction.json",
+        project_root / "evals" / "regression" / "paper" / "synthetic_insufficient_evidence.json",
     ]
 
     result = await run_offline_evaluation_suite(
@@ -63,5 +63,7 @@ def test_checked_in_evaluation_schemas_match_result_models() -> None:
     }
 
     for filename, model in schemas.items():
-        checked_in_schema = json.loads((project_root / "evals" / filename).read_text(encoding="utf-8"))
+        checked_in_schema = json.loads(
+            (project_root / "evals" / "regression" / "schemas" / filename).read_text(encoding="utf-8")
+        )
         assert checked_in_schema == model.model_json_schema()

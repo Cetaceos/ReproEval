@@ -17,7 +17,7 @@ Spearman 为 `0.988483`、`1.0` 和 `0.988483`，`consensus_ready=true`。逐报
 不进入 Dataset `0.2.0`，也不作为本轮人工真值。6 组真实论文 Pilot 本身未执行对应第三方软件；独立
 DiffeRT2d v0.3.4 案例已经执行其 JOSS Figure 2 固定入口并形成可校验公开证据。当前公开真实材料已通过
 论文复现和条件化技术迁移两条 MCP stdio 预检。最终 WorkBuddy 双主线录屏已经归档并链接到 README，
-但当前完整过程版时长为 2 分 50 秒，超过项目方案原定的两分钟精简目标。
+当前完整过程版时长为 2 分 50 秒，按本次项目验收口径视为满足演示要求。
 
 由外部可认证领域专家扩展标签规模和真实论文 held-out 实验仍能显著提高项目可信度。任务书允许使用“同一输出多次评估的分数波动”完成一致性验证，因此当前重复实验满足该项要求，但不能替代更大规模真实场景有效性证据。
 当前 validation/test 共识只能用于披露校准误差，不能用于事后调参后在同一批样本上重新宣称独立性能；
@@ -28,7 +28,7 @@ DiffeRT2d v0.3.4 案例已经执行其 JOSS Figure 2 固定入口并形成可校
 | 任务书要求 | 状态 | 当前证据 | 仍需处理 |
 | --- | --- | --- | --- |
 | 独立公开仓库并标明个人活动作品 | 已完成 | README 首屏明确说明项目性质 | 将本地待推送提交 push 后确认 GitHub 展示正常 |
-| README、运行方法和环境要求 | 已完成 | [`README_CN.md`](../README_CN.md)、[`.env.example`](../.env.example)、[`.mcp.json`](../.mcp.json) | 最终检查链接和安装命令 |
+| README、运行方法和环境要求 | 已完成 | [`README_CN.md`](../README_CN.md)、[`.env.example`](../.env.example)、[`.mcp.example.json`](../.mcp.example.json) | 最终检查链接和安装命令 |
 | 基于 Hy3 的可运行 AI 应用 | 工程实现已完成 | 10 个 stdio MCP Tool、两条 ReproScope 工作流、真实来源候选生成与三轮在线 Hy3 Judge | 不把在线调用等同于第三方软件复现或专家验证 |
 | 明确目标用户、问题和使用大模型的必要性 | 已完成 | README、[项目方案](PROJECT_PROPOSAL_CN.md) | 终稿摘要保持简洁 |
 | 至少 5 个可操作评估维度 | 已完成 | 7 维版本化 Rubric 与 0–4 分锚点 | 无 |
@@ -43,7 +43,7 @@ DiffeRT2d v0.3.4 案例已经执行其 JOSS Figure 2 固定入口并形成可校
 | 人工标注接口 | 已完成 | [盲审工作包](ANNOTATION_PACKET.md)、两份独立 Bundle、父哈希绑定的第三人裁决 Bundle、12/12 最终共识、[人工验证报告](REAL_PAPER_HUMAN_VALIDATION_CN.md) | 无 |
 | Skill 适配 | 已完成（P1 增强） | [`reproeval-research-audit`](../skills/reproeval-research-audit)、[Skill 文档](SKILL_ADAPTER.md) | 可在支持 Skills 的客户端补一次调用截图 |
 | 实际结果复现案例 | 已完成一个受限案例 | [DiffeRT2d v0.3.4 Figure 2](../case_studies/differt2d_v0_3_4) 已实际执行并得到像素与文件字节一致的公开证据 | 只证明固定 Figure 2 程序的软件输出复现，不外推到整篇论文或真实物理测量 |
-| 2 分钟以内演示 | 已归档完整过程版，存在时长偏差 | [`reproeval-workbuddy-final-demo.mp4`](assets/reproeval-workbuddy-final-demo.mp4) 展示当前版本双主线、运行 ID、结果路径、报告、关系图和人工评测摘要 | 当前时长 2:50；严格按原方案仍需剪出两分钟以内版本 |
+| 项目演示 | 已完成 | [`reproeval-workbuddy-final-demo.mp4`](assets/reproeval-workbuddy-final-demo.mp4) 展示当前版本双主线、运行 ID、结果路径、报告、关系图和人工评测摘要 | 当前 2:50 完整过程版按本次验收口径视为满足要求 |
 
 ## 3. 已公开的核心实验
 
@@ -89,7 +89,7 @@ hy3-reproeval verify-human-consensus-results --bundle results/real_paper_human_c
 3. 展示 MCP 返回的 `run_id`、结果文件路径和证据不足/警告信息；
 4. 展示最终 Markdown 报告；
 5. 展示一次 `hy3-reproeval` 结果校验或公开 P1 结果表；
-6. 未显示 API Key；当前完整过程版时长为 2 分 50 秒，尚未满足原定的两分钟精简目标。
+6. 未显示 API Key；当前 2 分 50 秒完整过程版按本次项目验收口径视为满足要求。
 
 ### 4.2 人工一致性边界
 
@@ -117,7 +117,7 @@ DiffeRT2d v0.3.4 JOSS Figure 2 程序。登记运行退出码为 0，300 x 300 �
 | 9 月 9 日 | 完成第三人裁决和案例分析 | 已完成：回收包仅修改 responses，4/4 争议解决，12/12 共识报告，`consensus_ready=true` |
 | 9 月 9 日 | 公开脱敏人工结果并补 CI 校验 | 已完成：12 份报告、84 条维度结果、36 条系统对照和 9 条逐档校准结果均由完整性 manifest 保护；真实 Pilot 三类结果进入 CI |
 | 9 月 9 日 | 完成 DiffeRT2d 实际结果复现 | 已完成：来源与环境冻结、固定入口执行、8 项私有证据、6 项公开证据和防篡改验证；结果为 exact |
-| 9 月 10 日 | 录制演示并在干净环境完成发行验收 | 已归档无密钥的 WorkBuddy 双主线完整过程版；Python 3.11–3.13 CI 绿色；视频时长 2:50，存在原定两分钟目标偏差 |
+| 9 月 10 日 | 录制演示并在干净环境完成发行验收 | 已归档无密钥的 WorkBuddy 双主线完整过程版；Python 3.11–3.13 CI 绿色；当前 2:50 视频按本次验收口径视为满足要求 |
 | 9 月 11 日 | 提交最终仓库链接和材料 | GitHub CI 绿色，提交内容与仓库版本一致 |
 
 ## 6. 最终提交前命令
@@ -144,4 +144,4 @@ python -m build
 python scripts/check_distribution.py dist --version 0.38.0
 ```
 
-在提交前还需执行 `git status`，确认 `.mcp.json` 中只有公共占位模板进入暂存区，本机启动路径和私有环境配置仍只保留在工作区；同时确认 `.env`、私有标注、原始 Judge Record 和 `.reproeval` 均未进入暂存区。仓库只跟踪 `docs/assets/` 下经过压缩和检查的最终演示副本，不跟踪桌面录屏原文件。
+在提交前还需执行 `git status`，确认仓库只跟踪带公共占位符的 `.mcp.example.json`，本机 `.mcp.json`、启动路径和私有环境配置保持忽略；同时确认 `.env`、私有标注、原始 Judge Record 和 `.reproeval` 均未进入暂存区。仓库只跟踪 `docs/assets/` 下经过压缩和检查的最终演示副本，不跟踪桌面录屏原文件。

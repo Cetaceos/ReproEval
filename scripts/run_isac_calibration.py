@@ -21,7 +21,9 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--fixture",
         type=Path,
-        default=Path(__file__).resolve().parents[1] / "evals" / "synthetic_isac_calibration.json",
+        default=(
+            Path(__file__).resolve().parents[1] / "evals" / "regression" / "isac" / "synthetic_isac_calibration.json"
+        ),
         help="Explicitly labelled ISAC calibration fixture (JSON).",
     )
     parser.add_argument(

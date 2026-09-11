@@ -114,7 +114,9 @@ async def test_generic_profile_remains_default(tmp_path) -> None:
 
 @pytest.mark.asyncio
 async def test_auto_isac_profile_normalizes_registry_and_evidence_boundaries(tmp_path) -> None:
-    fixture = json.loads((PROJECT_ROOT / "evals" / "synthetic_isac_profile.json").read_text(encoding="utf-8"))
+    fixture = json.loads(
+        (PROJECT_ROOT / "evals" / "regression" / "isac" / "synthetic_isac_profile.json").read_text(encoding="utf-8")
+    )
     paper_path = PROJECT_ROOT / fixture["inputs"]["paper"]
     fake = FakeHy3Client(fixture["response"])
     app = AppContext(settings=_settings(tmp_path, PROJECT_ROOT), hy3_client=fake)
@@ -156,7 +158,9 @@ async def test_auto_isac_profile_normalizes_registry_and_evidence_boundaries(tmp
 @pytest.mark.asyncio
 async def test_explicit_isac_profile_downgrades_unsupported_classification(tmp_path) -> None:
     fixture = json.loads(
-        (PROJECT_ROOT / "evals" / "synthetic_isac_insufficient_evidence.json").read_text(encoding="utf-8")
+        (PROJECT_ROOT / "evals" / "regression" / "isac" / "synthetic_isac_insufficient_evidence.json").read_text(
+            encoding="utf-8"
+        )
     )
     paper_path = PROJECT_ROOT / fixture["inputs"]["paper"]
     fake = FakeHy3Client(fixture["response"])

@@ -48,7 +48,7 @@ REQUIRED_SDIST_DOCS = {
     "docs/STABILITY_PROTOCOL.md",
     "docs/WORKBUDDY_FINAL_DEMO_CN.md",
     "docs/PROJECT_PROPOSAL_CN.md",
-    "docs/reproscope/RELEASE_EVIDENCE_0.15_CN.md",
+    "docs/archive/reproscope-0.15/RELEASE_EVIDENCE_0.15_CN.md",
 }
 REQUIRED_SDIST_FILES = {
     "CHANGELOG.md",
@@ -131,10 +131,10 @@ def _archive_text(path: Path, relative_path: str) -> str:
 
 def _validate_public_mcp_config(payload: object) -> None:
     if not isinstance(payload, dict) or not isinstance(payload.get("mcpServers"), dict):
-        raise ValueError(".mcp.json must contain an mcpServers object")
+        raise ValueError(".mcp.example.json must contain an mcpServers object")
     servers = payload["mcpServers"]
     if not servers:
-        raise ValueError(".mcp.json must declare at least one MCP server")
+        raise ValueError(".mcp.example.json must declare at least one MCP server")
     for server_name, server in servers.items():
         if not isinstance(server, dict):
             raise ValueError(f"MCP server {server_name!r} must be an object")
@@ -194,9 +194,9 @@ def check_archive(path: Path) -> None:
         if large_media:
             raise ValueError(f"Repository-only media found in {path.name}: {', '.join(large_media)}")
         try:
-            mcp_payload = json.loads(_archive_text(path, ".mcp.json"))
+            mcp_payload = json.loads(_archive_text(path, ".mcp.example.json"))
         except json.JSONDecodeError as exc:
-            raise ValueError(f"Invalid .mcp.json in {path.name}: {exc}") from exc
+            raise ValueError(f"Invalid .mcp.example.json in {path.name}: {exc}") from exc
         _validate_public_mcp_config(mcp_payload)
 
 

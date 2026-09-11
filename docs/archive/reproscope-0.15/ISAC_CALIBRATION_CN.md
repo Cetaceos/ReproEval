@@ -40,7 +40,7 @@
 
 真实校准集通过 `load_expert_calibration_cases` 导入。它要求顶层 `annotation_policy` 为 `expert`、`reviewed` 或 `mixed`，拒绝 `synthetic` 标签，并要求同时存在 `calibration` 与 `held_out` split：
 
-`evals/isac_expert_annotation_template.json` 是人工标注交付模板，不是数据集；其中的空 `cases` 必须由外部标注流程替换，仓库不会把候选论文或合成案例升级成专家真值。
+`evals/regression/isac/isac_expert_annotation_template.json` 是人工标注交付模板，不是数据集；其中的空 `cases` 必须由外部标注流程替换，仓库不会把候选论文或合成案例升级成专家真值。
 
 ```bash
 python scripts/run_isac_calibration.py \
@@ -58,11 +58,11 @@ python scripts/run_isac_calibration.py \
 
 ## 当前状态
 
-`evals/synthetic_isac_calibration.json` 是公开、合成的回归 fixture，覆盖四类 split 和重复预测稳定性。它只证明计算路径和边界行为，不代表真实论文样本、专家标注或 0.16 校准结果。
+`evals/regression/isac/synthetic_isac_calibration.json` 是公开、合成的回归 fixture，覆盖四类 split 和重复预测稳定性。它只证明计算路径和边界行为，不代表真实论文样本、专家标注或 0.16 校准结果。
 
 ## 公开论文候选集
 
-`evals/isac_public_candidate_cases.json` 保存了通过 Crossref 公开元数据选出的 3 个 ISAC/雷达通信正例候选和 2 个雷达单领域负例候选。每条记录包含 DOI、题名、年份、来源 URL、来源定位符 SHA-256 和当前工程候选标签；其中一个负例还保留了 Crossref 的公开摘要摘录。`source_locator_sha256` 只校验 DOI 定位符，不是全文内容哈希。该文件有意不直接作为 `ISACCalibrationCase` fixture：标签只基于公开元数据或单人初审，没有两名独立领域专家和仲裁记录，因此不能用于宣称引用准确率、风险规则准确率、UAR/CAR 或 held-out 泛化能力。
+`evals/regression/isac/isac_public_candidate_cases.json` 保存了通过 Crossref 公开元数据选出的 3 个 ISAC/雷达通信正例候选和 2 个雷达单领域负例候选。每条记录包含 DOI、题名、年份、来源 URL、来源定位符 SHA-256 和当前工程候选标签；其中一个负例还保留了 Crossref 的公开摘要摘录。`source_locator_sha256` 只校验 DOI 定位符，不是全文内容哈希。该文件有意不直接作为 `ISACCalibrationCase` fixture：标签只基于公开元数据或单人初审，没有两名独立领域专家和仲裁记录，因此不能用于宣称引用准确率、风险规则准确率、UAR/CAR 或 held-out 泛化能力。
 
 要把候选集升级为真实校准集，必须为每个案例补充脱敏全文片段和页/行定位符，由至少两名 ISAC 领域标注者独立填写 Evidence Card，再由第三人处理分歧并冻结 development/calibration/held-out/negative 划分。只有完成这一步后，`run_isac_calibration.py` 的输出才可以作为真实校准结果；在此之前，脚本结果仍固定标记为 `descriptive_calibration`。
 

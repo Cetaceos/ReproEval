@@ -83,8 +83,8 @@
 
 两张用户提供的当前版本工具发现截图已保存：
 
-- [CodeBuddy 0.15.0 十工具发现](../assets/codebuddy-0.15.0-tool-discovery.png)
-- [Visual Studio Code 0.15.0 十工具发现](../assets/vscode-0.15.0-tool-discovery.png)
+- [CodeBuddy 0.15.0 十工具发现](../../assets/archive/reproscope-0.15/codebuddy-0.15.0-tool-discovery.png)
+- [Visual Studio Code 0.15.0 十工具发现](../../assets/archive/reproscope-0.15/vscode-0.15.0-tool-discovery.png)
 
 The CodeBuddy full-pipeline capture supplied after the 0.15.0 run adds a client-side
 cross-step assertion for `transfer_graph.graph_validated=true`. This is stronger than tool discovery,
@@ -92,7 +92,7 @@ but it remains a user-provided GUI capture; the persisted JSON artifact is the a
 For both clients, verify the top-level `graph_validated` boolean in `transfer_graph.json`, or use the
 same marker exposed by `reproscope_render_transfer_report` and `transfer_report_manifest.json`.
 
-截图可证明两个客户端各发现 10 个 Tool，且未包含 API key、Authorization header、`.env` 内容或私有 endpoint。用户另行提供的 CodeBuddy 全流程截图包含十步顺序执行和 `transfer_graph.graph_validated=true` 跨步断言。Visual Studio Code 1.131.0 使用运行时代码等价的前一构建 wheel `61F776...` 完成 `reproscope_audit_repository`：run `repository_8246ee4f34e0`、Schema 1.21、0 gaps、0 warnings、未截断、未执行代码；artifact content/payload hash 为 `8f271a...`/`34342b...`。历史 CodeBuddy 原始录屏未随当前仓库分发，因此不能作为仓库内可复核链接，也不证明论文链或新构建 wheel 的完整在线重复。脱敏索引见 [CLIENT_VALIDATION_0_15_INDEX.json](../CLIENT_VALIDATION_0_15_INDEX.json)，并由 `validate_client_evidence.py` 校验。双客户端发现 montage 位于 [demo-0.15.0-client-discovery-montage.gif](../assets/demo-0.15.0-client-discovery-montage.gif)。
+截图可证明两个客户端各发现 10 个 Tool，且未包含 API key、Authorization header、`.env` 内容或私有 endpoint。用户另行提供的 CodeBuddy 全流程截图包含十步顺序执行和 `transfer_graph.graph_validated=true` 跨步断言。Visual Studio Code 1.131.0 使用运行时代码等价的前一构建 wheel `61F776...` 完成 `reproscope_audit_repository`：run `repository_8246ee4f34e0`、Schema 1.21、0 gaps、0 warnings、未截断、未执行代码；artifact content/payload hash 为 `8f271a...`/`34342b...`。历史 CodeBuddy 原始录屏未随当前仓库分发，因此不能作为仓库内可复核链接，也不证明论文链或新构建 wheel 的完整在线重复。脱敏索引见 [CLIENT_VALIDATION_0_15_INDEX.json](CLIENT_VALIDATION_0_15_INDEX.json)，并由 `validate_client_evidence.py` 校验。双客户端发现 montage 位于 [demo-0.15.0-client-discovery-montage.gif](../../assets/archive/reproscope-0.15/demo-0.15.0-client-discovery-montage.gif)。
 
 ## 6. 在线验证命令
 
@@ -135,6 +135,6 @@ $env:HY3_REASONING_EFFORT = 'low'
 1. ReproScope CI [run 30689787695](https://github.com/Cetaceos/Hy3/actions/runs/30689787695) 已在提交
    `36253a6` 上完成 Linux 3.11/3.12/3.13、Windows 3.11 和 macOS 3.11 五项全绿；手动 live job 按设计跳过。
 2. PR #187 正文已同步 0.15.0 十工具和两条端到端流程；本轮 README 与当前 wheel 证据尚未 commit、push，推送后需等待新 HEAD 的 CI。
-3. 领域专家标注、真实 Calibration/Held-out、引用准确率和风险阈值尚未产生；当前 `evals/synthetic_isac_calibration.json` 只输出描述性合成指标，UAR/CAR 不能解释为 benchmark。
+3. 领域专家标注、真实 Calibration/Held-out、引用准确率和风险阈值尚未产生；当前 `evals/regression/isac/synthetic_isac_calibration.json` 只输出描述性合成指标，UAR/CAR 不能解释为 benchmark。
 4. 最近完成在线验证的 `3C940...` wheel 已获授权并实际发送仓库合成样例；论文、迁移与 ISAC 三条链全部完成，run ID、artifact hash、汇总哈希和历史失败边界均已进入 `LIVE_VALIDATION_0_15_INDEX.json`。
 5. 最终 CodeBuddy MP4 已完成；后续代码收口生成的新 wheel 必须重新记录哈希和本地门禁，不能从录屏或 `3C940...` 在线记录继承“精确新 wheel 已在线验证”的表述。

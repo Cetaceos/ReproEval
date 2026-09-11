@@ -29,7 +29,7 @@
 
 当前 0.15.0 论文、迁移和 ISAC 链的 run ID、artifact content/payload hash、确定性指标和失败边界见
 [LIVE_VALIDATION_0_15_CN.md](LIVE_VALIDATION_0_15_CN.md)。两张当前客户端十工具发现截图位于
-`docs/assets/`；VS Code 当前调用索引为 `docs/CLIENT_VALIDATION_0_15_INDEX.json`。历史 CodeBuddy 原始录屏未随
+`docs/assets/archive/reproscope-0.15/`；VS Code 当前调用索引为 `docs/archive/reproscope-0.15/CLIENT_VALIDATION_0_15_INDEX.json`。历史 CodeBuddy 原始录屏未随
 当前仓库分发；仓库中的截图 montage 仅用于双客户端 Tool 发现，不能替代完整交互演示。
 
 最近在线验证的 `3C940...` wheel 汇总覆盖 13 个成功 run 和 28 个成功 artifact；汇总 SHA-256 为

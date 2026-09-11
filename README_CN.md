@@ -1,52 +1,62 @@
-# Hy3 ReproEval
+# ReproEval
 
-[English](README.md)
+[English](README.md) | 简体中文
 
-Hy3 ReproEval 是一个面向开放式科研报告的 Hy3 多工具应用与可信评测框架。项目以论文复现审查为主场景，并将技术方案迁移评估保留为跨场景泛化案例。
+ReproEval 是一个基于 Hy3 的科研证据审查与开放式报告评测项目。它通过 MCP Server 向 CodeBuddy、
+WorkBuddy、VS Code/Copilot、Cursor 和 Cline 等客户端提供论文复现审查与技术方案迁移评估能力，并用
+版本化量表、确定性数值校验、数据溯源和人工盲评约束大模型结论。
 
-本项目是为 2026 腾讯犀牛鸟开源课题实战开发的个人作品，不是腾讯官方产品。
+本仓库是腾讯犀牛鸟“开放式场景：AI 应用与评判标准设计”实战任务的个人作品，不是腾讯官方产品。
 
-## 当前进度
+## 核心亮点
 
-第一阶段迁移已经完成。本仓库已纳入 [Tencent-Hunyuan/Hy3 PR #187](https://github.com/Tencent-Hunyuan/Hy3/pull/187) 中经过验证的 ReproScope 应用层，包括：
+| 能力 | 实现 |
+| --- | --- |
+| 双主线应用 | 论文复现证据审查，以及技术方案面向新场景的条件化迁移评估。 |
+| Hy3 与确定性程序协作 | Hy3 负责语义理解与结构化判断，Python 负责统计重算、Schema 校验、哈希和输入输出关系检查。 |
+| 10 个 MCP Tool | 从材料读取、主张提取、结果对比、评分、证据关系图到 Markdown 报告均可由 stdio 客户端编排。 |
+| 可复核评测体系 | 7 维量表、好/中/差与对抗样本、三轮 Hy3 Judge、双人盲评和第三人裁决均有版本化协议。 |
+| 真实来源与实际执行 | 真实论文 Pilot 包含 6 篇开放获取论文；DiffeRT2d v0.3.4 Figure 2 已在冻结环境中实际执行。 |
+| 可追溯输出 | 每一步返回 `run_id` 和相对结果路径，并记录输入哈希、直接依赖、警告和运行状态。 |
 
-- 10 个 stdio MCP Tool，覆盖论文复现、方案迁移、证据图、报告和只读仓库审计；
-- 本地统计重算、Schema 校验、来源哈希、数据溯源关系校验和证据不足拒答；
-- 合成示例、离线评测集、在线验证流程和 400 余项自动化测试；
-- 对原有 `hy3_reproscope_mcp` 模块和 `hy3-reproscope-mcp` 命令的兼容。
-
-版本化七维 Rubric、确定性校验器、受限 Hy3 语义 Judge、盲化重复比较、可复现数据协议、可恢复批量 Judge、组内 Benchmark、重复运行稳定性分析、人工标注数据结构、一致性分析和裁决共识聚合已经实现。盲审工作包同时提供匿名报告、匿名源材料、来源哈希和固定行号，并在回收时校验副本完整性与源证据引用；质量档位、Mutation、预期错误和系统分数不进入标注者目录。仓库提供 12 组 P0 合成协议数据，并新增 6 组来源可核验的开放获取真实论文 Pilot。真实 Pilot 尚未执行第三方软件；当前已完成冻结输入上的三轮在线 `hy3` Judge、validation/test 全部 12 份报告的双人盲评和 4 项第三人裁决，最终 `consensus_ready=true`，脱敏共识结果已公开。另行生成的高档候选保持待人工审核的实验支线，不进入当前 Dataset。详见[项目方案](docs/PROJECT_PROPOSAL_CN.md)。
-
-## 架构
+## 系统设计
 
 ```text
-论文材料 + 复现实验结果
-          |
-          v
-   ReproScope 应用生成层
-Hy3 语义提取 + Python 本地校验
-          |
-          v
-   可追溯报告与结构化结果
-          |
-          v
-    ReproEval 质量评估层
-规则校验 + Hy3 Judge + 人工标签
+MCP 客户端
+   |
+   +-- 论文材料 + 复现结果 --> Hy3 主张提取 --> Python 指标重算 --> 六维可靠性评估
+   |                                                    --> 证据关系图 --> 中文报告
+   |
+   +-- 源方案 + 目标背景 ----> Hy3 方案画像 --> 条件、风险与改造分析
+                                                        --> 迁移关系图 --> 中文报告
+
+评测层：7 维 Rubric --> 冻结数据集 --> Hy3 Judge --> 稳定性/判别力 --> 人工盲评与裁决
 ```
 
-Hy3 负责语义提取和证据关系判断；本地 Python 负责数值重算、Schema 与引用校验、输入输出关系校验和固定规则聚合。模型输出不能覆盖本地重新计算的事实。
+模型输出不能覆盖本地重新计算的数值或结构校验结果。证据不足的维度返回 `insufficient`，而不是被
+机械记为零分；迁移评估在缺少目标实测数据时不会给出精确性能预测。
 
 ## 最终演示
 
-[观看 WorkBuddy 双主线演示（MP4）](docs/assets/reproeval-workbuddy-final-demo.mp4)
+[下载或在线观看 WorkBuddy 双主线演示（1080p MP4，2 分 50 秒）](docs/assets/reproeval-workbuddy-final-demo.mp4)
 
-视频展示 MCP Server 的 10 个 Tool、DiffeRT2d 论文复现证据审查、技术方案迁移评估、两类 Markdown
-报告、`run_id`、结果文件路径、证据关系图和人工评测摘要。归档文件为 1080p 无声版本，时长
-2 分 50 秒；它保留完整展示过程，因此超过项目方案原定的两分钟精简目标。
+视频展示 WorkBuddy 发现 10 个 Tool，并以 DiffeRT2d 的公开论文和实际 Figure 2 执行证据完成论文审查，
+随后评估该方案迁移到三维 UAV-BS ISAC 研究流程的条件、风险与验证路径。录屏中的 API 调用与结果均为
+真实运行；结论只覆盖展示的输入和固定案例，不代表整篇论文或传播模型物理正确性已经得到验证。
+
+详细录制输入和验收边界见 [WorkBuddy 演示手册](docs/WORKBUDDY_FINAL_DEMO_CN.md)。
 
 ## 快速开始
 
-要求 Python 3.11 或更高版本，以及可用的 Hy3 兼容接口。
+要求 Python 3.11–3.13，以及可用的 Hy3 OpenAI-compatible API。项目默认示例使用腾讯云 TokenHub。
+
+### 一条命令安装
+
+```bash
+python -m pip install "hy3-reproeval @ git+https://github.com/Cetaceos/ReproEval.git@main"
+```
+
+这条命令适合安装 MCP Server 和 CLI。要运行仓库内样例、数据集与实际复现案例，请使用开发安装：
 
 ```bash
 git clone https://github.com/Cetaceos/ReproEval.git
@@ -66,477 +76,159 @@ Linux / macOS：
 ./.venv/bin/python -m pip install -e .
 ```
 
-请将 `.env.example` 中的变量加载到父进程，或通过 MCP 客户端提供。程序不会自动读取 `.env` 文件，不得提交真实 API Key。
+### 配置 Hy3
+
+密钥只能通过环境变量或 MCP 客户端的私有配置传入，不要写入仓库。可用配置项见
+[`.env.example`](.env.example)。最小环境变量如下：
 
 ```text
 HY3_API_PROVIDER=tokenhub
 HY3_BASE_URL=https://tokenhub.tencentmaas.com/v1
-HY3_API_KEY=replace-with-your-key
+HY3_API_KEY=YOUR_HY3_API_KEY
 HY3_MODEL=hy3
 REPROSCOPE_OUTPUT_LANGUAGE=zh-CN
-REPROSCOPE_ALLOWED_ROOTS=.
-REPROSCOPE_WORKSPACE=.reproeval/reproscope
 ```
 
-`REPROSCOPE_OUTPUT_LANGUAGE` 可设为 `zh-CN` 或 `en`。中文模式会让 Hy3 的说明字段和两类 Markdown
-报告使用简体中文，同时保留 JSON 字段名、枚举值、ID、引用、单位和代码标识符，避免影响 MCP Tool
-之间的结构化数据传递。
+### 配置 MCP 客户端
 
-通过 stdio 启动 MCP Server：
+复制 [`.mcp.example.json`](.mcp.example.json) 为本地 `.mcp.json`，将 Python、仓库和工作目录替换为
+本机绝对路径。可靠的 Windows
+stdio 配置形式如下：
 
-```bash
-hy3-reproeval-mcp
+```json
+{
+  "mcpServers": {
+    "hy3-reproeval": {
+      "type": "stdio",
+      "command": "C:/path/to/ReproEval/.venv/Scripts/python.exe",
+      "args": ["-m", "hy3_reproscope_mcp"],
+      "env": {
+        "HY3_API_PROVIDER": "tokenhub",
+        "HY3_BASE_URL": "https://tokenhub.tencentmaas.com/v1",
+        "HY3_API_KEY": "YOUR_HY3_API_KEY",
+        "HY3_MODEL": "hy3",
+        "HY3_TIMEOUT_SECONDS": "300",
+        "REPROSCOPE_OUTPUT_LANGUAGE": "zh-CN",
+        "REPROSCOPE_ALLOWED_ROOTS": "C:/path/to/ReproEval",
+        "REPROSCOPE_WORKSPACE": "C:/path/to/ReproEval/.reproeval/reproscope"
+      }
+    }
+  }
+}
 ```
 
-已有客户端仍可继续使用兼容命令：
+CodeBuddy 和 VS Code 示例分别位于 [`examples/mcp-config/codebuddy.json`](examples/mcp-config/codebuddy.json)
+和 [`examples/mcp-config/vscode.json`](examples/mcp-config/vscode.json)。
 
-```bash
-hy3-reproscope-mcp
-```
+## 两条端到端流程
 
-项目级客户端配置可参考 [.mcp.json](.mcp.json)，使用时需替换占位路径，并在私有配置中注入密钥。
+### 论文复现审查
 
-## Agent Skill
-
-仓库提供 [`reproeval-research-audit`](skills/reproeval-research-audit) Agent Skill，将自然语言任务路由到两条 ReproScope MCP 工作流，并保持过程可追溯、证据不足状态和安全边界。Skill 不替代 MCP Server，也不保存任何凭据；当前 ReproEval 质量评估命令仍通过 CLI 使用。
-
-从源码仓库将 Skill 安装到支持 Agent Skills 的客户端后，可通过 `$reproeval-research-audit` 调用。安装方法、编排行为和验证方式见 [SKILL_ADAPTER.md](docs/SKILL_ADAPTER.md)。
-
-## 报告评估
-
-以下公开样例无需 API Key：
-
-```bash
-hy3-reproeval evaluate-report \
-  --case examples/evaluation/sample_case.json \
-  --output evaluation.json
-```
-
-Case Manifest 登记合法来源定位、必需主张与章节、数值期望、不确定性短语和结果文件哈希。评估结果包含维度分数、证据位置、错误标签、已评估权重、硬性分数上限、Manifest 与 Rubric 指纹和机器可读质量结论。
-
-以下命令使用公开的合成 Judge 记录，无需 API Key：
-
-```bash
-hy3-reproeval evaluate-report \
-  --case examples/evaluation/sample_case.json \
-  --judge replay \
-  --judge-record examples/evaluation/sample_judge_record.json \
-  --output hybrid-evaluation.json
-```
-
-在线调用 Hy3 Judge 并保存可回放记录：
-
-```bash
-hy3-reproeval evaluate-report \
-  --case examples/evaluation/sample_case.json \
-  --judge online \
-  --judge-record judge-record.json \
-  --output hybrid-evaluation.json
-```
-
-在线模式读取现有 `HY3_*` 环境变量。回放记录仅在 Prompt 版本、Case、场景、报告、Rubric、请求和结构化响应指纹全部匹配时生效。没有确定性或语义证据的维度保持 `insufficient_evidence`，已评估权重低于 50% 时不输出总分。评分边界和限制详见 [EVALUATION_CORE.md](docs/EVALUATION_CORE.md)。
-
-## 盲化重复比较
-
-使用公开的三次合成回放记录，比较采用同一确定性评测契约的两份报告：
-
-```bash
-hy3-reproeval compare-reports \
-  --left-case examples/evaluation/sample_case.json \
-  --right-case examples/evaluation/sample_case_variant.json \
-  --comparison-id sample-pairwise-v1 \
-  --repeats 3 \
-  --judge replay \
-  --judge-record examples/evaluation/sample_pairwise_judge_bundle.json \
-  --output pairwise-result.json
-```
-
-Prompt 不包含 Case ID 和文件路径，交替将两份报告呈现为 A，并仅让 Hy3 判断两个语义维度。Python 将语义分数与各报告的确定性贡献和 hard cap 合并，输出分数标准差、排序翻转率、质量等级翻转和观察到的 A/B 位置差值。公开 Bundle 是用于验证协议的合成回放数据，不代表真实模型 Benchmark。详见 [PAIRWISE_COMPARISON.md](docs/PAIRWISE_COMPARISON.md)。
-
-## 可复现数据协议
-
-以下命令无需 API Key，可验证公开的高、中、低三档合成报告组：
-
-```bash
-hy3-reproeval validate-dataset \
-  --manifest examples/dataset/sample_dataset.json \
-  --output dataset-validation.json
-```
-
-版本化 Dataset Manifest 登记来源、组级数据划分、报告档位、Case Manifest、内容哈希、预期错误和 Mutation Manifest。字面变异可从高质量父报告确定性重放，只有输出字节与登记的 SHA-256 一致时才会通过：
-
-```bash
-hy3-reproeval replay-mutation \
-  --manifest examples/dataset/medium_mutation.json \
-  --root examples/dataset
-```
-
-公开合成对抗样例可在无 API Key 的确定性模式下验证攻击登记与指标聚合：
-
-```bash
-hy3-reproeval benchmark-dataset \
-  --manifest examples/dataset/sample_adversarial_dataset.json \
-  --mode deterministic
-```
-
-验证器要求同一来源组使用同一评测契约，阻止登记的同一来源指纹跨数据集划分复用，限制路径范围，并要求本地可检查错误与声明标签完整对应。对抗报告还必须逐项登记攻击类型、目标维度和预期错误，并与 Mutation 操作一一对应。语义类标签仍需后续 Hy3 Judge 或人工实验验证。两个公开样例均为合成开发组，只用于验证协议，不是 held-out Benchmark。详见 [DATASET_PROTOCOL.md](docs/DATASET_PROTOCOL.md) 和 [ADVERSARIAL_PROTOCOL.md](docs/ADVERSARIAL_PROTOCOL.md)。
-
-### 真实论文 Pilot
-
-仓库内的真实论文 Pilot 包含 6 篇 CC BY 4.0 的 JOSS 论文和对应软件归档，按 2/2/2 划分
-development、validation、test，共形成 18 份高/中/低候选报告，其中 4 组为难例：
-
-```bash
-hy3-reproeval build-real-paper-pilot --output evals/real_paper_pilot --check
-hy3-reproeval validate-dataset --manifest evals/real_paper_pilot/dataset.json
-```
-
-该 Pilot 只审查复现条件，不声称已经安装或运行第三方软件。Dataset 1.2 登记 30 个来源资产；每篇论文的
-证据包包含 5 条带 PDF 页码、章节和短摘录的 Evidence ID。论文 PDF 不进入仓库，但可在私有缓存中对
-6 份 PDF 哈希和 30 条摘录执行复验：
-
-```bash
-hy3-reproeval verify-real-paper-sources --source-dir .reproeval/source_cache
-```
-
-高档报告使用 `curator_draft`，在完成真实人工复核前不是专家真值。可使用 Hy3 重新生成带完整数据溯源信息的候选，
-再由评审者填写默认状态为 `pending` 的人工审核表：
-
-```bash
-hy3-reproeval generate-real-paper-references \
-  --manifest evals/real_paper_pilot/dataset.json \
-  --output-dir .reproeval/real-paper-reference-candidates
-
-hy3-reproeval validate-reference-reviews \
-  --manifest evals/real_paper_pilot/dataset.json \
-  --bundle-dir .reproeval/real-paper-reference-candidates \
-  --require-approved
-```
-
-详见 [真实论文 Pilot](docs/REAL_PAPER_PILOT.md)和[高档报告生成与复核手册](docs/REFERENCE_GENERATION_REVIEW_CN.md)。
-
-### DiffeRT2d 实际结果复现案例
-
-独立案例使用上游锁文件和专用 Python 3.11.8 环境，实际执行 DiffeRT2d v0.3.4 发布归档中的 JOSS
-Figure 2 程序。登记运行在 JAX CPU 后端耗时 30.160 秒，生成 300 x 300 功率网格；本次 PNG 与归档
-参考图在文件字节和 1313 x 1710 x 4 像素上均完全一致。公开证据包不包含第三方源码、本机路径、
-虚拟环境或凭据，保留环境版本、数值摘要、日志、复现 PNG 和由哈希绑定的数据溯源信息。
-
-该结果只证明固定 Figure 2 程序在所记录环境下复现了归档产物，不代表整篇论文或无线传播准确性
-已经得到独立验证。详见[案例协议与结果](case_studies/differt2d_v0_3_4)和
-[中文证据协议](docs/DIFFERT2D_REPRODUCTION_PROTOCOL_CN.md)。
-
-仓库跟踪的[真实论文 Pilot Judge 聚合结果](results/real_paper_judge)来自同一 Freeze 上的三轮 TokenHub
-`hy3` 调用，共 54 条成功记录。公开包不包含原始请求、响应或凭据：
-
-```bash
-hy3-reproeval verify-results-export --bundle results/real_paper_judge
-hy3-reproeval verify-results-figures \
-  --figures results/real_paper_judge_figures \
-  --source-bundle results/real_paper_judge
-hy3-reproeval verify-human-consensus-results \
-  --bundle results/real_paper_human_consensus
-```
-
-三轮组内排序均为 100%，但 Run 1 产生了一个未登记的 `reasoning_gap`。双人盲评覆盖全部 12 份
-validation/test 报告，二次加权 Kappa 为 `0.964225`；三轮系统—最终共识 Spearman 为 `0.988483`、`1.0`
-和 `0.988483`，平均绝对误差为 `14.541667–15.791667`，说明排序能力强于绝对分数校准。4 个
-`factual_accuracy` 错误码分歧已完成第三人裁决，12/12 份目标报告形成最终人工共识。[脱敏公开包](results/real_paper_human_consensus)包含
-逐报告、逐维度以及逐轮系统—人工对照 CSV，不含评审者身份、Bundle ID、评语或原始模型响应。详见[三轮 Judge 实验](docs/REAL_PAPER_JUDGE_EXPERIMENT_CN.md)
-和[人工验证报告](docs/REAL_PAPER_HUMAN_VALIDATION_CN.md)。
-
-### P0 合成协议数据集
-
-仓库内的 P0 候选集包含 12 个相互隔离的合成来源组，development、validation、test 各 4 组，
-共 44 份报告和 8 份对抗报告，并覆盖已登记的全部 7 类攻击。无需 API Key 即可按规范字节复验并校验：
-
-```bash
-hy3-reproeval build-p0-dataset --output evals/p0_dataset --check
-hy3-reproeval validate-dataset --manifest evals/p0_dataset/dataset.json
-```
-
-其中的生成标签只用于回归、Mutation 和对抗协议验证，不是专家真值或 held-out 性能结果。详见
-[P0_DATASET.md](docs/P0_DATASET.md)。
-
-### P1 技术迁移泛化数据集
-
-仓库内的 P1 数据集增加 5 个相互隔离的技术迁移场景，以及覆盖边缘推理、UAV 联邦学习、天线阵列、
-ISAC 和语义通信的 15 份高/中/低报告，用于验证同一七维评估器能否在不修改 Rubric 权重的情况下审查
-条件化迁移报告：
-
-```bash
-hy3-reproeval build-p1-transfer-dataset --output evals/p1_transfer_dataset --check
-hy3-reproeval validate-dataset --manifest evals/p1_transfer_dataset/dataset.json
-```
-
-该数据集评估报告质量、证据使用、目标约束、限制说明和验证计划，不证明任何合成方案能够真实部署。
-详见 [P1_TRANSFER_DATASET.md](docs/P1_TRANSFER_DATASET.md)。
-
-### 数据集冻结
-
-在正式生成 Judge Record 或组织人工盲评前，冻结所有登记输入：
-
-```bash
-mkdir .reproeval
-hy3-reproeval freeze-dataset \
-  --manifest examples/dataset/sample_dataset.json \
-  --output .reproeval/dataset-freeze.json
-
-hy3-reproeval verify-dataset-freeze \
-  --freeze .reproeval/dataset-freeze.json \
-  --manifest examples/dataset/sample_dataset.json
-```
-
-Freeze 绑定 Rubric 版本与哈希，并记录 Dataset、Case、报告、证据附件、Mutation 和已登记 Judge Record 的相对路径、角色、字节数与 SHA-256。`--require-p0-ready` 可拒绝未达到 12 个来源组、validation/test 划分和 8 份对抗报告的 Dataset。公开开发样例会正常冻结，但 `meets_p0_dataset_targets=false`；冻结不代表人工标注、Judge 或 held-out 结果已经就绪。详见 [DATASET_FREEZE.md](docs/DATASET_FREEZE.md)。
-
-## 批量评估
-
-以下命令无需 API Key，可回放清单中登记的合成 Judge Record：
-
-```bash
-hy3-reproeval benchmark-dataset \
-  --manifest examples/dataset/sample_dataset.json \
-  --mode replay \
-  --output dataset-benchmark.json
-```
-
-运行器只在同一来源组内比较报告，输出排序资格、成对覆盖率与准确率、完整排序覆盖率与准确率、组级 Spearman 宏平均和错误标签召回率。对抗报告单独输出逐攻击类型检测率、错误放行率和标签召回率，不参与高、中、低排序。Provisional 分数不参与排序，未定义指标保持 `null`。公开回放仅用于协议自检，不代表 Hy3 性能、人机一致性或对抗鲁棒性。详见 [BENCHMARK_PROTOCOL.md](docs/BENCHMARK_PROTOCOL.md)。
-
-### 可恢复在线 Judge 记录
-
-在已经创建的私有目录中为每份报告生成经过校验的 Hy3 记录，再通过完整索引直接执行回放 Benchmark：
-
-```bash
-hy3-reproeval generate-judge-records \
-  --manifest examples/dataset/sample_dataset.json \
-  --dataset-freeze .reproeval/dataset-freeze.json \
-  --output-dir .reproeval/judge-run
-
-hy3-reproeval benchmark-dataset \
-  --manifest examples/dataset/sample_dataset.json \
-  --dataset-freeze .reproeval/dataset-freeze.json \
-  --mode replay \
-  --judge-index .reproeval/judge-run/judge_record_index.json \
-  --output .reproeval/dataset-benchmark.json
-```
-
-需先创建输出目录；中断后应先检查已有文件，再使用 `--resume`。同一输出目录上的并发生成器会被独占锁拒绝。受控实验应在 Judge、Benchmark、标注、一致性分析和共识命令中复用同一个 `--dataset-freeze`；各输出将记录同一已验证指纹，混用不同运行的结果文件会直接失败。详见 [JUDGE_BATCH.md](docs/JUDGE_BATCH.md) 和 [DATASET_FREEZE.md](docs/DATASET_FREEZE.md)。
-
-### 一键重复 Judge 实验
-
-以下命令会依次冻结数据集，执行三轮相互独立且可恢复的 Judge，回放各轮 Benchmark，分析稳定性，
-并导出审阅结果包：
-
-```bash
-hy3-reproeval run-judge-experiment \
-  --manifest evals/p1_transfer_dataset/dataset.json \
-  --output-dir .reproeval/p1-transfer-experiment \
-  --runs 3
-```
-
-输出目录必须不存在或为空。检查中断状态后可追加 `--resume`；已完成轮次会经过哈希校验后复用，
-完整实验只执行复核，不会再次调用 API。命令使用实验级独占锁，且不会保存凭据。详见
-[JUDGE_EXPERIMENT.md](docs/JUDGE_EXPERIMENT.md)。
-
-### 重复 Benchmark 稳定性
-
-使用三个相互独立的 Judge 输出目录生成三份 replay Benchmark 后，无需再次调用 API 即可汇总总分和逐维波动：
-
-```bash
-hy3-reproeval analyze-benchmark-stability \
-  --benchmark .reproeval/benchmark-run-1.json \
-  --benchmark .reproeval/benchmark-run-2.json \
-  --benchmark .reproeval/benchmark-run-3.json \
-  --output .reproeval/benchmark-stability.json
-```
-
-分析器要求不同 Judge `run_id` 和 Index 绑定同一个 Dataset Freeze，并输出覆盖率、标准差、极差和质量等级翻转。详见 [STABILITY_PROTOCOL.md](docs/STABILITY_PROTOCOL.md)。
-
-将已验证结果导出为便于审阅的 Markdown 与 CSV 结果包：
-
-```bash
-hy3-reproeval export-benchmark-results \
-  --benchmark .reproeval/benchmark-run-1.json \
-  --benchmark .reproeval/benchmark-run-2.json \
-  --benchmark .reproeval/benchmark-run-3.json \
-  --stability .reproeval/benchmark-stability.json \
-  --output-dir .reproeval/benchmark-review
-```
-
-导出器会先根据 Benchmark 输入重新计算 Stability，结果不一致或输出目录非空时直接拒绝写入。详见
-[RESULT_EXPORT.md](docs/RESULT_EXPORT.md)。
-
-仓库跟踪的 [P1 技术迁移 Judge 结果包](results/p1_transfer_judge)记录了通过腾讯云 TokenHub 对合成迁移报告执行的三轮在线 Hy3 Judge 调用，不公开模型原始响应。该结果只验证当前合成评测协议，不代表真实技术方案的迁移效果。可在本地执行完整性校验：
-
-```bash
-hy3-reproeval verify-results-export --bundle results/p1_transfer_judge
-```
-
-结果归因、失败模式和结论边界见 [P1 实验分析](docs/P1_JUDGE_EXPERIMENT_CN.md)。
-
-从任意已验签结果包生成并验证自包含 SVG 图表：
-
-```bash
-hy3-reproeval render-results-figures \
-  --bundle results/p1_transfer_judge \
-  --output-dir .reproeval/p1-figures
-hy3-reproeval verify-results-figures \
-  --figures .reproeval/p1-figures \
-  --source-bundle results/p1_transfer_judge
-```
-
-仓库跟踪的 [P1 图表包](results/p1_transfer_judge_figures)与公开结果 manifest 绑定，不包含模型原始响应。协议与结论边界见 [RESULT_FIGURES.md](docs/RESULT_FIGURES.md)。
-
-### Annotation Bundle 校验
-
-以下命令生成一份随机化的盲审工作包。每个 item 包含带固定行号的候选报告和已登记源材料；`assignment.json` 记录源材料原始哈希与编号副本哈希，便于交付前后核验：
-
-```bash
-hy3-reproeval prepare-annotation-packet \
-  --manifest evals/p1_transfer_dataset/dataset.json \
-  --dataset-freeze .reproeval/p1-transfer-freeze.json \
-  --output-dir private_annotations/p1-reviewer-a \
-  --assignment-id p1-independent-a \
-  --annotator-id reviewer-a \
-  --bundle-id p1-independent-bundle-a
-```
-
-只向专家发送生成的 `annotator/` 目录，`coordinator_manifest.json` 必须由组织者私下保留。事实准确性、证据可追溯性和数值一致性若标为 `assessed`，必须同时引用报告行和源材料行。收回填写后的目录，再通过 `finalize-annotation-packet` 验签并生成严格 Bundle。完整双人流程和信任边界见 [ANNOTATION_PACKET.md](docs/ANNOTATION_PACKET.md)。
-
-以下命令无需 API Key，可校验公开的合成协议样例：
-
-```bash
-hy3-reproeval validate-annotations \
-  --manifest examples/dataset/sample_dataset.json \
-  --bundle examples/annotations/synthetic_annotation_bundle.json
-```
-
-真实 Benchmark 就绪要求每份 validation/test 报告都获得两位合格标注者相互独立且盲化的人工标注。公开合成 Bundle 永远不计为人工证据。详见 [ANNOTATION_PROTOCOL.md](docs/ANNOTATION_PROTOCOL.md)。
-
-分析人工一致性，并可选择将人工聚合分数与同一数据集上的 Dataset Benchmark 结果进行比较：
-
-```bash
-hy3-reproeval analyze-annotations \
-  --manifest path/to/frozen_dataset.json \
-  --dataset-freeze .reproeval/dataset-freeze.json \
-  --bundle private_annotations/annotator-01.json \
-  --bundle private_annotations/annotator-02.json \
-  --benchmark-result .reproeval/dataset-benchmark.json \
-  --output .reproeval/annotation-agreement.json
-```
-
-结果包含二次加权 Cohen's Kappa、精确一致率、±1 分一致率、平均绝对分差、逐维和逐标注者对指标，以及状态冲突或分差超过 1 分时生成的裁决清单；清单不会自动解决争议。系统-人工比较要求每份报告至少有两个人工有效总分，并且只有在 Dataset、Rubric、报告清单、数据划分和内容哈希完全一致时才输出 Spearman 相关系数与 MAE。不可定义的统计量保持 `null`；`agreement_ready=true` 只说明覆盖条件满足，不证明专家身份或标签质量。
-
-重复标注和裁决 Bundle 通过 `parent_annotation_bundle_ids` 声明上游关系。裁决工作包只包含程序生成的争议报告和维度，并以匿名方式展示两位原评审者的评分及证据轨迹；回收验签时会绑定上游 Bundle 的 SHA-256。第三位裁决者必须不同于两位原评审者、完成 Rubric 培训且对系统分数盲化：
-
-```bash
-hy3-reproeval prepare-adjudication-packet \
-  --manifest path/to/frozen_dataset.json \
-  --dataset-freeze .reproeval/dataset-freeze.json \
-  --bundle private_annotations/annotator-01.json \
-  --bundle private_annotations/annotator-02.json \
-  --output-dir private_annotations/adjudicator-03 \
-  --assignment-id adjudication-03 \
-  --adjudicator-id adjudicator-03 \
-  --bundle-id adjudication-bundle-03
-
-hy3-reproeval finalize-adjudication-packet \
-  --manifest path/to/frozen_dataset.json \
-  --dataset-freeze .reproeval/dataset-freeze.json \
-  --bundle private_annotations/annotator-01.json \
-  --bundle private_annotations/annotator-02.json \
-  --packet-dir private_annotations/adjudicator-03 \
-  --output private_annotations/adjudication-03.json
-```
-
-重复轮次引用同一标注者的一份独立 Bundle，只输出重复稳定性，不计为多人一致性。第三人裁决完成后，提交包含完整上游关系的 Bundle 集合生成共识：
-
-```bash
-hy3-reproeval finalize-annotations \
-  --manifest path/to/frozen_dataset.json \
-  --dataset-freeze .reproeval/dataset-freeze.json \
-  --bundle private_annotations/annotator-01.json \
-  --bundle private_annotations/annotator-02.json \
-  --bundle private_annotations/adjudication-01.json \
-  --output .reproeval/annotation-consensus.json
-```
-
-无争议的已评估分数按公开 Rubric 取均值；状态冲突、错误码冲突和分差超过 1 分的维度必须由匹配父级的裁决 Bundle 解决。缺少裁决时保持 unresolved，无关或重复裁决会被拒绝。只有每份 validation/test 报告都完成双人标注并形成完整共识时，`consensus_ready` 才为 `true`。
-
-## 已迁移的 MCP Tools
-
-| Tool | 功能 |
-| --- | --- |
-| `reproscope_extract_claims` | 提取论文实验主张和可选领域证据 |
-| `reproscope_compare_results` | 对齐指标并重新计算复现实验统计量 |
-| `reproscope_score_paper` | 执行六维证据充分性评估 |
-| `reproscope_build_evidence_graph` | 构建论文证据图 |
-| `reproscope_render_report` | 生成论文复现审查报告 |
-| `reproscope_extract_solution_profile` | 提取结构化技术方案画像 |
-| `reproscope_assess_transfer` | 评估迁移条件、风险和证据缺口 |
-| `reproscope_build_transfer_graph` | 构建技术迁移证据图 |
-| `reproscope_render_transfer_report` | 生成技术迁移决策报告 |
-| `reproscope_audit_repository` | 静态审计 Python 仓库的复现条件 |
-
-## 开发验证
-
-```bash
-python -m pip install --require-hashes -r requirements.lock
-python -m pip install -e . --no-deps
-python -m pytest
-python -m ruff check src tests scripts
-python scripts/run_offline_eval.py
-python scripts/run_transfer_offline_eval.py
-```
-
-在线验证脚本仅在显式提供 Hy3 API Key 时运行，并在保留结果文件前执行输出安全检查。
-
-## 目录结构
+依次调用：
 
 ```text
-src/hy3_reproeval/          ReproEval 公共包和 CLI
-src/hy3_reproscope_mcp/     迁移后的应用与 MCP 兼容层
-tests/                      单元、集成、stdio、安全和结果文件完整性测试
-examples/                   公开合成输入与 MCP 客户端配置
-evals/                      已迁移的确定性评测样例
-scripts/                    离线评测、在线验证、打包与证据检查脚本
-docs/PROJECT_PROPOSAL_CN.md 实战阶段设计和交付计划
-docs/EVALUATION_CORE.md     确定性评估器契约和能力边界
-docs/DATASET_PROTOCOL.md    数据集、划分、来源与变异协议
-docs/DATASET_FREEZE.md      实验输入冻结、复核与 P0 门槛
-docs/REAL_PAPER_PILOT.md    真实开放获取论文 Pilot、来源与实验边界
-docs/REAL_PAPER_JUDGE_EXPERIMENT_CN.md 真实论文 Pilot 三轮 Hy3 Judge 结果与边界
-docs/P0_DATASET.md          规范化 P0 合成数据集清单与结论边界
-docs/P1_TRANSFER_DATASET.md 规范化 P1 技术迁移泛化集清单与结论边界
-docs/P1_JUDGE_EXPERIMENT_CN.md P1 合成输入在线 Hy3 评测、归因与失败模式
-docs/SKILL_ADAPTER.md        Agent Skill 安装与编排契约
-docs/DELIVERY_STATUS_CN.md   最终任务书逐项完成状态与倒排计划
-docs/RESULT_FIGURES.md       确定性 SVG 生成与验签协议
-docs/BENCHMARK_PROTOCOL.md  组内批量指标和结论边界
-docs/ADVERSARIAL_PROTOCOL.md 对抗攻击登记与检测指标协议
-docs/JUDGE_BATCH.md         可恢复在线 Judge Record 生成协议
-docs/JUDGE_EXPERIMENT.md    一键冻结重复 Judge 实验编排协议
-docs/STABILITY_PROTOCOL.md  冻结重复 Benchmark 稳定性分析协议
-docs/RESULT_EXPORT.md       已验证的 Markdown/CSV Benchmark 审查包
-docs/ANNOTATION_PACKET.md   人工盲审工作包生成、回收与验签流程
-docs/ANNOTATION_PROTOCOL.md 去标识化标注和就绪条件
-docs/REAL_PILOT_REVIEW_GUIDE_CN.md 真实论文 Pilot 双人盲评操作手册
-docs/REFERENCE_GENERATION_REVIEW_CN.md Hy3 高档候选生成与人工审核要求
-docs/reproscope/             ReproScope 验证证据与历史材料
-results/                     带 SHA-256 manifest 的模型结果、图表和脱敏人工共识包
-skills/                      面向两条 MCP 流程的可复用 Agent Skill
+reproscope_extract_claims
+  -> reproscope_compare_results
+  -> reproscope_score_paper
+  -> reproscope_build_evidence_graph
+  -> reproscope_render_report
 ```
 
-兼容性和来源说明见 [MIGRATION.md](docs/MIGRATION.md)。
-版本更新记录见 [CHANGELOG.md](CHANGELOG.md)。
+快速演示材料为 `examples/sample_paper.md`、`examples/sample_results.csv` 和
+`examples/sample_train.log`。实际案例使用 `case_studies/differt2d_v0_3_4` 中的冻结协议和公开证据。
 
-## 安全与能力边界
+### 技术方案迁移评估
 
-- API Key 和私有科研材料不得进入版本控制；
-- 仓库审计仅执行静态分析，不运行第三方代码；
-- 系统评估当前材料中的证据，不判断学术不端，也不提供法律结论；
-- 报告和评分用于辅助专家复核，不能替代专家判断。
+依次调用：
+
+```text
+reproscope_extract_solution_profile
+  -> reproscope_assess_transfer
+  -> reproscope_build_transfer_graph
+  -> reproscope_render_transfer_report
+```
+
+最小材料为 `examples/sample_solution.md` 和 `examples/sample_target_context.md`。DiffeRT2d 到 UAV-BS ISAC
+的目标背景位于 `examples/differt2d_uav_isac_target.md`。
+
+另有 `reproscope_audit_repository` 对 Python 仓库进行只读静态审计。它不会安装依赖，也不会执行发现的
+入口、测试或第三方代码。
+
+## MCP Tools
+
+| Tool | 作用 | 执行方式 |
+| --- | --- | --- |
+| `reproscope_extract_claims` | 提取论文主张、设置及可选 ISAC 证据 | Hy3 + 本地校验 |
+| `reproscope_compare_results` | 对齐指标并重算复现结果 | Hy3 + 本地统计 |
+| `reproscope_score_paper` | 六维可靠性评估与证据不足处理 | Hy3 + 本地聚合 |
+| `reproscope_build_evidence_graph` | 构建论文证据关系图 | 本地确定性 |
+| `reproscope_render_report` | 生成论文审查报告 | 本地确定性 |
+| `reproscope_extract_solution_profile` | 提取技术方案画像 | Hy3 + 本地校验 |
+| `reproscope_assess_transfer` | 评估迁移条件、改造和风险 | Hy3 + 本地聚合 |
+| `reproscope_build_transfer_graph` | 构建迁移证据关系图 | 本地确定性 |
+| `reproscope_render_transfer_report` | 生成迁移决策报告 | 本地确定性 |
+| `reproscope_audit_repository` | 静态审计 Python 仓库复现条件 | 本地确定性 |
+
+## 数据与结果
+
+| 证据 | 规模与结果 | 可支持的结论 |
+| --- | --- | --- |
+| [P0 数据集](evals/p0_dataset/dataset.json) | 12 组、44 份好/中/差及对抗报告 | 验证数据协议、错误标签与对抗回归路径 |
+| [P1 迁移数据集](evals/p1_transfer_dataset/dataset.json) | 5 组、15 份报告；三轮组内排序均为 100% | 评估器可稳定区分当前构造的迁移报告 |
+| [真实论文 Pilot](evals/real_paper_pilot/dataset.json) | 6 篇开放论文、18 份报告；三轮质量档位无翻转 | 验证真实来源材料上的评测流程和重复稳定性 |
+| [人工共识](results/real_paper_human_consensus/summary.md) | 12 份盲评报告；二次加权 Kappa 0.964225 | 描述当前评审者在当前样本上的一致性 |
+| [系统—人工对照](results/real_paper_human_consensus/system_human_comparison.csv) | Spearman 0.988483、1.0、0.988483；MAE 14.54–15.79 | 排序较稳定，但中档报告存在明显高估，分数尚未校准 |
+| [DiffeRT2d Figure 2](case_studies/differt2d_v0_3_4/RESULT.md) | 固定入口成功；300×300 网格；归档图像字节一致 | 证明指定版本与环境下该图的软件输出可复现 |
+
+真实论文不等于真实复现实验：Pilot 主要评估“复现准备度”，只有独立 DiffeRT2d 案例实际执行了上游
+程序。完整结果保存在 [`results`](results/README.md)，协议、冻结和人工评审说明见
+[`docs`](docs/README.md)。
+
+## 本地验证
+
+无需 API Key 的核心检查：
+
+```bash
+python -m pytest
+python -m ruff check src tests scripts case_studies
+python scripts/run_offline_eval.py
+python scripts/run_transfer_offline_eval.py
+python -m hy3_reproeval build-p0-dataset --output evals/p0_dataset --check
+python -m hy3_reproeval build-p1-transfer-dataset --output evals/p1_transfer_dataset --check
+python -m hy3_reproeval build-real-paper-pilot --output evals/real_paper_pilot --check
+python case_studies/differt2d_v0_3_4/scripts/run_reproduction.py verify-public \
+  --evidence-dir case_studies/differt2d_v0_3_4/evidence
+```
+
+发行构建：
+
+```bash
+python -m build
+python scripts/check_distribution.py dist --version 0.38.0
+```
+
+## 仓库结构
+
+```text
+src/            MCP 应用层、评测核心和 CLI
+examples/       最小可运行输入及客户端配置
+evals/          回归样例、P0/P1 数据集和真实论文 Pilot
+case_studies/   实际执行案例及可校验证据
+results/        精选聚合结果、CSV、SVG 和完整性清单
+scripts/        离线评测、在线验证与发行检查
+skills/         可复用研究审查 Skill
+tests/          单元、集成、安全与防篡改测试
+docs/           当前协议、实验报告、交付说明和历史归档
+```
+
+## 安全与边界
+
+- 文件访问受 `REPROSCOPE_ALLOWED_ROOTS` 限制，输出写入独立工作目录。
+- API Key、原始模型响应、私有评语、论文 PDF 缓存和本机路径不进入版本控制。
+- 证据关系图与 SHA-256 用于发现输入被替换或链路不一致，不用于证明科学结论正确。
+- 系统不判断学术不端，不提供法律结论，也不能替代领域专家和真实系统测量。
 
 ## 许可证
 
-Apache License 2.0，详见 [LICENSE](LICENSE)。
+ReproEval 代码以 [Apache-2.0](LICENSE) 发布。第三方论文、软件和数据仍遵循各自许可证；仓库中的来源
+记录不构成法律意见。

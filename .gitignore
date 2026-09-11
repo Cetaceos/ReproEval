@@ -19,6 +19,7 @@ dist/
 .env
 .env.*
 !.env.example
+.mcp.json
 *.pem
 *.key
 
@@ -31,6 +32,7 @@ private_annotations/
 
 # IDE and operating system files
 .idea/
+.codebuddy/
 .workbuddy/
 .vscode/*.local.json
 .DS_Store

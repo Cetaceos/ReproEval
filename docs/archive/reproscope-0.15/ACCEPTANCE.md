@@ -2,7 +2,7 @@
 
 > Historical note: this document preserves the migrated ReproScope 0.15.0 client evidence and must not be read as
 > acceptance evidence for the current ReproEval 0.38.0 release candidate. The current WorkBuddy recording procedure
-> and pass criteria are defined in [WORKBUDDY_FINAL_DEMO_CN.md](../WORKBUDDY_FINAL_DEMO_CN.md).
+> and pass criteria are defined in [WORKBUDDY_FINAL_DEMO_CN.md](../../WORKBUDDY_FINAL_DEMO_CN.md).
 
 Do not mark a client as passed until the exact packaged server, endpoint configuration, and demo inputs have been
 tested. Never capture an API key in screenshots or recordings.
@@ -28,11 +28,11 @@ deterministic fixtures in these tests; they validate server orchestration and sa
 `python scripts/run_offline_eval.py` is the repeatable acceptance baseline for the complete five-tool chain. It runs a
 normal scoring case and an insufficient-evidence case, checks 49 claim, statistic, setting, score, abstention, graph,
 report, and lifecycle invariants, and exits nonzero on failure. The suite reports Correct Abstention Rate and its JSON
-output follows `evals/offline_evaluation_suite.schema.json`. This is an orchestration evaluation and does not replace
+output follows `evals/regression/schemas/offline_evaluation_suite.schema.json`. This is an orchestration evaluation and does not replace
 live Hy3 or GUI-client validation.
 
 The four-tool transfer suite performs 67 checks across normal and insufficient-target-context cases. ISAC profile
-regressions use `evals/synthetic_isac_profile.json` and `evals/synthetic_isac_insufficient_evidence.json` to cover
+regressions use `evals/regression/isac/synthetic_isac_profile.json` and `evals/regression/isac/synthetic_isac_insufficient_evidence.json` to cover
 generic-default behavior, conservative auto detection, explicit activation, registry bounds, unsupported-output
 cleanup, graph integration, and report rendering. These are synthetic replay fixtures, not domain-quality calibration.
 
@@ -55,7 +55,7 @@ Visual Studio Code 1.131.0 completed a prior-build static-audit Tool call record
 Validate the checked-in credential-free current-wheel evidence with:
 
 ```bash
-python scripts/validate_client_evidence.py docs/CLIENT_VALIDATION_0_15_INDEX.json
+python scripts/validate_client_evidence.py docs/archive/reproscope-0.15/CLIENT_VALIDATION_0_15_INDEX.json
 ```
 
 The validator requires the canonical ten-tool list, Schema 1.21, server 0.15.0, completed run IDs, relative artifact
@@ -173,6 +173,6 @@ Use Cline as the alternative if Cursor is unavailable:
 
 The original CodeBuddy recording was reviewed during the ReproScope 0.15.0 work but is not distributed in this
 repository. The checked-in evidence is limited to the current ten-tool discovery screenshots, the
-[client-discovery montage](../assets/demo-0.15.0-client-discovery-montage.gif), and the sanitized machine-checkable
+[client-discovery montage](../../assets/archive/reproscope-0.15/demo-0.15.0-client-discovery-montage.gif), and the sanitized machine-checkable
 index. None of these artifacts proves that every Hy3 workflow was freshly executed in the current ReproEval version.
 Historical 0.5.0 evidence remains useful context but cannot satisfy current-version claims.
